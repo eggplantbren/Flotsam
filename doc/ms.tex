@@ -3,7 +3,7 @@
 \usepackage{graphicx} \usepackage{amssymb}
 \usepackage{amsmath}
 
-\input{macros.tex}
+%\input{macros.tex}
 
 % -----------------------------------------------------------------------------
 
@@ -303,50 +303,6 @@ fluctuations added. These data violate the modelling assumptions, particularly
 that of the probability distribution for the microlensing variations being a
 GP. 
 
-% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-\subsection{A Sample of Mock Lenses}
-
-Motivated by the need to accurately measure time delays for lens cosmography
-in the multi-filter optical imaging survey era, we  we selected three
-quadruply-imaged quasar lens systems from the mock LSST  catalog provided by
-\citet[][hereafter OM10]{OM10}.\footnote{The catalog is available from
-\texttt{http://kipac.stanford.edu/collab/research/lensing}} 
-
-The OM10 mock lenses are designed to represent massive elliptical galaxies;
-they have singular isothermal mass distributions, with velocity dispersions
-$\vdisp$ drawn from the SDSS velocity function \citep[extrapolated to higher
-redshifts assuming no evolution, as in][]{Ogu++08}. The sources were drawn
-from a model quasar luminosity function that matches the observed bright and
-faint ends. External shears, drawn from a plausible distribution, were
-applied. The mock catalog is the product of performing the lens abundance
-calculation for the LSST survey by Monte Carlo integration; OM10 found some
-3000 well-measured lens systems to be detectable at LSST single-epoch depth
-and image quality. Here we consider a typical slice through this sample: from
-the 22 systems lying between $0.4 < \zd < 0.6$, $1.6 < \zs < 2.4$ and $150 <
-\vdisp < 300$\kms, three were chosen as being representative of the possible
-image configurations while also being particularly prone to microlensing
-effects: 6 out of the 12 images lie within the lens galaxy effective radius. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure*}
-\begin{minipage}{0.32\linewidth}
-\centering\includegraphics[width=\linewidth]{figs1/oguri_qso_ID=3042348.eps}
-\end{minipage}
-\begin{minipage}{0.32\linewidth}
-\centering\includegraphics[width=\linewidth]{figs1/oguri_qso_ID=3424637.eps}
-\end{minipage}
-\begin{minipage}{0.32\linewidth}
-\centering\includegraphics[width=\linewidth]{figs1/oguri_qso_ID=5058554.eps}
-\end{minipage}\hfill
-\caption{The three simulated lenses, showing image positions (blue) relative
-to the lens light effective area (orange). The fraction of surface mass
-density in stars ($f^{*}$) at each image position is shown under each image's\label{lenslayouts}}
-\end{figure*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 \subsection{Intrinsic AGN Variability}
 
@@ -399,108 +355,6 @@ estimate for each magnitude consistent with these assumptions, based on
 propagating the assumed errors on the flux to an uncertainty in the
 corresponding magnitude.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table}
-\begin{center}
-\begin{tabular}{ccc}
-\hline
-Parameter      & Possible values \\
-\hline\hline
-$tau_q$/days   & 31.62, {\bf 316.2}, 3162  \\ 
-$sigma_q$      & 0.004, {\bf 0.008}, 0.016 \\ 
-\hline
-\end{tabular}
-\end{center}
-\caption{Simulated source parameters. The damped random walk variability model
-is controlled by two parameters, $tau_q$ and $sigma_q$; the values used here
-are representative of those observed in the SDSS stripe 82 spectroscopic 
-quasar sample. Our fiducial source lies at the centre of the resulting 3 by 3
-grid, and its variability parameters are highlighted in bold font.
-\label{tab:simsrc}}
-\end{table}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-We then apply the appropriate magnifications and time delays to generate
-4-year lightcurves for each image of our three mock lenses. We sample the
-lightcurves in several different ways, to explore the robustness of our time
-delay inference. Keeping the monitoring campaign length fixed at 4 years, we
-down-sample to a plausible cadence (separation between successive
-observations) and season length. Again, we choose representative values:
-COSMOGRAIL \citep{cosmograil} typically monitor lenses for 8 months per year
-at a cadence of 4 days, LSST will likely have seasons closer to 4 months, with
-a single-filter cadence closer to 8 days (although this is somewhat
-pessimistic). 4-month seasons with 4 day cadence mimics LSST monitoring should
-multi-filter joint analysis be possible, while 8-month seasons with 8-day
-cadence represents a cheaper version of a dedicated monitoring campaign. These
-choices resulted in 4 possible observing strategies, with total numbers of
-measurements of 60, 120, 120 and 240. A more thorough investigation of time
-delay measurement feasibility with LSST is left to future work. Four observing
-strategies, times 3 times 3 possible variable sources, lensed by 3 deflectors 
-makes a total of 108 simulated datasets, and 324 independent time delays to be
-inferred.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table*}
-\begin{center}
-\begin{tabular}{ccccc}
-\hline
-Observing strategy & Cadence (days) & Season length (days) 
-& Epochs/season & Total epochs\\
-\hline\hline
-A  & 8  & 120 & 15  &  60 \\ 
-\textbf{B}  & \textbf{4}  & \textbf{120} & \textbf{30}  & \textbf{120} \\
-C  & 8  & 240 & 30  & 120 \\
-D  & 4  & 240 & 60  & 240 \\
-\hline
-\end{tabular}
-\end{center}
-\caption{Simulating observing strategies explored. 4 day cadence and 8 month
-seasons are an approximation to those used in the COSMOGRAIL survey, while
-LSST will provide closer to 8 day cadence and 4 month seasons. Strategy B is
-our fiducial one, corresponding approximately to (somehow) using multiple
-LSST filters to achieve a 4-day cadence over four consecutive 4-month seasons.
-\label{observing}}
-\end{table*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\TODO{PJM}{Check these  numbers, esp COSMOGRAIL...}
-
-Two example simulated datasets are shown in Figure~\ref{fig:simdata}. In  the
-next sub-section we present results from our Gaussian Process modelling of all 108
-datasets. 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure*}
-\begin{minipage}{0.48\linewidth}
-\centering\includegraphics[width=\linewidth]{figs1/oguri_qso_ID=3042348_tau=31_sigma=4_cadence=4_season=8_lightcurve.eps}
-\end{minipage}
-\begin{minipage}{0.48\linewidth}
-\centering\includegraphics[width=\linewidth]{figs1/oguri_qso_ID=5058554_tau=3162_sigma=16_cadence=8_season=4_lightcurve.eps}
-\end{minipage}\hfill
-\caption{Two example simulated lensed AGN datasets (with no microlensing).
-Left: a minimally-variable source ($\tau_q = 31.62$ days, $\sigma_q = 0.004$),
-lensed into a cross configuration (lens ID 3042348), and monitored with high
-cadence and long season length (4 days, 8 months, strategy D). Right: a
-maaximally-variable source ($\tau_q = 3162$ days, $\sigma_q = 0.016$), lensed
-into a major axis cusp configuration (lens ID 5058554), and monitored with low
-cadence and short season length (8 days, 4 months, strategy A).
-\label{fig:simdata}}
-\end{figure*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-\subsubsection{Results}
-
-Strategy B, dt recovery across sample. 3x3x3 = 27 inferences, 27x18 dt estimates. Are
-uncertainties on dt accurate? Trends with dt.
-
-Effect of changing observing strategy.
-
-Mean mag and var par recovery across sample. Trends with tau and sigma.
-
-
-
-% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 \subsection{Including Microlensing}
 
@@ -512,41 +366,6 @@ affected by observing strategy?
 
 
 \subsubsection{Methodology}
-
-\TODO{GD}{Write this section please!}
-\TODO{PJM/BJB}{Suitable illustrative figure?}
-
-Stellar mass distributions were ``painted on'' to the model lens galaxies, as
-described in Dobler et al.\, (in preparation). Established galaxy scaling
-relations were used to draw luminosities and effective radii given the model
-velocity dispersions; a surface brightness distribution with the same
-ellipticity as that of the lens mass, and with a de Vaucoleurs cite profile 
-were assumed. Finally, a mass to light ratio was assumed, and the fraction of
-surface mass density in the form of stars ($\fstar$) 
-computed, at each image position. This parameter, the local lens
-convergence, and its shear, were then used to generate a starfield at each
-image position, and compute the corresponding source plane magnification map,
-using the code of ...
-
-Wambsganss maps. Then, parameters chosen to span the possibilities. Constant
-speed traversals, 2 speeds (fast and slow).  2 source sizes, from Kochanek etc
-work, separated by factor of 3 (large and small).  fstar values chosen in
-catalog and in lens selection, check they are high (c. 0.5).  Check timescales
-compared to length of dataset. Illustrative plot. 
-
-Apply to 3 lenses with "typical" intrinsic variabilities, ie the middle tau
-and sigma of the 3x3 grid in the previous section. 
-
-\subsubsection{Results}
-
-dt recovery across sample. 3x(2x2) = 12 inferences, 12x18=216 dt estimates.
-Are uncertainties on dt accurate? Trends with dt.
-
-Mean mag and ml par recovery across sample. 48 microlensing lightcurves (4
-images times 3 lenses x 4 setups). Trends with fstar, source size and v.
-
-% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
 \subsection{Discussion}
 
 What did we learn from simulated data?
