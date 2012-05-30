@@ -1,0 +1,11 @@
+# Compiled stuff
+*.o
+*.gch
+*.pyc
+
+# Latex stuff
+*.log
+*.aux
+*.dvi
+*.pdf
+
