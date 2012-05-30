@@ -124,7 +124,7 @@ oscillations of stars \citep{2009MNRAS.395.2226B}.
 % -----------------------------------------------------------------------------
 
 
-\section{The Model}
+\section{The Model for the Inference}
 
 We begin by defining our model for the prior knowledge about how the time
 delays give rise rise to the observed data. This results in a probability
@@ -185,7 +185,7 @@ C_{\rm micro}(\Delta t) = \sigma_{\rm micro}^2\exp\left(-\left(\frac{\Delta t}{L
 There is a $\sigma_{\rm micro}$  parameter and an $L_{\rm micro}$ parameter
 for each image; this is because the stellar density and lens convergence is
 different at each image position. In contrast, we use a single $\alpha_{\rm
-micro}$   parameter for all images; this is because it is suspected that the
+micro}$ parameter for all images; this is because it is suspected that the
 smoothness of the microlensing variations, which $\alpha$ describes, depends
 primarily on the size of the microlensed source, and all images are of the
 same source. 
@@ -204,13 +204,14 @@ microlensing contributions.
 The probability distribution for the observed data $\mathbf{y}$ given the
 model parameters $\boldsymbol{\theta}$ is a multivariate Gaussian:
 \begin{equation}
-p(\mathbf{y} | \theta) = \frac{1}{\sqrt{(2\pi)^n \det \mathbf{C}}} \exp\left[-\frac{1}{2}(\mathbf{y} - \mathbf{m})^T\mathbf{C}^{-1}(\mathbf{y} - \mathbf{m})\right]
+p(\mathbf{y} | \theta) = \frac{1}{\sqrt{(2\pi)^n \det \mathbf{C}}}
+\exp\left[-\frac{1}{2}
+(\mathbf{y} - \mathbf{m})^T\mathbf{C}^{-1}(\mathbf{y} - \mathbf{m})\right]
 \end{equation}
 where $\mathbf{m}$ is the vector of mean values, and $\mathbf{C}$ is the
 covariance matrix of the data, formed by evaluating the covariance function of
 the GP at the times of the observations, and then adding diagonal components
-to describe the observational errors. That is to say, 
-
+to describe the observational errors. That is,
 \begin{equation}
 \mathbf{C} = \textnormal{Cov}\left[y_i(t_1), y_j(t_2)\right] + \mathbf{C}_{\rm noise}.
 \end{equation}
@@ -242,15 +243,16 @@ scatter in the light curve is better modelled by independent Gaussian noise
 than it is by a time-correlated microlensing term. Thus, to improve the
 robustness of our method, we include a ``noise boost'' parameter $\kappa$
 describing the factor by which the reported error bars should be multiplied.
-This is another testable mechanism for accounting for outliers.
+This is another mechanism for accounting for outliers.
 
 In summary, the parameter vector is
 \begin{equation}
-\left\{ \{\tau\}, \{m\}, \sigma_{\rm QSO}, L_{\rm QSO}, \{\sigma_{\rm micro}\}, \{L_{\rm micro}\}, \alpha_{\rm micro}, \kappa \right\}
+\left\{ \{\tau\}, \{m\}, \sigma_{\rm QSO}, L_{\rm QSO}, \{\sigma_{\rm micro}\}
+\{L_{\rm micro}\}, \alpha_{\rm micro}, \kappa \right\}
 \end{equation}
 where parameters in braces denote a set (one for each QSO image).  For a
 double image lens, the total number of parameters in the model is~12. For a
-quad, this number is~20. {\bf CHECK.}  A set of uninformative prior
+quad, this number is~20. A set of uninformative prior
 distributions for these parameters are listed in Table~\ref{priors}; we assign
 these priors in the analysis described in the first part of this paper. Later,
 we will show how a more informative set of priors can be derived, and used to
