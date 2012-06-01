@@ -11,7 +11,7 @@ class Flotsam(object):
 
 	def __call__(self, params):
 		self.model.fromVector(params)
-		return model.logPrior + model.logLikelihood
+		return self.model.logPrior + model.logLikelihood
 
 data = Data()
 data.load('j1131.txt')
@@ -22,6 +22,7 @@ nwalkers = 100
 # Make an initial guess for the positions.
 model = TDModel(data.numImages)
 model.fromPrior()
+
 params = np.empty((nwalkers, model.vector.size))
 for i in xrange(0, nwalkers):
 	model.fromPrior()
@@ -31,14 +32,16 @@ for i in xrange(0, nwalkers):
 flotsam = Flotsam(data)
 
 # The sampler object
-sampler = emcee.EnsembleSampler(nwalkers, model.vector.size, flotsam, threads=10)
+sampler = emcee.EnsembleSampler(nwalkers, model.vector.size, flotsam, threads=1)
 
 # Sample, outputting to a file
 f = open("flotsam.out", "w")
-for pos, prob, rstate in sampler.sample(params, iterations=2000):
+for pos, prob, rstate in sampler.sample(params, iterations=1000):
 	# Write the current position to a file, one line per walker
 	f.write("\n".join(["\t".join([str(q) for q in p]) for p in pos]))
 	f.write("\n")
 	f.flush()
+	print('Acceptance Fraction = ', sampler.acceptance_fraction)
+
 f.close()
 
