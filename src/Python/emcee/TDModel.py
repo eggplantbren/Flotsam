@@ -3,20 +3,19 @@ import numpy.random as rng
 import matplotlib.pyplot as plt
 from Data import Data
 
-data = Data()
-data.load('j1131.txt')
-
 class Limits:
 	"""
 	A singleton class that just holds prior bounds
 	"""
-	mMin = data.yMean - 10.*data.yStDev
-	mMax = data.yMean + 10.*data.yStDev
-	mRange = mMax - mMin
+	@staticmethod
+	def initialise(data):
+		Limits.mMin = data.yMean - 10.*data.yStDev
+		Limits.mMax = data.yMean + 10.*data.yStDev
+		Limits.mRange = Limits.mMax - Limits.mMin
 
-	tauMin = -data.tRange
-	tauMax =  data.tRange
-	tauRange = tauMax - tauMin
+		Limits.tauMin = -data.tRange
+		Limits.tauMax =  data.tRange
+		Limits.tauRange = Limits.tauMax - Limits.tauMin
 
 class TDModel:
 	"""
@@ -59,6 +58,10 @@ class TDModel:
 		return np.hstack([self.m, self.tau])
 
 if __name__ == '__main__':
+	data = Data()
+	data.load('j1131.txt')
+	Limits.initialise(data)
+
 	model = TDModel()
 	model.fromPrior()
 	print(model.m)
