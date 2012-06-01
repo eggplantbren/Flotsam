@@ -93,8 +93,23 @@ class TDModel:
 			logP = -np.inf
 		return logP
 
-	@property
-	def logLikelihood(self):
+	def logLikelihood(self, data):
+		assert self.numImages == data.numImages
+
+		which = [np.nonzero(data.id == i)[0]\
+				for i in xrange(0, self.numImages)]
+
+		# Mean vector
+		m = np.empty(data.t.size)
+		for i in xrange(0, self.numImages):
+			m[which[i]] = self.mag[i]
+
+		# Covariance matrix
+		C = np.zeros((data.t.size, data.t.size))
+		ids = np.meshgrid(data.id, data.id)
+
+		equal = ids[0] == ids[1]
+
 		logL = 0.
 		return logL
 
