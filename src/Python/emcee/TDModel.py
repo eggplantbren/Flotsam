@@ -9,10 +9,12 @@ class Limits:
 	"""
 	@staticmethod
 	def initialise(data):
+		# Mean magnitudes
 		Limits.magMin = data.yMean - 10.*data.yStDev
 		Limits.magMax = data.yMean + 10.*data.yStDev
 		Limits.magRange = Limits.magMax - Limits.magMin
 
+		# Time delays
 		Limits.tauMin = -data.tRange
 		Limits.tauMax =  data.tRange
 		Limits.tauRange = Limits.tauMax - Limits.tauMin
@@ -27,7 +29,15 @@ class Limits:
 		Limits.alpha_mlRange = Limits.alpha_mlMax\
 						- Limits.alpha_mlMin
 
-
+		# QSO Variability
+		Limits.logSig_qsoMin = np.log(1E-2*data.yStDev).mean()
+		Limits.logSig_qsoMax = np.log(1E2*data.yStDev).mean()
+		Limits.logSig_qsoRange = Limits.logSig_qsoMax\
+						- Limits.logSig_qsoMin
+		Limits.logTau_qsoMin = np.log(1E-2*data.tRange)
+		Limits.logTau_qsoMax = np.log(1E3*data.tRange)
+		Limits.logTau_qsoRange = Limits.logTau_qsoMax\
+						- Limits.logTau_qsoMin
 
 class TDModel:
 	"""
@@ -54,6 +64,12 @@ class TDModel:
 		self.alpha_ml = Limits.alpha_mlMin + Limits.alpha_mlRange\
 					*rng.rand()
 
+		# QSO Variability
+		self.logSig_qso = Limits.logSig_qsoMin +\
+					Limits.logSig_qsoRange*rng.rand()
+		self.logTau_qso = Limits.logTau_qsoMin +\
+					Limits.logTau_qsoRange*rng.rand()
+
 	@property
 	def logPrior(self):
 		logP = 0.
@@ -69,6 +85,12 @@ class TDModel:
 		if self.alpha_ml < Limits.alpha_mlMin or self.alpha_ml >\
 					Limits.alpha_mlMax:
 			logP = -np.inf
+		if self.logSig_qso < Limits.logSig_qsoMin or\
+			self.logSig_qso > Limits.logSig_qsoMax:
+			logP = -np.inf
+		if self.logTau_qso < Limits.logTau_qsoMin or\
+			self.logTau_qso > Limits.logTau_qsoMax:
+			logP = -np.inf
 		return logP
 
 	@property
@@ -82,7 +104,8 @@ class TDModel:
 		Stack all parameters into a vector
 		"""
 		return np.hstack([self.mag, self.tau, self.logSig_ml,\
-					self.alpha_ml])
+					self.alpha_ml, self.logSig_qso,\
+					self.logTau_qso])
 
 	def fromVector(self, vec):
 		"""
@@ -92,6 +115,8 @@ class TDModel:
 		self.tau = vec[self.numImages:2*self.numImages]
 		self.logSig_ml = vec[2*self.numImages:3*self.numImages]
 		self.alpha_ml = vec[3*self.numImages]
+		self.logSig_qso = vec[3*self.numImages + 1]
+		self.logTau_qso = vec[3*self.numImages + 2]
 
 if __name__ == '__main__':
 	data = Data()
