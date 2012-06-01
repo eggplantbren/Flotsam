@@ -41,7 +41,7 @@ for pos, prob, rstate in sampler.sample(params, iterations=1000):
 	f.write("\n".join(["\t".join([str(q) for q in p]) for p in pos]))
 	f.write("\n")
 	f.flush()
-	print('Acceptance Fraction = ', sampler.acceptance_fraction)
+	print('Acceptance Fraction = %.3f'%sampler.acceptance_fraction.mean())
 
 f.close()
 
