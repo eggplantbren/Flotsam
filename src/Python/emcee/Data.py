@@ -23,6 +23,8 @@ class Data:
 		self.y = data[:,1]
 		self.sig = data[:,2]
 		self.id = data[:,3].astype('int')
+		assert self.id.min() == 0
+		self.computeSummaries()
 		self.loaded = True
 
 	def plot(self):
@@ -32,28 +34,25 @@ class Data:
 					yerr=self.sig[which], fmt='.')
 		plt.show()
 
-	# Useful summary statistics
-	@property
-	def tRange(self):
-		return self.t.max() - self.t.min()
+	def computeSummaries(self):
+		"""
+		Compute useful summary statistics
+		"""
+		self.numImages = self.id.max() + 1
+		self.tRange = self.t.max() - self.t.min()
 
-	@property
-	def weights(self):
-		w = self.sig**(-2)
-		w = w/w.sum()
-		return w
-
-	@property
-	def yMean(self):
-		return (self.weights*self.y).sum()
-
-	@property
-	def ySqMean(self):
-		return (self.weights*self.y**2).sum()
-
-	@property
-	def yStDev(self):
-		return np.sqrt(self.ySqMean - self.yMean**2)
+		# Summary statistics for each image
+		self.yMean = np.empty(self.numImages)
+		self.ySqMean = np.empty(self.numImages)
+		self.yStDev = np.empty(self.numImages)
+		for i in xrange(0, self.numImages):
+			which = np.nonzero(self.id == i)[0]
+			w = self.sig[which]**(-2)
+			w = w/w.sum()
+			self.yMean[i] = (w*self.y[which]).sum()
+			self.ySqMean[i] = (w*self.y[which]**2).sum()
+			self.yStDev[i] = np.sqrt(self.ySqMean[i]\
+							-self.yMean[i]**2)
 
 if __name__ == '__main__':
 	"""
@@ -62,5 +61,6 @@ if __name__ == '__main__':
 	
 	data = Data()
 	data.load('j1131.txt')
+	print(data.tRange, data.yMean, data.yStDev)
 	data.plot()
 
