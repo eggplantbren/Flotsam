@@ -11,7 +11,7 @@ class Flotsam(object):
 
 	def __call__(self, params):
 		self.model.fromVector(params)
-		return self.model.logPrior + model.logLikelihood
+		return self.model.logPrior + self.model.logLikelihood(data)
 
 data = Data()
 data.load('j1131.txt')
@@ -20,19 +20,19 @@ Limits.initialise(data)
 nwalkers = 100
 
 # Make an initial guess for the positions.
-model = TDModel(data.numImages)
-model.fromPrior()
+m = TDModel(data.numImages)
+m.fromPrior()
 
-params = np.empty((nwalkers, model.vector.size))
+params = np.empty((nwalkers, m.vector.size))
 for i in xrange(0, nwalkers):
-	model.fromPrior()
-	params[i, :] = model.vector
+	m.fromPrior()
+	params[i, :] = m.vector
 
 # Instantiate the class
 flotsam = Flotsam(data)
 
 # The sampler object
-sampler = emcee.EnsembleSampler(nwalkers, model.vector.size, flotsam, threads=1)
+sampler = emcee.EnsembleSampler(nwalkers, m.vector.size, flotsam, threads=1)
 
 # Sample, outputting to a file
 f = open("flotsam.out", "w")
