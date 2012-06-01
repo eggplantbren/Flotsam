@@ -17,10 +17,17 @@ class Limits:
 		Limits.tauMax =  data.tRange
 		Limits.tauRange = Limits.tauMax - Limits.tauMin
 
+		# Microlensing
 		Limits.logSig_mlMin = np.log(1E-2*data.yStDev)
 		Limits.logSig_mlMax = np.log(1E2*data.yStDev)
 		Limits.logSig_mlRange = Limits.logSig_mlMax\
 						- Limits.logSig_mlMin
+		Limits.alpha_mlMin = 1.
+		Limits.alpha_mlMax = 2.
+		Limits.alpha_mlRange = Limits.alpha_mlMax\
+						- Limits.alpha_mlMin
+
+
 
 class TDModel:
 	"""
@@ -43,6 +50,10 @@ class TDModel:
 		self.logSig_ml = Limits.logSig_mlMin + Limits.logSig_mlRange\
 					*rng.rand(self.numImages)
 
+		# Microlensing smoothness
+		self.alpha_ml = Limits.alpha_mlMin + Limits.alpha_mlRange\
+					*rng.rand()
+
 	@property
 	def logPrior(self):
 		logP = 0.
@@ -54,6 +65,9 @@ class TDModel:
 			logP = -np.inf
 		if np.any(np.logical_or(self.logSig_ml < Limits.logSig_mlMin,\
 				self.logSig_ml > Limits.logSig_mlMax)):
+			logP = -np.inf
+		if self.alpha_ml < Limits.alpha_mlMin or self.alpha_ml >\
+					Limits.alpha_mlMax:
 			logP = -np.inf
 		return logP
 
@@ -67,7 +81,8 @@ class TDModel:
 		"""
 		Stack all parameters into a vector
 		"""
-		return np.hstack([self.mag, self.tau, self.logSig_ml])
+		return np.hstack([self.mag, self.tau, self.logSig_ml,\
+					self.alpha_ml])
 
 	def fromVector(self, vec):
 		"""
@@ -76,6 +91,7 @@ class TDModel:
 		self.mag = vec[0:self.numImages]
 		self.tau = vec[self.numImages:2*self.numImages]
 		self.logSig_ml = vec[2*self.numImages:3*self.numImages]
+		self.alpha_ml = vec[3*self.numImages]
 
 if __name__ == '__main__':
 	data = Data()
