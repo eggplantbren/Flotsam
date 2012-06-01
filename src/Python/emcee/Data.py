@@ -1,6 +1,7 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
-class Data
+class Data:
 	"""
 	An object of this class is a dataset in Flotsam time delay inference
 	format. Columns: (time, magnitude, sig_magnitude, image ID)
@@ -23,6 +24,13 @@ class Data
 		self.sig = data[:,2]
 		self.id = data[:,3].astype('int')
 		self.loaded = True
+
+	def plot(self):
+		for i in xrange(self.id.min(), self.id.max() + 1):
+			which = np.nonzero(self.id == i)[0]
+			plt.errorbar(self.t[which], self.y[which],\
+					yerr=self.sig[which], fmt='.')
+		plt.show()
 
 	# Useful summary statistics
 	@property
@@ -52,4 +60,7 @@ if __name__ == '__main__':
 	This is just for simple testing purposes.
 	"""
 	
-	
+	data = Data()
+	data.load('j1131.txt')
+	data.plot()
+
