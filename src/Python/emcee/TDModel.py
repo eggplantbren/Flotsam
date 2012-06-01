@@ -22,26 +22,26 @@ class TDModel:
 	An object of this class is a point in the Flotsam parameter space
 	for inferring time delays in the presence of microlensing.
 	"""
-	def __init__(self):
-		pass
+	def __init__(self, numImages):
+		self.numImages = numImages
 
 	def fromPrior(self):
 		# Mean magnitudes
-		self.m = Limits.mMin + Limits.mRange*rng.rand(data.numImages)
+		self.m = Limits.mMin + Limits.mRange*rng.rand(self.numImages)
 
 		# Time delays
 		self.tau = Limits.tauMin\
-				+ Limits.tauRange*rng.rand(data.numImages)
+				+ Limits.tauRange*rng.rand(self.numImages)
 		self.tau[0] = 0.
 
 	@property
 	def logPrior(self):
 		logP = 0.
 		if np.any(np.logical_or(self.m < Limits.mMin,\
-				self.m > limits.mMax)):
+				self.m > Limits.mMax)):
 			logP = -np.inf
 		if np.any(np.logical_or(self.tau < Limits.tauMin,\
-				self.tau > limits.tauMax)):
+				self.tau > Limits.tauMax)):
 			logP = -np.inf
 		return logP
 
@@ -57,12 +57,20 @@ class TDModel:
 		"""
 		return np.hstack([self.m, self.tau])
 
+	def fromVector(self, vec):
+		"""
+		Set all parameters from the vector
+		"""
+		self.m = vec[0:self.numImages]
+		self.tau = vec[self.numImages:2*self.numImages]
+		
+
 if __name__ == '__main__':
 	data = Data()
 	data.load('j1131.txt')
 	Limits.initialise(data)
 
-	model = TDModel()
+	model = TDModel(data.numImages)
 	model.fromPrior()
 	print(model.m)
 
