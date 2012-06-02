@@ -1,5 +1,6 @@
 import numpy as np
 import numpy.random as rng
+import scipy.linalg as la
 import matplotlib.pyplot as plt
 from Data import Data
 
@@ -110,8 +111,16 @@ class TDModel:
 
 		equal = ids[0] == ids[1]
 
-		logL = 0.
-		return logL
+##		try:
+##			L = la.cholesky(C)
+##		except:
+##			return -np.inf
+#		y = data.y - m
+#		logDeterminant = 2.0*np.sum(np.log(np.diag(L)))
+#		solution = la.cho_solve((L, True), y)
+#		exponent = np.dot(y, solution)
+#		logL = -0.5*data.t.size*np.log(2.0*np.pi) - 0.5*logDeterminant - 0.5*exponent
+		return 0.
 
 	@property
 	def vector(self):
