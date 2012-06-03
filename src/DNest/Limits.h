@@ -9,6 +9,8 @@
 
 class Limits
 {
+	friend class TDModel;
+
 	private:
 		// Naming convention: varName_min, varName_max, varName_range
 
