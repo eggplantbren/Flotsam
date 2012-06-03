@@ -19,6 +19,9 @@ class Data
 
 		void computeSummaries();
 
+		// Singleton
+		static Data instance;
+
 	public:
 		Data();
 		void load(const char* filename);
@@ -28,6 +31,8 @@ class Data
 		double get_tRange() const { return tRange; }
 		int get_numPoints() const { return numPoints; }
 		int get_numImages() const { return numImages; }
+
+		static Data get_instance() { return instance; }
 
 };
 
