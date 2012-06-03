@@ -4,58 +4,62 @@
 #include "Model.h"
 #include "Data.h"
 #include <ostream>
-#include <istream>
 #include <vector>
 #include <Eigen/Dense>
 
-class TDModel:public DNest::Model
+// Shorter names for Eigen3 types
+typedef Eigen::VectorXd Vector;
+typedef Eigen::MatrixXd Matrix;
+typedef Eigen::LLT< Eigen::MatrixXd > Cholesky;
+
+class TDModel:public DNest3::Model
 {
 	private:
-		std::vector<double> timeDelays;
-		std::vector<double> sigMicrolensing;
-		std::vector<double> tauMicrolensing;
-		std::vector<double> meanMagnitudes;
+		// Mean magnitudes
+		std::vector<double> mag;
 
-		double sigIntrinsic, tauIntrinsic, alphaIntrinsic, alphaMicrolensing, sigmaBoost;
-		Eigen::MatrixXd covMat;
-		Eigen::LLT< Eigen::MatrixXd > cholesky;
+		// Time delays (first is zero by definition)
+		std::vector<double> tau;		
 
-		static const double minSig;
-		static const double maxSig;
+		// Microlensing amplitudes
+		std::vector<double> logSig_ml;
 
-		static Data data;
+		// Microlensing smoothness
+		double alpha;
 
-		void formCovarianceMatrix();
+		// QSO Variability amplitude
+		double logSig_qso;
 
-		double perturbHelper1();
-		double perturbHelper2();
-		double perturbHelper3();
-		double perturbHelper4();
-		double perturbHelper5();
-		double perturbHelper6();
-		double perturbHelper7();
-		double perturbHelper8();
-		double perturbHelper9();
+		// QSO variability timescale
+		double logTau_qso;
+
+		// Mean vector
+		Vector meanVector;
+
+		// Covariance matrix and its Cholesky decomposition
+		Matrix covarianceMatrix;
+		Cholesky cholesky;
 
 		// Noise-free covariance function
-		double covariance(double t1, double t2, int qsoID1, int qsoID2);
+		double covariance(double t1, double t2, int ID1, int ID2);
 
 	public:
 		TDModel();
-		~TDModel();
-		DNest::Model* factory() const;
-		DNest::Model* clone() const;
-		void copyFrom(const DNest::Model* other);
+
+		// Generate the point from the prior
 		void fromPrior();
-		void calculateLogLikelihood();
+
+		// Metropolis-Hastings proposals
 		double perturb();
-		double getValue();
-		double getLogLikelihood() const;
+
+		// Likelihood function
+		double logLikelihood() const;
+
+		// Print to stream
 		void print(std::ostream& out) const;
-		void read(std::istream& in);
-		std::vector<double> evaluate(const std::vector<double>& t, const std::vector<int>& qsoID);
-		static void loadData(const char* filename);
-		static Data& getData();
+
+		// Return string with column information
+		std::string description() const;
 };
 
 #endif
