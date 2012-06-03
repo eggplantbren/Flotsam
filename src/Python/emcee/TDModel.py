@@ -106,8 +106,12 @@ class TDModel:
 			m[which[i]] = self.mag[i]
 
 		# Covariance matrix
-		C = np.zeros((data.t.size, data.t.size))
+		[t1, t2] = np.meshgrid(data.t, data.t)
+		lags = np.abs(t2 - t1)
+		plt.imshow(lags)
+		plt.show()
 		ids = np.meshgrid(data.id, data.id)
+
 
 		equal = ids[0] == ids[1]
 
