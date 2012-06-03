@@ -5,25 +5,29 @@
 
 class Data
 {
-	friend class TDModel;
-
 	private:
+		// The data
 		std::vector<double> t, y, sig;
-		std::vector<int> qsoID;
+		std::vector<int> ID;
 
 		bool loaded;
 
-		int N;
-		int numQSOs;
-		double tMin, tRange;
-		double yMin, yRange;
+		// Some summary statistics
+		int numPoints, numImages;
+		double tMin, tMax, tRange;
+		std::vector<double> yMean, yStDev; // One for each image
+
+		void computeSummaries();
 
 	public:
 		Data();
 		void load(const char* filename);
-		double getTMin() const;
-		double getTRange() const;
-		int getN() const;
+
+		// A bunch of getters
+		double get_tMin() const { return tMin; }
+		double get_tRange() const { return tRange; }
+		int get_numPoints() const { return numPoints; }
+		int get_numImages() const { return numImages; }
 
 };
 
