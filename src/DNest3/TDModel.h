@@ -28,6 +28,9 @@ class TDModel:public DNest3::Model
 		// Microlensing amplitudes
 		std::vector<double> logSig_ml;
 
+		// Microlensing timescales
+		std::vector<double> logTau_ml;
+
 		// Microlensing smoothness
 		double alpha;
 
