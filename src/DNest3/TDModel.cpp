@@ -16,15 +16,23 @@ TDModel::TDModel()
 		cerr<<"# Data has not been loaded! Cannot construct TDModel."<<endl;
 		exit(0);
 	}
-	meanVector.resize(Data::get_instance().get_numPoints());
-	covarianceMatrix.resize(Data::get_instance().get_numPoints(),
-				Data::get_instance().get_numPoints());
+	numPoints = Data::get_instance().get_numPoints();
+	numImages = Data::get_instance().get_numImages();
+
+	mag.resize(numImages);
+	tau.resize(numImages);
+	logSig_ml.resize(numImages);
+	logTau_ml.resize(numImages);
+
+	meanVector.resize(numPoints);
+	covarianceMatrix.resize(numPoints,
+				numPoints);
 	limits.set(Data::get_instance());
 }
 
 void TDModel::fromPrior()
 {
-	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+	for(int i=0; i<numImages; i++)
 	{
 		mag[i] = limits.mag_min[i] + limits.mag_range[i]*randomU();
 		tau[i] = limits.tau_min[i] + limits.tau_range[i]*randomU();
@@ -41,7 +49,7 @@ void TDModel::fromPrior()
 
 double TDModel::perturb1()
 {
-	int which = randInt(Data::get_instance().get_numImages());
+	int which = randInt(numImages);
 	mag[which] += limits.mag_range[which]
 			*pow(10., 1.5 - 6.*randomU())*randn();
 	mag[which] = mod(mag[which] - limits.mag_min[which]
@@ -52,7 +60,7 @@ double TDModel::perturb1()
 
 double TDModel::perturb2()
 {
-	int which = randInt(Data::get_instance().get_numImages());
+	int which = randInt(numImages);
 	tau[which] += limits.tau_range[which]
 			*pow(10., 1.5 - 6.*randomU())*randn();
 	tau[which] = mod(tau[which] - limits.tau_min[which]
@@ -63,7 +71,7 @@ double TDModel::perturb2()
 
 double TDModel::perturb3()
 {
-	int which = randInt(Data::get_instance().get_numImages());
+	int which = randInt(numImages);
 	logSig_ml[which] += limits.logSig_ml_range[which]
 			*pow(10., 1.5 - 6.*randomU())*randn();
 	logSig_ml[which] = mod(logSig_ml[which] - limits.logSig_ml_min[which]
@@ -74,7 +82,7 @@ double TDModel::perturb3()
 
 double TDModel::perturb4()
 {
-	int which = randInt(Data::get_instance().get_numImages());
+	int which = randInt(numImages);
 	logTau_ml[which] += limits.logTau_ml_range[which]
 			*pow(10., 1.5 - 6.*randomU())*randn();
 	logTau_ml[which] = mod(logTau_ml[which] - limits.logTau_ml_min[which]
@@ -148,9 +156,9 @@ void TDModel::formCovarianceMatrix()
 {
 	// Fill covariance matrix
 	// with covariance function evaluations
-	for(int i=0; i<Data::get_instance().get_numPoints(); i++)
+	for(int i=0; i<numPoints; i++)
 	{
-		for(int j=i; j<Data::get_instance().get_numPoints(); j++)
+		for(int j=i; j<numPoints; j++)
 		{
 			covarianceMatrix(i, j) =
 				covariance(Data::get_instance().get_t()[i],
@@ -164,7 +172,7 @@ void TDModel::formCovarianceMatrix()
 	}
 
 	// Add diagonal noise component
-	for(int i=0; i<Data::get_instance().get_numPoints(); i++)
+	for(int i=0; i<numPoints; i++)
 		covarianceMatrix(i, i) += pow(Data::get_instance().get_sig()[i], 2);
 
 	cholesky = covarianceMatrix.llt();
@@ -172,7 +180,7 @@ void TDModel::formCovarianceMatrix()
 
 void TDModel::formMeanVector()
 {
-	for(int i=0; i<Data::get_instance().get_numPoints(); i++)
+	for(int i=0; i<numPoints; i++)
 		meanVector(i) = mag[Data::get_instance().get_ID()[i]];
 }
 
@@ -185,9 +193,9 @@ double TDModel::covariance(double t1, double t2, int ID1, int ID2)
 	double C = pow(sig_qso, 2)
 				*exp(-exponent);
 
-	vector<double> sig_ml(Data::get_instance().get_numImages());
-	vector<double> tau_ml(Data::get_instance().get_numImages());
-	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+	vector<double> sig_ml(numImages);
+	vector<double> tau_ml(numImages);
+	for(int i=0; i<numImages; i++)
 	{
 		sig_ml[i] = exp(logSig_ml[i]);
 		tau_ml[i] = exp(logTau_ml[i]);
@@ -205,30 +213,30 @@ double TDModel::logLikelihood() const
 {
 	Matrix L = cholesky.matrixL();
 
-	Vector y(Data::get_instance().get_numPoints());
-	for(int i=0; i<Data::get_instance().get_numPoints(); i++)
+	Vector y(numPoints);
+	for(int i=0; i<numPoints; i++)
 		y(i) = Data::get_instance().get_y()[i] - meanVector(i);
 
 	double logDeterminant = 0.;
-	for(int i=0; i<Data::get_instance().get_numPoints(); i++)
+	for(int i=0; i<numPoints; i++)
 		logDeterminant += 2.*log(L(i,i));
 
 	Vector solution = cholesky.solve(y); // C^-1*(y-mu)
 	double exponent = y.dot(solution);
 
-	return -0.5*Data::get_instance().get_numPoints()*log(2*M_PI)
+	return -0.5*numPoints*log(2*M_PI)
 			- 0.5*logDeterminant - 0.5*exponent;
 }
 
 void TDModel::print(ostream& out) const
 {
-	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+	for(int i=0; i<numImages; i++)
 		out<<mag[i]<<' ';
-	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+	for(int i=0; i<numImages; i++)
 		out<<tau[i]<<' ';
-	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+	for(int i=0; i<numImages; i++)
 		out<<logSig_ml[i]<<' ';
-	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+	for(int i=0; i<numImages; i++)
 		out<<logTau_ml[i]<<' ';
 
 	out<<alpha<<' ';

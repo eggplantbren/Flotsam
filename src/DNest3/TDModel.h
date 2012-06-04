@@ -19,6 +19,9 @@ class TDModel:public DNest3::Model
 		// Prior bounds on everything
 		static Limits limits;
 
+		// Useful integers
+		int numPoints, numImages;
+
 		// Mean magnitudes
 		std::vector<double> mag;
 

@@ -2,8 +2,10 @@ OBJECTS = Data.o Limits.o TDModel.o
 
 # Compiler settings
 CPP = g++
-# CFLAGS = -O0 -g -Wall -Wextra -ansi -pedantic  # Development
-CFLAGS = -O2 -Wall -Wextra -ansi -pedantic -DNDEBUG  # Optimized
+# Development
+# CFLAGS = -O0 -g -Wall -Wextra -ansi -pedantic
+# Optimized
+CFLAGS = -O2 -Wall -Wextra -ansi -pedantic -DNDEBUG
 CLIBS = -ldnest3 -lgsl -lgslcblas
 
 # The default build rule
