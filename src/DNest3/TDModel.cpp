@@ -65,6 +65,18 @@ double TDModel::perturb3()
 				+ limits.logSig_ml_min[which];
 	return 0.;
 }
+
+double TDModel::perturb4()
+{
+	int which = randInt(Data::get_instance().get_numImages());
+	logTau_ml[which] += limits.logTau_ml_range[which]
+			*pow(10., 1.5 - 6.*randomU())*randn();
+	logTau_ml[which] = mod(logTau_ml[which] - limits.logTau_ml_min[which]
+				,limits.logTau_ml_range[which])
+				+ limits.logTau_ml_min[which];
+	return 0.;
+}
+
 /*
 
 double TDModel::perturb4()
