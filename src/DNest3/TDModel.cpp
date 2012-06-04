@@ -222,3 +222,25 @@ double TDModel::logLikelihood() const
 			- 0.5*logDeterminant - 0.5*exponent;
 }
 
+void TDModel::print(ostream& out) const
+{
+	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+		out<<mag[i]<<' ';
+	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+		out<<tau[i]<<' ';
+	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+		out<<logSig_ml[i]<<' ';
+	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+		out<<logTau_ml[i]<<' ';
+
+	out<<alpha<<' ';
+	out<<logSig_qso<<' ';
+	out<<logTau_qso;
+}
+
+string description() const
+{
+	return string("mag, tau, logSig_ml, logTau_ml, alpha")
+			+ string(", logSig_qso, logTau_qso");
+}
+
