@@ -14,6 +14,9 @@ TDModel::TDModel()
 		cerr<<"# Data has not been loaded! Cannot construct TDModel"<<endl;
 		exit(0);
 	}
+	meanVector.resize(Data::get_instance().get_numPoints());
+	covarianceMatrix.resize(Data::get_instance().get_numPoints(),
+				Data::get_instance().get_numPoints());
 }
 
 void TDModel::fromPrior()
@@ -133,7 +136,7 @@ double TDModel::perturb()
 			break;
 	}
 
-	// formMeanVector();
+	formMeanVector();
 	formCovarianceMatrix();
 	return logH;
 }
@@ -166,6 +169,11 @@ void TDModel::formCovarianceMatrix()
 	cholesky = covarianceMatrix.llt();
 }
 
+void TDModel::formMeanVector()
+{
+	for(int i=0; i<Data::get_instance().get_numPoints(); i++)
+		meanVector(i) = mag[Data::get_instance().get_ID()[i]];
+}
 
 double TDModel::covariance(double t1, double t2, int ID1, int ID2)
 {
