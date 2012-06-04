@@ -15,6 +15,9 @@ typedef Eigen::LLT< Eigen::MatrixXd > Cholesky;
 class TDModel:public DNest3::Model
 {
 	private:
+		// Prior bounds on everything
+		static Limits limits;
+
 		// Mean magnitudes
 		std::vector<double> mag;
 
