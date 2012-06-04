@@ -94,6 +94,14 @@ double TDModel::perturb6()
 	return 0.;
 }
 
+double TDModel::perturb7()
+{
+	double logTau_qso += limits.logTau_qso_range
+				*pow(10., 1.5 - 6.*randomU())*randn();
+	logTau_qso = mod(logTau_qso - limits.logTau_qso_min,
+				limits.logTau_qso_range) + limits.logTau_qso_min;
+	return 0.;
+}
 
 /*
 
