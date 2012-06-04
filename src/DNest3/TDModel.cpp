@@ -207,10 +207,7 @@ double TDModel::logLikelihood() const
 
 	Vector y(Data::get_instance().get_numPoints());
 	for(int i=0; i<Data::get_instance().get_numPoints(); i++)
-	{
-		y(i) = Data::get_instance().get_y()[i]
-			-mag[Data::get_instance().get_ID()[i]];
-	}
+		y(i) = Data::get_instance().get_y()[i] - meanVector(i);
 
 	double logDeterminant = 0.;
 	for(int i=0; i<Data::get_instance().get_numPoints(); i++)
