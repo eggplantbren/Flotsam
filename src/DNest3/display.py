@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 sample = np.atleast_2d(np.loadtxt('sample.txt'))
 
 for i in xrange(0, sample.shape[1]):
-	plt.plot(sample[:,0])
+	plt.plot(sample[:,i])
 	plt.title(i)
 	plt.show()
 
