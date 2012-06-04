@@ -55,6 +55,7 @@ class TDModel:public DNest3::Model
 		double perturb2();
 		double perturb3();
 		double perturb4();
+		double perturb5();
 
 	public:
 		TDModel();

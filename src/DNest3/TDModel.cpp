@@ -77,6 +77,14 @@ double TDModel::perturb4()
 	return 0.;
 }
 
+double TDModel::perturb5()
+{
+	double alpha += limits.alpha_range*pow(10., 1.5 - 6.*randomU())*randn();
+	alpha = mod(alpha - limits.alpha_min, limits.alpha_range)
+			+ limits.alpha_min;
+	return 0.;
+}
+
 /*
 
 double TDModel::perturb4()
