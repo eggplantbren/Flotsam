@@ -32,7 +32,9 @@ class Limits
 
 		// QSO variability timescale
 		double logTau_qso_min, logTau_qso_max, logTau_qso_range;
-		
+
+		// Whether set() has been called
+		bool isSet;
 
 	public:
 		// Default constructor: Do nothing
