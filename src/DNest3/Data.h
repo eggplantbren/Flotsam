@@ -39,7 +39,7 @@ class Data
 		const std::vector<double> get_sig() const { return sig; }
 		const std::vector<int> get_ID() const { return ID; }
 
-		static Data get_instance() { return instance; }
+		static Data& get_instance() { return instance; }
 
 };
 
