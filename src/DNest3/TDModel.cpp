@@ -13,7 +13,7 @@ TDModel::TDModel()
 {
 	if(!Data::get_instance().get_loaded())
 	{
-		cerr<<"# Data has not been loaded! Cannot construct TDModel"<<endl;
+		cerr<<"# Data has not been loaded! Cannot construct TDModel."<<endl;
 		exit(0);
 	}
 	meanVector.resize(Data::get_instance().get_numPoints());
