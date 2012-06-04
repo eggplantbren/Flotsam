@@ -19,15 +19,9 @@ void Limits::set(const Data& data)
 		mag_range[i] = mag_max[i] - mag_min[i];
 	}
 
-	tau_min.resize(data.get_numImages());
-	tau_max.resize(data.get_numImages());
-	tau_range.resize(data.get_numImages());
-	for(int i=0; i<data.get_numImages(); i++)
-	{
-		tau_min[i] = -data.get_tRange();
-		tau_max[i] =  data.get_tRange();
-		tau_range[i] = tau_max[i] - tau_min[i];
-	}
+	tau_min = -data.get_tRange();
+	tau_max =  data.get_tRange();
+	tau_range = tau_max - tau_min;
 
 	logSig_ml_min.resize(data.get_numImages());
 	logSig_ml_max.resize(data.get_numImages());

@@ -38,7 +38,14 @@ void TDModel::fromPrior()
 	for(int i=0; i<numImages; i++)
 	{
 		mag[i] = limits.mag_min[i] + limits.mag_range[i]*randomU();
-		tau[i] = limits.tau_min[i] + limits.tau_range[i]*randomU();
+
+		// Cauchy prior with bounds
+		do
+		{
+			tau[i] = limits.tau_min + limits.tau_range*randomU();
+		}while(randomU() >=
+				1./(1. + pow(tau[i]/(0.1*limits.tau_range), 2)));
+
 		logSig_ml[i] = limits.logSig_ml_min[i]
 					+ limits.logSig_ml_range[i]*randomU();
 		logTau_ml[i] = limits.logTau_ml_min[i]
@@ -48,11 +55,15 @@ void TDModel::fromPrior()
 	alpha = limits.alpha_min + limits.alpha_range*randomU();
 	logSig_qso = limits.logSig_qso_min + limits.logSig_qso_range*randomU();
 	logTau_qso = limits.logTau_qso_min + limits.logTau_qso_range*randomU();
+
+	formMeanVector();
+	formCovarianceMatrix();
 }
 
 double TDModel::perturb1()
 {
 	int which = randInt(numImages);
+
 	mag[which] += limits.mag_range[which]
 			*pow(10., 1.5 - 6.*randomU())*randn();
 	mag[which] = mod(mag[which] - limits.mag_min[which]
@@ -63,13 +74,18 @@ double TDModel::perturb1()
 
 double TDModel::perturb2()
 {
+	double logH = 0.;
 	int which = randInt(numImages);
-	tau[which] += limits.tau_range[which]
+
+	logH -= -log(1. + pow(tau[which]/(0.1*limits.tau_range), 2));
+	tau[which] += limits.tau_range
 			*pow(10., 1.5 - 6.*randomU())*randn();
-	tau[which] = mod(tau[which] - limits.tau_min[which]
-				,limits.tau_range[which])
-				+ limits.tau_min[which];
-	return 0.;
+	tau[which] = mod(tau[which] - limits.tau_min
+				,limits.tau_range)
+				+ limits.tau_min;
+	logH += -log(1. + pow(tau[which]/(0.1*limits.tau_range), 2));
+
+	return logH;
 }
 
 double TDModel::perturb3()
@@ -124,7 +140,10 @@ double TDModel::perturb()
 {
 	double logH = 0.;
 
-	int which = randInt(7);
+	// Propose things that are per-image more often
+	double prob = 0.9;
+	int which = (randomU() <= prob)?(randInt(4)):(4 + randInt(3));
+
 	switch(which)
 	{
 		case 0:
@@ -227,8 +246,12 @@ double TDModel::logLikelihood() const
 	Vector solution = cholesky.solve(y); // C^-1*(y-mu)
 	double exponent = y.dot(solution);
 
-	return -0.5*numPoints*log(2*M_PI)
+	double logL = -0.5*numPoints*log(2*M_PI)
 			- 0.5*logDeterminant - 0.5*exponent;
+	if(isnan(logL))
+		logL = -1E300;
+
+	return logL;
 }
 
 void TDModel::print(ostream& out) const

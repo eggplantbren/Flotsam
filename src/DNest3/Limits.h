@@ -18,7 +18,7 @@ class Limits
 		std::vector<double> mag_min, mag_max, mag_range;
 
 		// Time delays (first is zero by definition)
-		std::vector<double> tau_min, tau_max, tau_range;
+		double tau_min, tau_max, tau_range;
 
 		// Microlensing amplitudes
 		std::vector<double> logSig_ml_min, logSig_ml_max,
