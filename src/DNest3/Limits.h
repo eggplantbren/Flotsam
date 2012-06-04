@@ -24,6 +24,10 @@ class Limits
 		std::vector<double> logSig_ml_min, logSig_ml_max,
 						logSig_ml_range;
 
+		// Microlensing timescales
+		std::vector<double> logTau_ml_min, logTau_ml_max,
+						logTau_ml_range;
+
 		// Microlensing smoothness
 		double alpha_min, alpha_max, alpha_range;
 
