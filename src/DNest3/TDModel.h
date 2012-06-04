@@ -3,6 +3,7 @@
 
 #include "Model.h"
 #include "Data.h"
+#include "Limits.h"
 #include <ostream>
 #include <vector>
 #include <Eigen/Dense>
