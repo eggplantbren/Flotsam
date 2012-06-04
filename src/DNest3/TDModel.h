@@ -59,6 +59,9 @@ class TDModel:public DNest3::Model
 		double perturb6();
 		double perturb7();
 
+		void formMeanVector();
+		void formCovarianceMatrix();
+
 	public:
 		TDModel();
 
