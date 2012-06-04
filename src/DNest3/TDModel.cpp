@@ -32,15 +32,17 @@ void TDModel::fromPrior()
 	logTau_qso = limits.logTau_qso_min + limits.logTau_qso_range*randomU();
 }
 
-
-/*double TDModel::perturb1()
+double TDModel::perturb1()
 {
-	int which = 1+randInt(timeDelays.size()-1);
-	timeDelays[which] += data.tRange*pow(10.0, 1.5-6*randomU())*randn();
-	timeDelays[which] = mod(timeDelays[which] + 0.5*data.tRange, data.tRange) - 0.5*data.tRange;
-	return 0;
+	int which = randInt(Data::get_instance().get_numImages());
+	mag[which] += limits.mag_range[which]
+			*pow(10., 1.5 - 6.*randomU())*randn();
+	mag[which] = mod(mag_which - limits.mag_min[which]
+				,limits.mag_range[which])
+				+ limits.mag_min[which];
+	return 0.;
 }
-
+/*
 double TDModel::perturb2()
 {
 	int which = randInt(sigMicrolensing.size());
