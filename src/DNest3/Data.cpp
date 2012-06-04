@@ -50,7 +50,7 @@ void Data::load(const char* filename)
 
 void Data::computeSummaries()
 {
-	cout<<"# Summary statistics :"<<endl;
+	cout<<"# Summary statistics:"<<endl;
 
 	numPoints = t.size();
 	numImages = 1 + *max_element(ID.begin(), ID.end());
@@ -87,9 +87,11 @@ void Data::computeSummaries()
 	cout<<"# Empirical mean levels of images: ";
 	for(int k=0; k<numImages; k++)
 		cout<<yMean[k]<<' ';
+	cout<<endl;
 	cout<<"# Empirical standard deviations of images: ";
 	for(int k=0; k<numImages; k++)
 		cout<<yStDev[k]<<' ';
+	cout<<endl;
 	
 }
 
