@@ -31,6 +31,8 @@ class Data
 		double get_tRange() const { return tRange; }
 		int get_numPoints() const { return numPoints; }
 		int get_numImages() const { return numImages; }
+		const std::vector<double>& get_yMean() const { return yMean; }
+		const std::vector<double>& get_yStDev() const { return yStDev; }
 
 		static Data get_instance() { return instance; }
 
