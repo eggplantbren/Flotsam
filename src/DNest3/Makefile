@@ -1,27 +1,16 @@
-CFLAGS = -O2 -Wall -Wextra -ansi -pedantic -pthread
-LIBS = -lgsl -lgslcblas -ldnest -lboost_thread -lpthread -lboost_program_options
+# Compiler settings
+CPP = g++
+# CFLAGS = -O0 -g -Wall -Wextra -ansi -pedantic  # Development
+CFLAGS = -O2 -Wall -Wextra -ansi -pedantic -DNDEBUG  # Optimized
+CLIBS = -ldnest3 -lgsl -lgslcblas
 
-default: main interpolate
+# The default build rule
+.cpp.o:
+	$(CPP) $(CFLAGS) -o $*.o -c $*.cpp
 
-TDModel.o: TDModel.cpp TDModel.h Data.h
-	g++ $(CFLAGS) -c TDModel.cpp
-
-Data.o: Data.cpp Data.h
-	g++ $(CFLAGS) -c Data.cpp
-
-main.o: main.cpp Data.h TDModel.h
-	g++ $(CFLAGS) -c main.cpp
-
-interpolate.o: interpolate.cpp Data.h TDModel.h
-	g++ $(CFLAGS) -c interpolate.cpp
-
-main: TDModel.o Data.o main.o
-	g++ $(LFLAGS) -o main main.o TDModel.o Data.o $(LIBS)
-
-interpolate: TDModel.o Data.o interpolate.o
-	g++ $(LFLAGS) -o interpolate interpolate.o TDModel.o Data.o $(LIBS)
+default: main.o $(OBJECTS)
+	$(CPP) -o main main.o $(OBJECTS) $(CLIBS)
 
 clean:
-	rm -f *.o
-
+	rm -f main main.o $(OBJECTS) *.pyc
 
