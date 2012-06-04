@@ -103,101 +103,38 @@ double TDModel::perturb7()
 	return 0.;
 }
 
-/*
-
-double TDModel::perturb4()
-{
-	int which = randInt(meanMagnitudes.size());
-	meanMagnitudes[which] += data.yRange*pow(10.0, 1.5-6*randomU())*randn();
-	meanMagnitudes[which] = mod(meanMagnitudes[which] - data.yMin, data.yRange) + data.yMin;
-	return 0.0;
-}
-
-double TDModel::perturb5()
-{
-	double temp = log(sigIntrinsic);
-	temp += log(maxSig/minSig)*pow(10.0, 1.5-6*randomU())*randn();
-	temp = mod(temp - log(minSig), log(maxSig/minSig)) + log(minSig);
-	sigIntrinsic = exp(temp);
-	return 0.0;	
-}
-
-double TDModel::perturb6()
-{
-	double temp = log(tauIntrinsic);
-	temp += log(1E4)*pow(10.0, 1.5-6*randomU())*randn();
-	temp = mod(temp - log(1E-2*data.tRange), log(1E4)) + log(1E-2*data.tRange);
-	tauIntrinsic = exp(temp);
-	return 0.0;
-}
-
-double TDModel::perturb7()
-{
-	alphaMicrolensing += pow(10.0, 1.5-6*randomU())*randn();
-	alphaMicrolensing = mod(alphaMicrolensing-1.0, 1.0) + 1.0;
-	return 0.0;
-}
-
-double TDModel::perturb8()
-{
-	sigmaBoost = log(sigmaBoost);
-	sigmaBoost += log(10.0)*pow(10.0, 1.5-6*randomU())*randn();
-	sigmaBoost = mod(sigmaBoost, log(10.0));
-	sigmaBoost = exp(sigmaBoost);
-	return 0.0;
-}
-
-double TDModel::perturb9()
-{
-	alphaIntrinsic += pow(10.0, 1.5-6*randomU())*randn();
-	alphaIntrinsic = mod(alphaIntrinsic-1.0, 1.0) + 1.0;
-	return 0.0;
-}
-
-
 double TDModel::perturb()
 {
-	int which = (randomU() < 0.3)?(0):randInt(9);
-	double logh = 0;
+	int which = randInt(7);
+	double logH = 0;
 	bool necessary = true;
 
 	switch(which)
 	{
 		case 0:
-			logh += perturb1();
+			logH += perturb1();
 			break;
 		case 1:
-			logh += perturb2();
+			logH += perturb2();
 			break;
 		case 2:
-			logh += perturb3();
+			logH += perturb3();
 			break;
 		case 3:
-			logh += perturb4();
-			necessary = false;
+			logH += perturb4();
 			break;
 		case 4:
-			logh += perturb5();
+			logH += perturb5();
 			break;
 		case 5:
-			logh += perturb6();
+			logH += perturb6();
 			break;
 		case 6:
-			logh += perturb7();
-			break;
-		case 7:
-			logh += perturb8();
-			break;
-		case 8:
-			logh += perturb9();
+			logH += perturb7();
 			break;
 	}
 
-	DNest::Model::perturb();
-	if(necessary)
-		formCovarianceMatrix();
-	calculateLogLikelihood();
-	return logh;
+	return logH;
 }
 
 void TDModel::formCovarianceMatrix()
