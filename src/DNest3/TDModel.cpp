@@ -40,7 +40,7 @@ void TDModel::fromPrior()
 		mag[i] = limits.mag_min[i] + limits.mag_range[i]*randomU();
 
 		if(i == 0)
-			lag[i] = 0.;
+			tau[i] = 0.;
 		else
 		{
 			// Cauchy prior with bounds
