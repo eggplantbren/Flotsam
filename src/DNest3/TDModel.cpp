@@ -52,18 +52,20 @@ double TDModel::perturb2()
 	tau[which] = mod(tau[which] - limits.tau_min[which]
 				,limits.tau_range[which])
 				+ limits.tau_min[which];
-	return 0.0;
+	return 0.;
 }
-/*
+
 double TDModel::perturb3()
 {
-	int which = randInt(tauMicrolensing.size());
-	double temp = log(tauMicrolensing[which]);
-	temp += log(1E4)*pow(10.0, 1.5-6*randomU())*randn();
-	temp = mod(temp - log(1E-2*data.tRange), log(1E4)) + log(1E-2*data.tRange);
-	tauMicrolensing[which] = exp(temp);
-	return 0.0;
+	int which = randInt(Data::get_instance().get_numImages());
+	logSig_ml[which] += limits.logSig_ml_range[which]
+			*pow(10., 1.5 - 6.*randomU())*randn();
+	logSig_ml[which] = mod(logSig_ml[which] - limits.logSig_ml_min[which]
+				,limits.logSig_ml_range[which])
+				+ limits.logSig_ml_min[which];
+	return 0.;
 }
+/*
 
 double TDModel::perturb4()
 {

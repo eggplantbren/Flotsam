@@ -53,6 +53,7 @@ class TDModel:public DNest3::Model
 		// Helper methods
 		double perturb1();
 		double perturb2();
+		double perturb3();
 
 	public:
 		TDModel();
