@@ -121,11 +121,14 @@ double TDModel::perturb()
 {
 	double logH = 0.;
 
+	bool affectsCovarianceMatrix = true;
+
 	int which = randInt(7);
 	switch(which)
 	{
 		case 0:
 			logH += perturb1();
+			affectsCovarianceMatrix = false;
 			break;
 		case 1:
 			logH += perturb2();
@@ -147,8 +150,8 @@ double TDModel::perturb()
 			break;
 	}
 
-	formMeanVector();
-	formCovarianceMatrix();
+	if(affectsCovarianceMatrix)
+		formCovarianceMatrix();
 	return logH;
 }
 
