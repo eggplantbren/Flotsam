@@ -33,6 +33,7 @@ class Data
 		int get_numImages() const { return numImages; }
 		const std::vector<double>& get_yMean() const { return yMean; }
 		const std::vector<double>& get_yStDev() const { return yStDev; }
+		bool get_loaded() const { return loaded; }
 
 		static Data get_instance() { return instance; }
 
