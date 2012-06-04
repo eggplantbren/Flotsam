@@ -146,8 +146,6 @@ double TDModel::perturb()
 
 void TDModel::formCovarianceMatrix()
 {
-	covarianceMatrix.setZero();
-
 	// Fill covariance matrix
 	// with covariance function evaluations
 	for(int i=0; i<Data::get_instance().get_numPoints(); i++)
