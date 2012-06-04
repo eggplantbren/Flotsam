@@ -43,6 +43,12 @@ class TDModel:public DNest3::Model
 		// QSO variability timescale
 		double logTau_qso;
 
+		// Error bar boosts - one for each dataPoint
+		std::vector<double> sigmaBoost;
+
+		// Hyperparameters for error bar boosts
+		double meanSigmaBoost, stdSigmaBoost;
+
 		// Mean vector
 		Vector meanVector;
 

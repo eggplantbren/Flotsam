@@ -16,6 +16,8 @@ TDModel::TDModel()
 		cerr<<"# Data has not been loaded! Cannot construct TDModel."<<endl;
 		exit(0);
 	}
+	limits.set(Data::get_instance());
+
 	numPoints = Data::get_instance().get_numPoints();
 	numImages = Data::get_instance().get_numImages();
 
@@ -27,7 +29,8 @@ TDModel::TDModel()
 	meanVector.resize(numPoints);
 	covarianceMatrix.resize(numPoints,
 				numPoints);
-	limits.set(Data::get_instance());
+
+	sigmaBoost.resize(numPoints);
 }
 
 void TDModel::fromPrior()
