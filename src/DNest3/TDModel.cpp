@@ -85,6 +85,16 @@ double TDModel::perturb5()
 	return 0.;
 }
 
+double TDModel::perturb6()
+{
+	double logSig_qso += limits.logSig_qso_range
+				*pow(10., 1.5 - 6.*randomU())*randn();
+	logSig_qso = mod(logSig_qso - limits.logSig_qso_min,
+				limits.logSig_qso_range) + limits.logSig_qso_min;
+	return 0.;
+}
+
+
 /*
 
 double TDModel::perturb4()
