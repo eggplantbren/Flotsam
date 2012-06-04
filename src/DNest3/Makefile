@@ -1,3 +1,5 @@
+OBJECTS = Data.o Limits.o TDModel.o
+
 # Compiler settings
 CPP = g++
 # CFLAGS = -O0 -g -Wall -Wextra -ansi -pedantic  # Development

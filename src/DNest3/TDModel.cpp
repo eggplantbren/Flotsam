@@ -7,6 +7,8 @@
 using namespace std;
 using namespace DNest3;
 
+Limits TDModel::limits;
+
 TDModel::TDModel()
 {
 	if(!Data::get_instance().get_loaded())
@@ -238,7 +240,7 @@ void TDModel::print(ostream& out) const
 	out<<logTau_qso;
 }
 
-string description() const
+string TDModel::description() const
 {
 	return string("mag, tau, logSig_ml, logTau_ml, alpha")
 			+ string(", logSig_qso, logTau_qso");
