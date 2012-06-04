@@ -23,6 +23,8 @@ void TDModel::fromPrior()
 		tau[i] = limits.tau_min[i] + limits.tau_range[i]*randomU();
 		logSig_ml[i] = limits.logSig_ml_min[i]
 					+ limits.logSig_ml_range[i]*randomU();
+		logTau_ml[i] = limits.logTau_ml_min[i]
+					+ limits.logTau_ml_range[i]*randomU();
 	}
 
 	alpha = limits.alpha_min + limits.alpha_range*randomU();
@@ -31,7 +33,7 @@ void TDModel::fromPrior()
 }
 
 
-/*double TDModel::perturbHelper1()
+/*double TDModel::perturb1()
 {
 	int which = 1+randInt(timeDelays.size()-1);
 	timeDelays[which] += data.tRange*pow(10.0, 1.5-6*randomU())*randn();
@@ -39,7 +41,7 @@ void TDModel::fromPrior()
 	return 0;
 }
 
-double TDModel::perturbHelper2()
+double TDModel::perturb2()
 {
 	int which = randInt(sigMicrolensing.size());
 	double temp = log(sigMicrolensing[which]);
@@ -49,7 +51,7 @@ double TDModel::perturbHelper2()
 	return 0.0;
 }
 
-double TDModel::perturbHelper3()
+double TDModel::perturb3()
 {
 	int which = randInt(tauMicrolensing.size());
 	double temp = log(tauMicrolensing[which]);
@@ -59,7 +61,7 @@ double TDModel::perturbHelper3()
 	return 0.0;
 }
 
-double TDModel::perturbHelper4()
+double TDModel::perturb4()
 {
 	int which = randInt(meanMagnitudes.size());
 	meanMagnitudes[which] += data.yRange*pow(10.0, 1.5-6*randomU())*randn();
@@ -67,7 +69,7 @@ double TDModel::perturbHelper4()
 	return 0.0;
 }
 
-double TDModel::perturbHelper5()
+double TDModel::perturb5()
 {
 	double temp = log(sigIntrinsic);
 	temp += log(maxSig/minSig)*pow(10.0, 1.5-6*randomU())*randn();
@@ -76,7 +78,7 @@ double TDModel::perturbHelper5()
 	return 0.0;	
 }
 
-double TDModel::perturbHelper6()
+double TDModel::perturb6()
 {
 	double temp = log(tauIntrinsic);
 	temp += log(1E4)*pow(10.0, 1.5-6*randomU())*randn();
@@ -85,14 +87,14 @@ double TDModel::perturbHelper6()
 	return 0.0;
 }
 
-double TDModel::perturbHelper7()
+double TDModel::perturb7()
 {
 	alphaMicrolensing += pow(10.0, 1.5-6*randomU())*randn();
 	alphaMicrolensing = mod(alphaMicrolensing-1.0, 1.0) + 1.0;
 	return 0.0;
 }
 
-double TDModel::perturbHelper8()
+double TDModel::perturb8()
 {
 	sigmaBoost = log(sigmaBoost);
 	sigmaBoost += log(10.0)*pow(10.0, 1.5-6*randomU())*randn();
@@ -101,7 +103,7 @@ double TDModel::perturbHelper8()
 	return 0.0;
 }
 
-double TDModel::perturbHelper9()
+double TDModel::perturb9()
 {
 	alphaIntrinsic += pow(10.0, 1.5-6*randomU())*randn();
 	alphaIntrinsic = mod(alphaIntrinsic-1.0, 1.0) + 1.0;
@@ -118,32 +120,32 @@ double TDModel::perturb()
 	switch(which)
 	{
 		case 0:
-			logh += perturbHelper1();
+			logh += perturb1();
 			break;
 		case 1:
-			logh += perturbHelper2();
+			logh += perturb2();
 			break;
 		case 2:
-			logh += perturbHelper3();
+			logh += perturb3();
 			break;
 		case 3:
-			logh += perturbHelper4();
+			logh += perturb4();
 			necessary = false;
 			break;
 		case 4:
-			logh += perturbHelper5();
+			logh += perturb5();
 			break;
 		case 5:
-			logh += perturbHelper6();
+			logh += perturb6();
 			break;
 		case 6:
-			logh += perturbHelper7();
+			logh += perturb7();
 			break;
 		case 7:
-			logh += perturbHelper8();
+			logh += perturb8();
 			break;
 		case 8:
-			logh += perturbHelper9();
+			logh += perturb9();
 			break;
 	}
 
@@ -176,15 +178,32 @@ void TDModel::formCovarianceMatrix()
 
 	cholesky = covMat.llt();
 }
-
-double TDModel::covariance(double t1, double t2, int qsoID1, int qsoID2)
+*/
+double TDModel::covariance(double t1, double t2, int ID1, int ID2)
 {
-	double result = pow(sigIntrinsic, 2)*exp(-pow(abs((t1 - timeDelays[qsoID1]) - (t2 - timeDelays[qsoID2]))/tauIntrinsic, alphaIntrinsic));
-	if(qsoID1 == qsoID2)
-		result += pow(sigMicrolensing[qsoID1], 2)*exp(-pow(abs(t1 - t2)/tauMicrolensing[qsoID1], alphaMicrolensing));
-	return result;
-}
+	double sig_qso = exp(logSig_qso);
+	double tau_qso = exp(logTau_qso);
 
+	double exponent = abs((t1 - tau[ID1]) - (t2 - tau[ID2]))/tau_qso;
+	double C = pow(sig_qso, 2)
+				*exp(-exponent);
+
+	vector<double> sig_ml(Data::get_instance().get_numImages());
+	vector<double> tau_ml(Data::get_instance().get_numImages());
+	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+	{
+		sig_ml[i] = exp(logSig_ml[i]);
+		tau_ml[i] = exp(logTau_ml[i]);
+	}
+
+	if(ID1 == ID2)
+	{
+		exponent = pow(abs(t1 - t2)/tau_ml[ID1], alpha);
+		C += pow(sig_ml[ID1], 2)*exp(-exponent);
+	}
+	return C;
+}
+/*
 void TDModel::calculateLogLikelihood()
 {
 	MatrixXd L = cholesky.matrixL();
