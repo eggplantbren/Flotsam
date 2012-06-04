@@ -126,7 +126,6 @@ double TDModel::perturb()
 	{
 		case 0:
 			logH += perturb1();
-			affectsCovarianceMatrix = false;
 			break;
 		case 1:
 			logH += perturb2();
