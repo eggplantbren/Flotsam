@@ -1,5 +1,6 @@
 #include "TDModel.h"
 #include "Data.h"
+#include "Utils.h"
 #include "RandomNumberGenerator.h"
 #include <iostream>
 
@@ -37,22 +38,23 @@ double TDModel::perturb1()
 	int which = randInt(Data::get_instance().get_numImages());
 	mag[which] += limits.mag_range[which]
 			*pow(10., 1.5 - 6.*randomU())*randn();
-	mag[which] = mod(mag_which - limits.mag_min[which]
+	mag[which] = mod(mag[which] - limits.mag_min[which]
 				,limits.mag_range[which])
 				+ limits.mag_min[which];
 	return 0.;
 }
-/*
+
 double TDModel::perturb2()
 {
-	int which = randInt(sigMicrolensing.size());
-	double temp = log(sigMicrolensing[which]);
-	temp += log(maxSig/minSig)*pow(10.0, 1.5-6*randomU())*randn();
-	temp = mod(temp - log(minSig), log(maxSig/minSig)) + log(minSig);
-	sigMicrolensing[which] = exp(temp);
+	int which = randInt(Data::get_instance().get_numImages());
+	tau[which] += limits.tau_range[which]
+			*pow(10., 1.5 - 6.*randomU())*randn();
+	tau[which] = mod(tau[which] - limits.tau_min[which]
+				,limits.tau_range[which])
+				+ limits.tau_min[which];
 	return 0.0;
 }
-
+/*
 double TDModel::perturb3()
 {
 	int which = randInt(tauMicrolensing.size());

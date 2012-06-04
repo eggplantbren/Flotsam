@@ -50,6 +50,10 @@ class TDModel:public DNest3::Model
 		// Noise-free covariance function
 		double covariance(double t1, double t2, int ID1, int ID2);
 
+		// Helper methods
+		double perturb1();
+		double perturb2();
+
 	public:
 		TDModel();
 
