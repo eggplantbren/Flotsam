@@ -19,6 +19,7 @@ TDModel::TDModel()
 	meanVector.resize(Data::get_instance().get_numPoints());
 	covarianceMatrix.resize(Data::get_instance().get_numPoints(),
 				Data::get_instance().get_numPoints());
+	limits.set(Data::get_instance());
 }
 
 void TDModel::fromPrior()
