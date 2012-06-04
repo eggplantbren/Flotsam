@@ -1,75 +1,37 @@
 #include "TDModel.h"
-#include "Utils.h"
+#include "Data.h"
 #include "RandomNumberGenerator.h"
-#include <cmath>
 #include <iostream>
-#include <Eigen/Dense>
 
-using namespace Eigen;
 using namespace std;
-using namespace DNest;
-
-Data TDModel::data;
-
-const double TDModel::minSig = 1E-3;
-const double TDModel::maxSig = 10.;
+using namespace DNest3;
 
 TDModel::TDModel()
-:timeDelays(data.numQSOs), sigMicrolensing(data.numQSOs), tauMicrolensing(data.numQSOs), meanMagnitudes(data.numQSOs)
-,covMat(data.N, data.N)
 {
-	if(!data.loaded)
+	if(!Data::get_instance().get_loaded())
 	{
-		cerr<<"Data has not been loaded! Cannot construct TDModel"<<endl;
+		cerr<<"# Data has not been loaded! Cannot construct TDModel"<<endl;
 		exit(0);
 	}
 }
 
-TDModel::~TDModel()
-{
-
-}
-
-DNest::Model* TDModel::factory() const
-{
-	return new TDModel;
-}
-
-DNest::Model* TDModel::clone() const
-{
-	return new TDModel(*this);
-}
-
-void TDModel::copyFrom(const DNest::Model* other)
-{
-	*this = *((TDModel*)other);
-}
-
 void TDModel::fromPrior()
 {
-	for(size_t i=0; i<timeDelays.size(); i++)
-		timeDelays[i] = (i==0)?(0):(data.tRange*(-0.5 + randomU()));
-	for(size_t i=0; i<sigMicrolensing.size(); i++)
-		sigMicrolensing[i] = exp(log(minSig) + log(maxSig/minSig)*randomU());
-	for(size_t i=0; i<tauMicrolensing.size(); i++)
-		tauMicrolensing[i] = exp(log(1E-2*data.tRange) + log(1E4)*randomU());
+	for(int i=0; i<Data::get_instance().get_numImages(); i++)
+	{
+		mag[i] = limits.mag_min[i] + limits.mag_range[i]*randomU();
+		tau[i] = limits.tau_min[i] + limits.tau_range[i]*randomU();
+		logSig_ml[i] = limits.logSig_ml_min[i]
+					+ limits.logSig_ml_range[i]*randomU();
+	}
 
-	for(size_t i=0; i<meanMagnitudes.size(); i++)
-		meanMagnitudes[i] = data.yMin + data.yRange*randomU();
-
-	sigIntrinsic = exp(log(minSig) + log(maxSig/minSig)*randomU());
-	tauIntrinsic = exp(log(1E-2*data.tRange) + log(1E4)*randomU());
-	alphaIntrinsic = 1.0 + randomU();
-	alphaMicrolensing = 1.0 + randomU();
-	sigmaBoost = exp(log(10.0)*randomU());
-
-	DNest::Model::fromPrior();
-	formCovarianceMatrix();
-	calculateLogLikelihood();
+	alpha = limits.alpha_min + limits.alpha_range*randomU();
+	logSig_qso = limits.logSig_qso_min + limits.logSig_qso_range*randomU();
+	logTau_qso = limits.logTau_qso_min + limits.logTau_qso_range*randomU();
 }
 
 
-double TDModel::perturbHelper1()
+/*double TDModel::perturbHelper1()
 {
 	int which = 1+randInt(timeDelays.size()-1);
 	timeDelays[which] += data.tRange*pow(10.0, 1.5-6*randomU())*randn();
@@ -358,4 +320,5 @@ Data& TDModel::getData()
 {
 	return data;
 }
+*/
 
