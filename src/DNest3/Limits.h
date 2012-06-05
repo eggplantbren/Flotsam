@@ -37,6 +37,13 @@ class Limits
 		// QSO variability timescale
 		double logTau_qso_min, logTau_qso_max, logTau_qso_range;
 
+		// Error bar boost parameters
+		double meanLogSigmaBoost_min, meanLogSigmaBoost_max,
+				meanLogSigmaBoost_range;
+		double logStdevLogSigmaBoost_min, logStdevLogSigmaBoost_max,
+				logStdevLogSigmaBoost_range;
+
+
 		// Whether set() has been called
 		bool isSet;
 
