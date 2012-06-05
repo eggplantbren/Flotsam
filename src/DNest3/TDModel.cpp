@@ -30,7 +30,7 @@ TDModel::TDModel()
 	covarianceMatrix.resize(numPoints,
 				numPoints);
 
-	sigmaBoost.resize(numPoints);
+	normals_sigmaBoost.resize(numPoints);
 }
 
 void TDModel::fromPrior()
@@ -61,6 +61,13 @@ void TDModel::fromPrior()
 	alpha = limits.alpha_min + limits.alpha_range*randomU();
 	logSig_qso = limits.logSig_qso_min + limits.logSig_qso_range*randomU();
 	logTau_qso = limits.logTau_qso_min + limits.logTau_qso_range*randomU();
+
+	for(int i=0; i<numPoints; i++)
+		normals_sigmaBoost[i] = randn();
+	meanLogSigmaBoost = limits.meanLogSigmaBoost_min
+				+ limits.meanLogSigmaBoost_range*randomU();
+	logStdevLogSigmaBoost = limits.logStdevLogSigmaBoost_min
+				+ limits.logStdevLogSigmaBoost_range*randomU();
 
 	formMeanVector();
 	formCovarianceMatrix();

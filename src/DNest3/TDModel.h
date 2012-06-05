@@ -43,11 +43,12 @@ class TDModel:public DNest3::Model
 		// QSO variability timescale
 		double logTau_qso;
 
-		// Error bar boosts - one for each dataPoint
-		std::vector<double> sigmaBoost;
+		// N(0, 1) latent variables for error bar boosts
+		// One for each data point
+		std::vector<double> normals_sigmaBoost;
 
 		// Hyperparameters for error bar boosts
-		double meanSigmaBoost, stdSigmaBoost;
+		double meanLogSigmaBoost, logStdevLogSigmaBoost;
 
 		// Mean vector
 		Vector meanVector;
@@ -67,6 +68,7 @@ class TDModel:public DNest3::Model
 		double perturb5();
 		double perturb6();
 		double perturb7();
+		double perturb8();
 
 		void formMeanVector();
 		void formCovarianceMatrix();
