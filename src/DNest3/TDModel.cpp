@@ -234,8 +234,15 @@ void TDModel::formCovarianceMatrix()
 	}
 
 	// Add diagonal noise component
+	double boost, sig;
 	for(int i=0; i<numPoints; i++)
-		covarianceMatrix(i, i) += pow(Data::get_instance().get_sig()[i], 2);
+	{
+		boost = meanLogSigmaBoost + exp(logStdevLogSigmaBoost)
+					*normals_sigmaBoost[i];
+		boost = exp(boost);
+		sig = boost*Data::get_instance().get_sig()[i];
+		covarianceMatrix(i, i) += pow(sig, 2);
+	}
 
 	cholesky = covarianceMatrix.llt();
 }

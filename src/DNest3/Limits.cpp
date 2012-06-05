@@ -61,11 +61,11 @@ void Limits::set(const Data& data)
 	logTau_qso_range = logTau_qso_max - logTau_qso_min;
 
 	meanLogSigmaBoost_min = log(1E-1);
-	meanLogSigmaBoost_max = log(1E+1);
+	meanLogSigmaBoost_max = log(1E+2);
 	meanLogSigmaBoost_range = meanLogSigmaBoost_max
 					- meanLogSigmaBoost_min;
 
-	logStdevLogSigmaBoost_min = log(1E-2);
+	logStdevLogSigmaBoost_min = log(1E-3);
 	logStdevLogSigmaBoost_max = log(1E+1);
 	logStdevLogSigmaBoost_range = logStdevLogSigmaBoost_max
 					- logStdevLogSigmaBoost_min;
