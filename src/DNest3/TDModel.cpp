@@ -149,13 +149,37 @@ double TDModel::perturb7()
 	return 0.;
 }
 
+double TDModel::perturb8()
+{
+	double logH = 0.;
+
+	// Resample some normals
+	double chance = pow(10., 0.5 - 4.*randomU());
+	for(int i=0; i<numPoints; i++)
+		if(randomU() <= chance)
+			normals_sigmaBoost[i] = randn();
+
+	// Hyperparameters
+	int which = randInt(2);
+	double& param = (which == 0)?(meanLogSigmaBoost):(logStdevLogSigmaBoost);
+	double& min = (which == 0)?(limits.meanLogSigmaBoost_min)
+					:(limits.logStdevLogSigmaBoost_min);
+	double& range = (which == 0)?(limits.meanLogSigmaBoost_range)
+					:(limits.logStdevLogSigmaBoost_range);
+
+	param += range*pow(10., 1.5 - 6.*randomU())*randn();
+	param = mod(param - min, range) + min;
+
+	return logH;
+}
+
 double TDModel::perturb()
 {
 	double logH = 0.;
 
 	// Propose things that are per-image more often
 	double prob = 0.9;
-	int which = (randomU() <= prob)?(randInt(4)):(4 + randInt(3));
+	int which = (randomU() <= prob)?(randInt(4)):(4 + randInt(4));
 
 	switch(which)
 	{
@@ -179,6 +203,9 @@ double TDModel::perturb()
 			break;
 		case 6:
 			logH += perturb7();
+			break;
+		case 7:
+			logH += perturb8();
 			break;
 	}
 
@@ -280,12 +307,14 @@ void TDModel::print(ostream& out) const
 
 	out<<alpha<<' ';
 	out<<logSig_qso<<' ';
-	out<<logTau_qso;
+	out<<logTau_qso<<' ';
+	out<<meanLogSigmaBoost<<' '<<logStdevLogSigmaBoost;
 }
 
 string TDModel::description() const
 {
 	return string("mag, tau, logSig_ml, logTau_ml, alpha")
-			+ string(", logSig_qso, logTau_qso");
+			+ string(", logSig_qso, logTau_qso")
+			+ string(", meanLogSigmaBoost, logStdevLogSigmaBoost");
 }
 
