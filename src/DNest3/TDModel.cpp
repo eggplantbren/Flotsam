@@ -264,7 +264,7 @@ void TDModel::formCovarianceMatrix()
 	{
 		boost = meanLogSigmaBoost + exp(logStdevLogSigmaBoost)
 					*normals_sigmaBoost[i];
-		boost = exp(boost);
+		boost = 1. + exp(boost);
 		sig = boost*Data::get_instance().get_sig()[i];
 		covarianceMatrix(i, i) += pow(sig, 2);
 	}
