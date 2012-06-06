@@ -155,9 +155,23 @@ double TDModel::perturb8()
 
 	// Resample some normals
 	double chance = pow(10., 0.5 - 4.*randomU());
+	double scale = pow(10., 1.5 - 6.*randomU());
 	for(int i=0; i<numPoints; i++)
+	{
 		if(randomU() <= chance)
-			normals_sigmaBoost[i] = randn();
+		{
+			if(scale > 3.)
+			{
+				normals_sigmaBoost[i] = randn();
+			}
+			else
+			{
+				logH -= -0.5*pow(normals_sigmaBoost[i], 2);
+				normals_sigmaBoost[i] += scale*randn();
+				logH += -0.5*pow(normals_sigmaBoost[i], 2);
+			}
+		}
+	}
 
 	// Hyperparameters
 	int which = randInt(2);
@@ -177,9 +191,20 @@ double TDModel::perturb()
 {
 	double logH = 0.;
 
-	// Propose things that are per-image more often
+	// Propose things that are many-parameter more often
 	double prob = 0.9;
-	int which = (randomU() <= prob)?(randInt(4)):(4 + randInt(4));
+	int which;
+	if(randomU() <= prob)
+	{
+		if(randomU() <= 0.8)
+			which = randInt(4);
+		else
+			which = 7;
+	}
+	else
+	{
+		which = 4 + randInt(3);
+	}
 
 	switch(which)
 	{
