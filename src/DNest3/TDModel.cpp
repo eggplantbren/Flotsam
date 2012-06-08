@@ -35,6 +35,8 @@ TDModel::TDModel()
 	covarianceMatrix = Matrix(numPoints, numPoints);
 	cholesky = Matrix(numPoints, numPoints);
 	normals_sigmaBoost.resize(numPoints);
+
+	gsl_set_error_handler_off();
 }
 
 void TDModel::fromPrior()
@@ -329,7 +331,8 @@ double TDModel::logLikelihood() const
 
 	double logL = -0.5*numPoints*log(2*M_PI)
 			- 0.5*logDeterminant - 0.5*exponent;
-	if(isnan(logL))
+
+	if(isnan(logL) || isinf(logL))
 		logL = -1E300;
 
 	return logL;
