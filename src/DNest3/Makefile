@@ -5,7 +5,7 @@ CPP = g++
 # Development
 # CFLAGS = -O0 -g -Wall -Wextra -ansi -pedantic
 # Optimized
-CFLAGS = -O2 -Wall -Wextra -ansi -pedantic -DNDEBUG
+CFLAGS = -O2 -Wall -Wextra -ansi -pedantic -DNDEBUG -DGSL_RANGE_CHECK_OFF -DHAVE_INLINE
 CLIBS = -ldnest3 -lgsl -lgslcblas -lboost_thread
 
 # The default build rule
