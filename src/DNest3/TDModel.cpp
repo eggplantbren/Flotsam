@@ -12,9 +12,9 @@ using namespace DNest3;
 Limits TDModel::limits;
 
 TDModel::TDModel()
-:meanVector(0)
-,covarianceMatrix(0, 0)
-,cholesky(0, 0)
+:meanVector(1)
+,covarianceMatrix(1, 1)
+,cholesky(1, 1)
 {
 	if(!Data::get_instance().get_loaded())
 	{
