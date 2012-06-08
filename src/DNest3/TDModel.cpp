@@ -310,19 +310,22 @@ double TDModel::covariance(double t1, double t2, int ID1, int ID2)
 
 double TDModel::logLikelihood() const
 {
-/*
-	Matrix L = cholesky.matrixL();
-
 	Vector y(numPoints);
 	for(int i=0; i<numPoints; i++)
 		y(i) = Data::get_instance().get_y()[i] - meanVector(i);
 
 	double logDeterminant = 0.;
 	for(int i=0; i<numPoints; i++)
-		logDeterminant += 2.*log(L(i,i));
+		logDeterminant += 2.*log(cholesky(i,i));
 
-	Vector solution = cholesky.solve(y); // C^-1*(y-mu)
-	double exponent = y.dot(solution);
+	// C^-1*(y-mu)
+	Vector solution(numPoints);
+	gsl_linalg_cholesky_solve(cholesky.get_gsl_matrix(), y.get_gsl_vector(), solution.get_gsl_vector());
+
+	// y . solution
+	double exponent = 0.;
+	for(int i=0; i<numPoints; i++)
+		exponent += y(i)*solution(i);
 
 	double logL = -0.5*numPoints*log(2*M_PI)
 			- 0.5*logDeterminant - 0.5*exponent;
@@ -330,8 +333,6 @@ double TDModel::logLikelihood() const
 		logL = -1E300;
 
 	return logL;
-*/
-	return 0.;
 }
 
 void TDModel::print(ostream& out) const

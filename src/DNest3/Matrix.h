@@ -30,7 +30,17 @@ class Matrix
 			return *(gsl_matrix_ptr(mat, i, j));
 		}
 
+		double operator () (int i, int j) const
+		{
+			return *(gsl_matrix_ptr(mat, i, j));
+		}
+
 		gsl_matrix* get_gsl_matrix()
+		{
+			return mat;
+		}
+
+		const gsl_matrix* get_gsl_matrix() const
 		{
 			return mat;
 		}
@@ -66,7 +76,17 @@ class Vector
 			return *(gsl_vector_ptr(vec, i));
 		}
 
+		double operator () (int i) const
+		{
+			return *(gsl_vector_ptr(vec, i));
+		}
+
 		gsl_vector* get_gsl_vector()
+		{
+			return vec;
+		}
+
+		const gsl_vector* get_gsl_vector() const
 		{
 			return vec;
 		}

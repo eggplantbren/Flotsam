@@ -6,7 +6,7 @@ CPP = g++
 # CFLAGS = -O0 -g -Wall -Wextra -ansi -pedantic
 # Optimized
 CFLAGS = -O2 -Wall -Wextra -ansi -pedantic -DNDEBUG
-CLIBS = -ldnest3 -lgsl -lgslcblas
+CLIBS = -ldnest3 -lgsl -lgslcblas -lboost_thread
 
 # The default build rule
 .cpp.o:
