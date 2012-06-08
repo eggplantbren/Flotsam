@@ -3,6 +3,8 @@
 #include "Utils.h"
 #include "RandomNumberGenerator.h"
 #include <iostream>
+#include <cmath>
+#include <gsl/gsl_linalg.h>
 
 using namespace std;
 using namespace DNest3;
@@ -10,6 +12,9 @@ using namespace DNest3;
 Limits TDModel::limits;
 
 TDModel::TDModel()
+:meanVector(0)
+,covarianceMatrix(0, 0)
+,cholesky(0, 0)
 {
 	if(!Data::get_instance().get_loaded())
 	{
@@ -26,10 +31,9 @@ TDModel::TDModel()
 	logSig_ml.resize(numImages);
 	logTau_ml.resize(numImages);
 
-	meanVector.resize(numPoints);
-	covarianceMatrix.resize(numPoints,
-				numPoints);
-
+	meanVector = Vector(numPoints);
+	covarianceMatrix = Matrix(numPoints, numPoints);
+	cholesky = Matrix(numPoints, numPoints);
 	normals_sigmaBoost.resize(numPoints);
 }
 
@@ -269,7 +273,8 @@ void TDModel::formCovarianceMatrix()
 		covarianceMatrix(i, i) += pow(sig, 2);
 	}
 
-	cholesky = covarianceMatrix.llt();
+	cholesky = covarianceMatrix;
+	gsl_linalg_cholesky_decomp(cholesky.get_gsl_matrix());
 }
 
 void TDModel::formMeanVector()
@@ -305,6 +310,7 @@ double TDModel::covariance(double t1, double t2, int ID1, int ID2)
 
 double TDModel::logLikelihood() const
 {
+/*
 	Matrix L = cholesky.matrixL();
 
 	Vector y(numPoints);
@@ -324,6 +330,8 @@ double TDModel::logLikelihood() const
 		logL = -1E300;
 
 	return logL;
+*/
+	return 0.;
 }
 
 void TDModel::print(ostream& out) const

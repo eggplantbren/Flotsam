@@ -29,6 +29,11 @@ class Matrix
 		{
 			return *(gsl_matrix_ptr(mat, i, j));
 		}
+
+		gsl_matrix* get_gsl_matrix()
+		{
+			return mat;
+		}
 };
 
 
@@ -59,6 +64,11 @@ class Vector
 		double& operator () (int i)
 		{
 			return *(gsl_vector_ptr(vec, i));
+		}
+
+		gsl_vector* get_gsl_vector()
+		{
+			return vec;
 		}
 };
 

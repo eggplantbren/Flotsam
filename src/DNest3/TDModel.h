@@ -6,12 +6,7 @@
 #include "Limits.h"
 #include <ostream>
 #include <vector>
-#include <Eigen/Dense>
-
-// Shorter names for Eigen3 types
-typedef Eigen::VectorXd Vector;
-typedef Eigen::MatrixXd Matrix;
-typedef Eigen::LLT< Eigen::MatrixXd > Cholesky;
+#include "Matrix.h"
 
 class TDModel:public DNest3::Model
 {
@@ -55,7 +50,7 @@ class TDModel:public DNest3::Model
 
 		// Covariance matrix and its Cholesky decomposition
 		Matrix covarianceMatrix;
-		Cholesky cholesky;
+		Matrix cholesky;
 
 		// Noise-free covariance function
 		double covariance(double t1, double t2, int ID1, int ID2);
