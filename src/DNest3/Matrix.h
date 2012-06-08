@@ -31,5 +31,38 @@ class Matrix
 		}
 };
 
+
+#include <gsl/gsl_vector.h>
+
+// A wrapper around GSL's matrices and vectors
+class Vector
+{
+	private:
+		gsl_vector* vec;
+
+	public:
+		Vector(int i)
+		:vec(gsl_vector_alloc(i))
+		{
+		}
+
+		Vector(const Vector& other)
+		{
+			gsl_vector_memcpy(vec, other.vec);
+		}
+
+		~Vector()
+		{
+			gsl_vector_free(vec);
+		}
+
+		double& operator () (int i)
+		{
+			return *(gsl_vector_ptr(vec, i));
+		}
+};
+
+
+
 #endif
 
