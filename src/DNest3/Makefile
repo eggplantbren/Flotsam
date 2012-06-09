@@ -1,4 +1,4 @@
-OBJECTS = Data.o Limits.o TDModel.o
+OBJECTS = Data.o Limits.o Matrix.o TDModel.o
 
 # Compiler settings
 CPP = g++

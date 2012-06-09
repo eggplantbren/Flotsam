@@ -10,52 +10,14 @@ class Matrix
 		gsl_matrix* mat;
 
 	public:
-		Matrix(int i, int j)
-		:mat(gsl_matrix_alloc(i, j))
-		{
-		}
-
-		Matrix(const Matrix& other)
-		{
-			mat = gsl_matrix_alloc(other.mat->size1, other.mat->size2);
-			gsl_matrix_memcpy(mat, other.mat);
-		}
-
-		~Matrix()
-		{
-			gsl_matrix_free(mat);
-		}
-
-		Matrix& operator = (const Matrix& other)
-		{
-			if(mat->size1 != other.mat->size1 || mat->size2 != other.mat->size2)
-			{
-				gsl_matrix_free(mat);
-				mat = gsl_matrix_alloc(other.mat->size1, other.mat->size2);
-			}
-			gsl_matrix_memcpy(mat, other.mat);
-			return *this;
-		}
-
-		double& operator () (int i, int j)
-		{
-			return *(gsl_matrix_ptr(mat, i, j));
-		}
-
-		double operator () (int i, int j) const
-		{
-			return *(gsl_matrix_ptr(mat, i, j));
-		}
-
-		gsl_matrix* get_gsl_matrix()
-		{
-			return mat;
-		}
-
-		const gsl_matrix* get_gsl_matrix() const
-		{
-			return mat;
-		}
+		Matrix(int i, int j);
+		Matrix(const Matrix& other);
+		~Matrix();
+		Matrix& operator = (const Matrix& other);
+		double& operator () (int i, int j);
+		double operator () (int i, int j) const;
+		gsl_matrix* get_gsl_matrix();
+		const gsl_matrix* get_gsl_matrix() const;
 };
 
 
