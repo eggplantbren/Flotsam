@@ -28,8 +28,11 @@ class Matrix
 
 		Matrix& operator = (const Matrix& other)
 		{
-			gsl_matrix_free(mat);
-			mat = gsl_matrix_alloc(other.mat->size1, other.mat->size2);
+			if(mat->size1 != other.mat->size1 || mat->size2 != other.mat->size2)
+			{
+				gsl_matrix_free(mat);
+				mat = gsl_matrix_alloc(other.mat->size1, other.mat->size2);
+			}
 			gsl_matrix_memcpy(mat, other.mat);
 			return *this;
 		}
@@ -83,8 +86,11 @@ class Vector
 
 		Vector& operator = (const Vector& other)
 		{
-			gsl_vector_free(vec);
-			vec = gsl_vector_alloc(other.vec->size);
+			if(vec->size != other.vec->size)
+			{
+				gsl_vector_free(vec);
+				vec = gsl_vector_alloc(other.vec->size);
+			}
 			gsl_vector_memcpy(vec, other.vec);
 			return *this;
 		}
