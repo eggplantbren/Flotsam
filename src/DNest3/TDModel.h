@@ -7,6 +7,7 @@
 #include <ostream>
 #include <vector>
 #include "Matrix.h"
+#include "Vector.h"
 
 class TDModel:public DNest3::Model
 {
