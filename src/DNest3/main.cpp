@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 	Data::get_instance().load(dataFile.c_str());
 
 	// Initialise the sampler
-	MTSampler<TDModel> sampler = setup<TDModel>(options);
+	MTSampler<TDModel> sampler = setup_mt<TDModel>(options);
 
 	// Go!
 	sampler.run();
