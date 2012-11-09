@@ -34,7 +34,7 @@ TDModel::TDModel()
 	meanVector = Vector(numPoints);
 	covarianceMatrix = Matrix(numPoints, numPoints);
 	cholesky = Matrix(numPoints, numPoints);
-	normals_sigmaBoost.resize(numPoints);
+	exponentials.resize(numPoints);
 
 	gsl_set_error_handler_off();
 }
@@ -69,11 +69,8 @@ void TDModel::fromPrior()
 	logTau_qso = limits.logTau_qso_min + limits.logTau_qso_range*randomU();
 
 	for(int i=0; i<numPoints; i++)
-		normals_sigmaBoost[i] = randn();
-	meanLogSigmaBoost = limits.meanLogSigmaBoost_min
-				+ limits.meanLogSigmaBoost_range*randomU();
-	logStdevLogSigmaBoost = limits.logStdevLogSigmaBoost_min
-				+ limits.logStdevLogSigmaBoost_range*randomU();
+		exponentials[i] = -log(randomU());
+	eta = exp(log(1E-3) + log(1E5)*randomU());
 
 	formMeanVector();
 	formCovarianceMatrix();
@@ -159,7 +156,7 @@ double TDModel::perturb8()
 {
 	double logH = 0.;
 
-	// Resample some normals
+	// Resample some exponentials
 	double chance = pow(10., 0.5 - 4.*randomU());
 	double scale = pow(10., 1.5 - 6.*randomU());
 	for(int i=0; i<numPoints; i++)
@@ -168,27 +165,23 @@ double TDModel::perturb8()
 		{
 			if(scale > 3.)
 			{
-				normals_sigmaBoost[i] = randn();
+				exponentials[i] = -log(randomU());
 			}
 			else
 			{
-				logH -= -0.5*pow(normals_sigmaBoost[i], 2);
-				normals_sigmaBoost[i] += scale*randn();
-				logH += -0.5*pow(normals_sigmaBoost[i], 2);
+				exponentials[i] = 1. - exp(-exponentials[i]);
+				exponentials[i] += scale*randn();
+				exponentials[i] = mod(exponentials[i], 1.);
+				exponentials[i] = -log(1. - exponentials[i]);
 			}
 		}
 	}
 
 	// Hyperparameters
-	int which = randInt(2);
-	double& param = (which == 0)?(meanLogSigmaBoost):(logStdevLogSigmaBoost);
-	double& min = (which == 0)?(limits.meanLogSigmaBoost_min)
-					:(limits.logStdevLogSigmaBoost_min);
-	double& range = (which == 0)?(limits.meanLogSigmaBoost_range)
-					:(limits.logStdevLogSigmaBoost_range);
-
-	param += range*pow(10., 1.5 - 6.*randomU())*randn();
-	param = mod(param - min, range) + min;
+	eta = log(eta);
+	eta += log(1E5)*pow(10., 1.5 - 6.*randomU())*randn();
+	eta = mod(eta - log(1E-3), log(1E5)) + log(1E-3);
+	eta = exp(eta);
 
 	return logH;
 }
@@ -268,9 +261,7 @@ void TDModel::formCovarianceMatrix()
 	double boost, sig;
 	for(int i=0; i<numPoints; i++)
 	{
-		boost = meanLogSigmaBoost + exp(logStdevLogSigmaBoost)
-					*normals_sigmaBoost[i];
-		boost = 1. + exp(boost);
+		boost = 1. + eta*exponentials[i];
 		sig = boost*Data::get_instance().get_sig()[i];
 		covarianceMatrix(i, i) += pow(sig, 2);
 	}
@@ -352,7 +343,7 @@ void TDModel::print(ostream& out) const
 	out<<alpha<<' ';
 	out<<logSig_qso<<' ';
 	out<<logTau_qso<<' ';
-	out<<meanLogSigmaBoost<<' '<<logStdevLogSigmaBoost;
+	out<<eta;
 }
 
 string TDModel::description() const
