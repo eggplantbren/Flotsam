@@ -34,7 +34,7 @@ TDModel::TDModel()
 	meanVector = Vector(numPoints);
 	covarianceMatrix = Matrix(numPoints, numPoints);
 	cholesky = Matrix(numPoints, numPoints);
-	exponentials.resize(numPoints);
+	normals.resize(numPoints);
 
 	gsl_set_error_handler_off();
 }
@@ -69,8 +69,9 @@ void TDModel::fromPrior()
 	logTau_qso = limits.logTau_qso_min + limits.logTau_qso_range*randomU();
 
 	for(int i=0; i<numPoints; i++)
-		exponentials[i] = -log(randomU());
-	eta = exp(log(1E-3) + log(1E5)*randomU());
+		normals[i] = randn();
+	eta0 = -5. + 10.*randomU();
+	eta1 = 2.*randomU();
 
 	formMeanVector();
 	formCovarianceMatrix();
@@ -156,7 +157,7 @@ double TDModel::perturb8()
 {
 	double logH = 0.;
 
-	// Resample some exponentials
+	// Resample some normals
 	double chance = pow(10., 0.5 - 4.*randomU());
 	double scale = pow(10., 1.5 - 6.*randomU());
 	for(int i=0; i<numPoints; i++)
@@ -165,23 +166,22 @@ double TDModel::perturb8()
 		{
 			if(scale > 3.)
 			{
-				exponentials[i] = -log(randomU());
+				normals[i] = randn();
 			}
 			else
 			{
-				exponentials[i] = 1. - exp(-exponentials[i]);
-				exponentials[i] += scale*randn();
-				exponentials[i] = mod(exponentials[i], 1.);
-				exponentials[i] = -log(1. - exponentials[i]);
+				logH -= -0.5*pow(normals[i], 2);
+				normals[i] += scale*randn();
+				logH += -0.5*pow(normals[i], 2);
 			}
 		}
 	}
 
 	// Hyperparameters
-	eta = log(eta);
-	eta += log(1E5)*pow(10., 1.5 - 6.*randomU())*randn();
-	eta = mod(eta - log(1E-3), log(1E5)) + log(1E-3);
-	eta = exp(eta);
+	eta0 += 10.*scale*randn();
+	eta0 = mod(eta0 + 5., 10.) - 5.;
+	eta1 += 2.*scale*randn();
+	eta1 = mod(eta1, 2.);
 
 	return logH;
 }
@@ -261,7 +261,7 @@ void TDModel::formCovarianceMatrix()
 	double boost, sig;
 	for(int i=0; i<numPoints; i++)
 	{
-		boost = 1. + eta*exponentials[i];
+		boost = 1. + exp(eta0 + eta1*normals[i]);
 		sig = boost*Data::get_instance().get_sig()[i];
 		covarianceMatrix(i, i) += pow(sig, 2);
 	}
@@ -343,7 +343,7 @@ void TDModel::print(ostream& out) const
 	out<<alpha<<' ';
 	out<<logSig_qso<<' ';
 	out<<logTau_qso<<' ';
-	out<<eta;
+	out<<eta0<<' '<<eta1;
 }
 
 string TDModel::description() const

@@ -39,12 +39,12 @@ class TDModel:public DNest3::Model
 		// QSO variability timescale
 		double logTau_qso;
 
-		// Exponential(1) latent variables for error bar boosts
+		// N(0. 1) latent variables for error bar boosts
 		// One for each data point
-		std::vector<double> exponentials;
+		std::vector<double> normals;
 
 		// Hyperparameters for error bar boosts
-		double eta;
+		double eta0, eta1;
 
 		// Mean vector
 		Vector meanVector;
