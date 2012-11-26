@@ -34,7 +34,7 @@ TDModel::TDModel()
 	meanVector = Vector(numPoints);
 	covarianceMatrix = Matrix(numPoints, numPoints);
 	cholesky = Matrix(numPoints, numPoints);
-	normals.resize(numPoints);
+	bad_uniforms.resize(numPoints);
 
 	gsl_set_error_handler_off();
 }
@@ -68,10 +68,11 @@ void TDModel::fromPrior()
 	logSig_qso = limits.logSig_qso_min + limits.logSig_qso_range*randomU();
 	logTau_qso = limits.logTau_qso_min + limits.logTau_qso_range*randomU();
 
+
 	for(int i=0; i<numPoints; i++)
-		normals[i] = randn();
-	eta0 = -5. + 10.*randomU();
-	eta1 = 2.*randomU();
+		bad_uniforms[i] = randomU();
+	f_bad = randomU();
+	boost = exp(log(1.) + log(100./1.)*randomU());
 
 	formMeanVector();
 	formCovarianceMatrix();
@@ -155,9 +156,29 @@ double TDModel::perturb7()
 
 double TDModel::perturb8()
 {
+	double scale = pow(10., 1.5 - 6.*randomU());
+	int which = randInt(2);
+	if(which == 0)
+	{
+		f_bad += scale*randn();
+		f_bad = mod(f_bad, 1.);
+	}
+	else
+	{
+		boost = log(boost);
+		boost += log(100./1.)*scale*randn();
+		boost = mod(boost - log(1.), log(100.)) + log(1.);
+		boost = exp(boost);
+	}
+
+	return 0.;
+}
+
+double TDModel::perturb9()
+{
 	double logH = 0.;
 
-	// Resample some normals
+	// Resample some uniforms
 	double chance = pow(10., 0.5 - 4.*randomU());
 	double scale = pow(10., 1.5 - 6.*randomU());
 	for(int i=0; i<numPoints; i++)
@@ -166,22 +187,15 @@ double TDModel::perturb8()
 		{
 			if(scale > 3.)
 			{
-				normals[i] = randn();
+				bad_uniforms[i] = randomU();
 			}
 			else
 			{
-				logH -= -0.5*pow(normals[i], 2);
-				normals[i] += scale*randn();
-				logH += -0.5*pow(normals[i], 2);
+				bad_uniforms[i] += scale*randn();
+				bad_uniforms[i] = mod(bad_uniforms[i], 1.);
 			}
 		}
 	}
-
-	// Hyperparameters
-	eta0 += 10.*scale*randn();
-	eta0 = mod(eta0 + 5., 10.) - 5.;
-	eta1 += 2.*scale*randn();
-	eta1 = mod(eta1, 2.);
 
 	return logH;
 }
@@ -191,19 +205,7 @@ double TDModel::perturb()
 	double logH = 0.;
 
 	// Propose things that are many-parameter more often
-	double prob = 0.9;
-	int which;
-	if(randomU() <= prob)
-	{
-		if(randomU() <= 0.8)
-			which = randInt(4);
-		else
-			which = 7;
-	}
-	else
-	{
-		which = 4 + randInt(3);
-	}
+	int which = randInt(9);
 
 	switch(which)
 	{
@@ -230,6 +232,9 @@ double TDModel::perturb()
 			break;
 		case 7:
 			logH += perturb8();
+			break;
+		case 8:
+			logH += perturb9();
 			break;
 	}
 
@@ -258,11 +263,12 @@ void TDModel::formCovarianceMatrix()
 	}
 
 	// Add diagonal noise component
-	double boost, sig;
+	double sig;
 	for(int i=0; i<numPoints; i++)
 	{
-		boost = 1. + exp(eta0 + eta1*normals[i]);
-		sig = boost*Data::get_instance().get_sig()[i];
+		sig = Data::get_instance().get_sig()[i];
+		if(bad_uniforms[i] <= f_bad)
+			sig *= boost;
 		covarianceMatrix(i, i) += pow(sig, 2);
 	}
 
@@ -343,7 +349,7 @@ void TDModel::print(ostream& out) const
 	out<<alpha<<' ';
 	out<<logSig_qso<<' ';
 	out<<logTau_qso<<' ';
-	out<<eta0<<' '<<eta1;
+	out<<f_bad<<' '<<boost<<' ';
 }
 
 string TDModel::description() const
