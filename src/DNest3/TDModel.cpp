@@ -180,21 +180,10 @@ double TDModel::perturb9()
 
 	// Resample some uniforms
 	double chance = pow(10., 0.5 - 4.*randomU());
-	double scale = pow(10., 1.5 - 6.*randomU());
 	for(int i=0; i<numPoints; i++)
 	{
 		if(randomU() <= chance)
-		{
-			if(scale > 3.)
-			{
-				bad_uniforms[i] = randomU();
-			}
-			else
-			{
-				bad_uniforms[i] += scale*randn();
-				bad_uniforms[i] = mod(bad_uniforms[i], 1.);
-			}
-		}
+			bad_uniforms[i] = randomU();
 	}
 
 	return logH;
