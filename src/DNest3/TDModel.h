@@ -4,7 +4,7 @@
 #include "Model.h"
 #include "Data.h"
 #include "Limits.h"
-#include <ostream>
+#include <iostream>
 #include <vector>
 #include "Matrix.h"
 #include "Vector.h"
@@ -81,6 +81,9 @@ class TDModel:public DNest3::Model
 
 		// Print to stream
 		void print(std::ostream& out) const;
+
+		// Read from stream
+		void read(std::istream& in);
 
 		// Return string with column information
 		std::string description() const;

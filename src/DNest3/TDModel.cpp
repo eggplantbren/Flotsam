@@ -345,6 +345,24 @@ void TDModel::print(ostream& out) const
 	out<<f_bad<<' '<<boost<<' ';
 }
 
+void TDModel::read(istream& in)
+{
+	for(int i=0; i<numImages; i++)
+		in>>mag[i];
+	for(int i=0; i<numImages; i++)
+		in>>tau[i];
+	for(int i=0; i<numImages; i++)
+		in>>logSig_ml[i];
+	for(int i=0; i<numImages; i++)
+		in>>logTau_ml[i];
+
+	in>>alpha;
+	in>>logSig_qso;
+	in>>logTau_qso;
+	in>>f_bad;
+	in>>boost;
+}
+
 string TDModel::description() const
 {
 	return string("mag, tau, logSig_ml, logTau_ml, alpha")
