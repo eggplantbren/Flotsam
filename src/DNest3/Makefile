@@ -1,20 +1,11 @@
-OBJECTS = Data.o Limits.o Matrix.o Vector.o TDModel.o
-
 # Compiler settings
 CPP = g++
-# Development
-# CFLAGS = -O0 -g -Wall -Wextra -ansi -pedantic
-# Optimized
 CFLAGS = -O2 -Wall -Wextra -ansi -pedantic -DNDEBUG -DGSL_RANGE_CHECK_OFF -DHAVE_INLINE
 CLIBS = -ldnest3 -lgsl -lgslcblas -lboost_thread -lboost_system
+OBJECTS = Data.o Limits.o Matrix.o TDModel.o Vector.o
 
-# The default build rule
-.cpp.o:
-	$(CPP) $(CFLAGS) -o $*.o -c $*.cpp
-
-default: main.o $(OBJECTS)
-	$(CPP) -o main main.o $(OBJECTS) $(CLIBS)
-
-clean:
-	rm -f main main.o $(OBJECTS) *.pyc
+default:
+	g++ $(CFLAGS) -c *.cpp
+	g++ -o Flotsam main.o $(OBJECTS) $(CLIBS)
+	rm -f *.o
 
