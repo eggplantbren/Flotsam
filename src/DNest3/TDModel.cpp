@@ -360,7 +360,7 @@ void TDModel::print2(ostream& out) const
 			out<<covarianceMatrix(i, j)<<' ';
 }
 
-void TDModel::read(istream& in)
+istream& TDModel::read(istream& in)
 {
 	for(int i=0; i<numImages; i++)
 		in>>mag[i];
@@ -382,6 +382,8 @@ void TDModel::read(istream& in)
 
 	formMeanVector();
 	formCovarianceMatrix();
+
+	return in;
 }
 
 string TDModel::description() const

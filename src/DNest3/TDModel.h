@@ -86,7 +86,7 @@ class TDModel:public DNest3::Model
 		void print2(std::ostream& out) const;
 
 		// Read from stream
-		void read(std::istream& in);
+		std::istream& read(std::istream& in);
 
 		// Return string with column information
 		std::string description() const;
