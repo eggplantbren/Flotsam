@@ -373,6 +373,9 @@ void TDModel::read(istream& in)
 	in>>logTau_qso;
 	in>>f_bad;
 	in>>boost;
+
+	formMeanVector();
+	formCovarianceMatrix();
 }
 
 string TDModel::description() const
