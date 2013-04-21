@@ -11,7 +11,7 @@ num_points = int((-1 + np.sqrt(1. + 4.*models.shape[1]))/2.)
 plt.ion()
 for i in xrange(0, models.shape[0]):
 	model = models[i, :]
-	mu = model[0:num_points]
+	mu = np.matrix(model[0:num_points]).T
 	C  = model[num_points:].reshape((num_points, num_points))
 	L = np.matrix((la.cholesky(C)).T)
 	y = mu + L*np.matrix(rng.randn(num_points, 1))
