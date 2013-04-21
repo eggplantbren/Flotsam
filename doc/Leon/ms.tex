@@ -22,7 +22,6 @@
 % Document starts here
 \begin{document}
 
-
 Suppose that the underlying QSO variability as a function of time is
 described by:
 \begin{eqnarray}
@@ -33,8 +32,7 @@ Then the light curves of the two images $A$ and $B$ will be given by:
 y_A(t) &=& y_{\rm QSO}(t) + \mu_A(t)\\
 y_B(t) &=& y_{\rm QSO}(t - \tau) + \mu_B(t)
 \end{eqnarray}
-where $\mu_A(t)$ and $\mu_B(t)$ are microlensing perturbations.
-
+where $\mu_A(t)$ and $\mu_B(t)$ are perturbations due to microlensing.
 
 
 The data for all images are in magnitudes:
@@ -60,10 +58,21 @@ p(\yy | \theta) &=& \frac{1}{\sqrt{(2\pi)^N\det{\CC}}}
 \right)
 \right]
 \end{eqnarray}
-
 Numerically, the logarithm of the determinant and the
 $\CC^{-1}\left(\yy - \mm\right)$ term are implemented using
 Cholesky decompositions.
+
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Parameter & Description & Prior\\
+\hline
+$\{m_k\}$ & Mean magnitudes for each image & Uniform$(m_{\rm min}, m_{\rm max})$\\
+$\{\tau_k\}$ & Time delays for each image & Cauchy$(0, \tau_{\rm range}/10)T(\tau_{\rm min}, \tau_{\rm max})$\\
+\end{tabular}
+\end{center}
+\end{table}
 
 \end{document}
 
