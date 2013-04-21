@@ -349,6 +349,6 @@ string TDModel::description() const
 {
 	return string("mag, tau, logSig_ml, logTau_ml, alpha")
 			+ string(", logSig_qso, logTau_qso")
-			+ string(", meanLogSigmaBoost, logStdevLogSigmaBoost");
+			+ string(", f_bad, boost");
 }
 
