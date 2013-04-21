@@ -60,7 +60,6 @@ void Limits::set(const Data& data)
 	logSig_qso_min = log(logSig_qso_min);
 	logSig_qso_max = log(logSig_qso_max);
 
-	cout<<logSig_qso_min<<' '<<logSig_qso_max<<endl;
 	logSig_qso_range = logSig_qso_max - logSig_qso_min;
 
 	logTau_qso_min = log(1E-3*data.get_tRange());
