@@ -344,6 +344,9 @@ void TDModel::print(ostream& out) const
 	out<<logSig_qso<<' ';
 	out<<logTau_qso<<' ';
 	out<<f_bad<<' '<<boost<<' ';
+
+	for(int i=0; i<numPoints; i++)
+		out<<bad_uniforms[i]<<' ';
 }
 
 void TDModel::print2(ostream& out) const
@@ -373,6 +376,9 @@ void TDModel::read(istream& in)
 	in>>logTau_qso;
 	in>>f_bad;
 	in>>boost;
+
+	for(int i=0; i<numPoints; i++)
+		in>>bad_uniforms[i];
 
 	formMeanVector();
 	formCovarianceMatrix();
