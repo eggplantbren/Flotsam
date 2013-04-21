@@ -7,5 +7,6 @@ OBJECTS = Data.o Limits.o Matrix.o TDModel.o Vector.o
 default:
 	g++ $(CFLAGS) -c *.cpp
 	g++ -o Flotsam main.o $(OBJECTS) $(CLIBS)
+	g++ -o mean_covariance mean_covariance.o $(OBJECTS) $(CLIBS)
 	rm -f *.o
 
