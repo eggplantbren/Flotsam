@@ -82,6 +82,9 @@ class TDModel:public DNest3::Model
 		// Print to stream
 		void print(std::ostream& out) const;
 
+		// Print mean vector and covariance matrix
+		void print2(std::ostream& out) const;
+
 		// Read from stream
 		void read(std::istream& in);
 

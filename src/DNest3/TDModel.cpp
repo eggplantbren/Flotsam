@@ -3,6 +3,7 @@
 #include "Utils.h"
 #include "RandomNumberGenerator.h"
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 #include <gsl/gsl_linalg.h>
 
@@ -343,6 +344,17 @@ void TDModel::print(ostream& out) const
 	out<<logSig_qso<<' ';
 	out<<logTau_qso<<' ';
 	out<<f_bad<<' '<<boost<<' ';
+}
+
+void TDModel::print2(ostream& out) const
+{
+	out<<setprecision(12);
+	// Write out mean vector and covariance matrix
+	for(int i=0; i<numPoints; i++)
+		out<<meanVector(i)<<' ';
+	for(int i=0; i<numPoints; i++)
+		for(int j=0; j<numPoints; j++)
+			out<<covarianceMatrix(i, j)<<' ';
 }
 
 void TDModel::read(istream& in)
