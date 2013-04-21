@@ -193,39 +193,43 @@ double TDModel::perturb()
 {
 	double logH = 0.;
 
-	// Propose things that are many-parameter more often
-	int which = randInt(9);
-
-	switch(which)
+	// Flag -- whether to do each kind of proposal
+	vector<bool> change(9, false);
+	int num = 0;
+	double chance = pow(10., 0.5 - 3.*randomU());
+	for(size_t i=0; i<change.size(); i++)
 	{
-		case 0:
-			logH += perturb1();
-			break;
-		case 1:
-			logH += perturb2();
-			break;
-		case 2:
-			logH += perturb3();
-			break;
-		case 3:
-			logH += perturb4();
-			break;
-		case 4:
-			logH += perturb5();
-			break;
-		case 5:
-			logH += perturb6();
-			break;
-		case 6:
-			logH += perturb7();
-			break;
-		case 7:
-			logH += perturb8();
-			break;
-		case 8:
-			logH += perturb9();
-			break;
+		if(randomU() <= chance)
+		{
+			change[i] = true;
+			num++;
+		}
 	}
+	if(num == 0)
+	{
+		change[randInt(change.size())] = true;
+		num++; 
+	}
+
+	if(change[0])
+		logH += perturb1();
+	if(change[1])
+		logH += perturb2();
+	if(change[2])
+		logH += perturb3();
+	if(change[3])
+		logH += perturb4();
+	if(change[4])
+		logH += perturb5();
+	if(change[5])
+		logH += perturb6();
+	if(change[6])
+		logH += perturb7();
+	if(change[7])
+		logH += perturb8();
+	if(change[8])
+		logH += perturb9();
+
 
 	formMeanVector();
 	formCovarianceMatrix();
