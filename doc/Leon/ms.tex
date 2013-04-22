@@ -1,5 +1,5 @@
 % Every Latex document starts with a documentclass command
-\documentclass[a4paper, 11pt]{article}
+\documentclass[a4paper, 10pt]{article}
 
 % Load some packages
 \usepackage{graphicx} % This allows you to put figures in
@@ -68,8 +68,17 @@ Cholesky decompositions.
 \hline
 Parameter & Description & Prior\\
 \hline
-$\{m_k\}$ & Mean magnitudes for each image & Uniform$(m_{\rm min}, m_{\rm max})$\\
-$\{\tau_k\}$ & Time delays for each image & Cauchy$(0, \tau_{\rm range}/10)T(\tau_{\rm min}, \tau_{\rm max})$\\
+$\{m_k\}$ & Mean magnitudes & Uniform$(m_{\rm min}, m_{\rm max})$\\
+$\{\tau_k\}$ & Time delays & Cauchy$(0, \tau_{\rm range}/10)T(\tau_{\rm min}, \tau_{\rm max})$\\
+$\{\sigma_{\rm ML}\}$ & Standard deviations of microlensing signals & LogUniform$()$\\
+$\{L_{\rm ML}\}$ & Timescales of microlensing signals & LogUniform$()$\\
+$\alpha$ & Smoothness parameter for microlensing signals & Uniform$(1,2)$\\
+$\sigma_{\rm QSO}$ & Standard deviation of quasar variability & LogUniform$()$\\
+$L_{\rm QSO}$ & Timescale of quasar variability & LogUniform$()$\\
+$f_{\rm bad}$ & Fraction of data points with incorrect errorbars & Uniform$(0,1)$\\
+$K$ & Boost factor for bad errorbars & LogUniform$(1, 100)$\\
+$\{b_i\}$ & Flag for whether each errorbar is bad & Bernoulli$(f_{\rm bad})$\\
+\hline
 \end{tabular}
 \end{center}
 \end{table}
