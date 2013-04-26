@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 	{
 		t.print2(fout); fout<<endl;
 		cout<<++k<<endl;
-		if(k > 10)
+		if(k >= 16)
 			break;
 	}
 	fout.close();
