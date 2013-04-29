@@ -47,6 +47,10 @@ as a vector of magnitude measurements:
 \begin{eqnarray}
 \yy = \{y_1, y_2, ..., y_N\}.
 \end{eqnarray}
+Along with these measurements we have the timestamps $\{t_i\}_{i=1}^N$,
+error bars $\{\sigma_i\}_{i=1}^N$ and flags
+$\{c_i\}_{i=1}^N$ where a flag $c_i \in \{A, B\}$ tells us whether the
+measurement is of image $A$ or image $B$.
 
 If we make the simplifying assumption that our prior knowledge about
 $\mu_A(t)$, $\mu_B(t)$, and
@@ -71,7 +75,7 @@ p(\yy | \theta) &=& \frac{1}{\sqrt{(2\pi)^N\det{\CC}}}
 The elements of the mean vector are just the mean magnitudes of the
 appropriate images:
 \begin{eqnarray}
-m_i = 
+m_i = M_{c_i}
 \end{eqnarray}
 
 The covariance matrix elements are given by:
@@ -83,8 +87,21 @@ C_{ij} &=& \textnormal{Cov}(y_i, y_j) \\
 \right]
 \end{eqnarray}
 
+We assume the following:
+\begin{eqnarray}
+\textnormal{Cov}\left(y_{\rm QSO}(t_1), y_{\rm QSO}(t_2)\right)
+&=& \sigma_{\rm QSO}^2\exp\left[-\frac{\left|t_2 - t_1\right|}{L_{\rm QSO}}\right]
+\end{eqnarray}
 
+\begin{eqnarray}
+\textnormal{Cov}\left(\mu_A(t_1), \mu_A(t_2)\right)
+&=& \sigma_{{\rm ML}, A}^2\exp\left[-\left(\frac{\left|t_2 - t_1\right|}{L_{{\rm ML}, A}}\right)^\alpha\right]
+\end{eqnarray}
 
+\begin{eqnarray}
+\textnormal{Cov}\left(\mu_B(t_1), \mu_B(t_2)\right)
+&=& \sigma_{{\rm ML}, B}^2\exp\left[-\left(\frac{\left|t_2 - t_1\right|}{L_{{\rm ML}, B}}\right)^\alpha\right]
+\end{eqnarray}
 
 Numerically, the logarithm of the determinant and the
 $\CC^{-1}\left(\yy - \mm\right)$ term are implemented using
