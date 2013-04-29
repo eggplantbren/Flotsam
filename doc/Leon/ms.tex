@@ -1,6 +1,7 @@
 % Every Latex document starts with a documentclass command
 \documentclass[a4paper, 10pt]{article}
 
+\usepackage{dsfont}
 % Load some packages
 \usepackage{graphicx} % This allows you to put figures in
 \usepackage{natbib}   % This allows for relatively pain-free reference lists
@@ -22,26 +23,35 @@
 % Document starts here
 \begin{document}
 
-Suppose that the underlying QSO variability as a function of time is
-described by:
+Throughout this section we consider the measured signal in magnitudes,
+rather than fluxes. Suppose that the underlying QSO variability as a function
+of time is described by the following function:
 \begin{eqnarray}
 y_{\rm QSO}(t)
 \end{eqnarray}
-Then the light curves of the two images $A$ and $B$ will be given by:
+Then the noise-free light curves of the two images
+$A$ and $B$ will be given by:
 \begin{eqnarray}
 y_A(t) &=& y_{\rm QSO}(t) + \mu_A(t)\\
-y_B(t) &=& y_{\rm QSO}(t - \tau) + \mu_B(t)
+y_B(t) &=& y_{\rm QSO}(t - \tau) + \mu_B(t).
 \end{eqnarray}
-where $\mu_A(t)$ and $\mu_B(t)$ are perturbations due to microlensing.
+The variability of image $A$ is the underlying QSO variability
+plus a signal $\mu_A(t)$ that is due to microlensing or perhaps
+other effects. The variability of image $B$ is given by
+a lagged version of the QSO variability, plus another
+perturbation $\mu_B(t)$ caused my microlensing.
 
-
-The data for all images are in magnitudes:
+The data are assumed to be noisy measurements of $y_A(t)$ and
+$y_B(t)$ at various times. We denote the entire dataset (both images together)
+as a vector of magnitude measurements:
 \begin{eqnarray}
-\yy = \{y_1, y_2, ..., y_N\}
+\yy = \{y_1, y_2, ..., y_N\}.
 \end{eqnarray}
 
-
-The probability distribution for the data $\yy$ given the parameters
+If we make the simplifying assumption that our prior knowledge about
+$\mu_A(t)$, $\mu_B(t)$, and
+$y_{\rm QSO}(t)$ can be described by Gaussian Processes \citep{rasmussen},
+then the probability distribution for the data $\yy$ given the parameters
 $\theta$
 is a multivariate normal distribution, where the mean vector $\mm$
 and the covariance matrix $\CC$ depend on the parameters:
@@ -58,6 +68,24 @@ p(\yy | \theta) &=& \frac{1}{\sqrt{(2\pi)^N\det{\CC}}}
 \right)
 \right]
 \end{eqnarray}
+The elements of the mean vector are just the mean magnitudes of the
+appropriate images:
+\begin{eqnarray}
+m_i = 
+\end{eqnarray}
+
+The covariance matrix elements are given by:
+\begin{eqnarray}
+C_{ij} &=& \textnormal{Cov}(y_i, y_j) \\
+&=& \mathds{E}\left[
+\left(y_i - m_i\right)
+\left(y_j - m_j\right)
+\right]
+\end{eqnarray}
+
+
+
+
 Numerically, the logarithm of the determinant and the
 $\CC^{-1}\left(\yy - \mm\right)$ term are implemented using
 Cholesky decompositions.
@@ -103,6 +131,9 @@ $\{b_i\}$ & Flag for whether each errorbar is bad & Bernoulli$(f_{\rm bad})$\\
 \end{center}
 \end{figure}
 
+\begin{thebibliography}{99} 
+\bibitem[\protect\citeauthoryear{Rasmussen \& Williams}{2006}]{rasmussen} Rasmussen C., Williams C., Gaussian Processes for Machine Learning, The MIT Press, 2006
+\end{thebibliography}
 
 \end{document}
 
