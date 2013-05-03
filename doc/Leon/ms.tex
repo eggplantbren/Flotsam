@@ -22,27 +22,15 @@
 
 % Document starts here
 \begin{document}
-
+In this section we describe the Bayesian model used to infer the
+time delay from the data. This model will be described in greater detail in
+a forthcoming contribution (Brewer and Marshall, in prep).
 Throughout this section we consider the measured signal in magnitudes,
-rather than fluxes. Suppose that the underlying QSO variability as a function
-of time is described by the following function:
-\begin{eqnarray}
-y_{\rm QSO}(t)
-\end{eqnarray}
-Then the noise-free light curves of the two images
-$A$ and $B$ will be given by:
-\begin{eqnarray}
-y_A(t) &=& y_{\rm QSO}(t) + \mu_A(t)\\
-y_B(t) &=& y_{\rm QSO}(t - \tau) + \mu_B(t).
-\end{eqnarray}
-The variability of image $A$ is the underlying QSO variability
-plus a signal $\mu_A(t)$ that is due to microlensing or perhaps
-other effects. The variability of image $B$ is given by
-a lagged version of the QSO variability, plus another
-perturbation $\mu_B(t)$ caused my microlensing.
+rather than fluxes, as the model assumptions (Section~\ref{sec:assumptions})
+make more sense in terms of magnitudes.
 
-The data are assumed to be noisy measurements of $y_A(t)$ and
-$y_B(t)$ at various times. We denote the entire dataset (both images together)
+\section{The Data}
+We denote the entire dataset (both images together)
 as a vector of magnitude measurements:
 \begin{eqnarray}
 \yy = \{y_1, y_2, ..., y_N\}.
@@ -50,7 +38,36 @@ as a vector of magnitude measurements:
 Along with these measurements we have the timestamps $\{t_i\}_{i=1}^N$,
 error bars $\{\sigma_i\}_{i=1}^N$ and flags
 $\{c_i\}_{i=1}^N$ where a flag $c_i \in \{A, B\}$ tells us whether the
-measurement is of image $A$ or image $B$.
+measurement is of image $A$ or image $B$. The likelihood will be
+written as a probability distribution for $\yy$ given some parameters, and the
+timestamps, errorbars and flags will be considered as part of the prior
+information.
+
+\section{Model Assumptions}\label{sec:assumptions}
+Suppose that the underlying QSO variability as a function
+of time, as seen through image $A$, is described by the following function:
+\begin{eqnarray}
+y_{\rm QSO}(t)
+\end{eqnarray}
+Then the light curves of the two images
+$A$ and $B$ will be given by:
+\begin{eqnarray}
+y_A(t) &=& M_A + y_{\rm QSO}(t)\\
+y_B(t) &=& M_B + y_{\rm QSO}(t - \tau).
+\end{eqnarray}
+The light curve of image $A$ is just the underlying QSO variability,
+and the light curve of 
+
+
+
+
+plus a signal $\mu_A(t)$ that is due to microlensing or perhaps
+other effects. The variability of image $B$ is given by
+a lagged version of the QSO variability, plus another
+perturbation $\mu_B(t)$ caused my microlensing.
+
+The data are assumed to be noisy measurements of $y_A(t)$ and
+$y_B(t)$ at various times. 
 
 If we make the simplifying assumption that our prior knowledge about
 $\mu_A(t)$, $\mu_B(t)$, and
