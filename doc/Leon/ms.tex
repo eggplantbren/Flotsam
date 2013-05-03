@@ -52,22 +52,72 @@ y_{\rm QSO}(t)
 Then the light curves of the two images
 $A$ and $B$ will be given by:
 \begin{eqnarray}
-y_A(t) &=& M_A + y_{\rm QSO}(t)\\
-y_B(t) &=& M_B + y_{\rm QSO}(t - \tau).
+y_A(t) &=& M_A + y_{\rm QSO}(t) + \mu_A(t)\\
+y_B(t) &=& M_B + y_{\rm QSO}(t - \tau) + \mu_B(t).
 \end{eqnarray}
 The light curve of image $A$ is just the underlying QSO variability,
-and the light curve of 
+fluctuating around the mean magnitude $M_A$ of image $A$, plus
+a microlensing signal $\mu_A(t)$. Similarly,
+the light curve of image $B$ is its mean magnitude $M_B$ plus the QSO
+variability delayed by a lag $\tau$, plus a different microlensing
+signal $\mu_B(t)$. The data are assumed to be noisy measurements of $y_A(t)$ and
+$y_B(t)$ at various times.
 
+\subsection{Error Bar Wrongness}
+We do not assume that the given error bars
+$\{\sigma_i\}_{i=1}^N$ are entirely correct. Instead, we assume that each
+measurement is either ``good'', in which case $\sigma_i$ is used, otherwise it
+is ``bad'', in which case $K\sigma_i$ is used, where $K > 1$. Letting $b_i = 1$
+denote a bad measurement and $b_i=0$ denote a good measurement, the PDF for the
+data can be written as:
+\begin{eqnarray}
+y_i \sim \mathcal{N}
+\left(
+y_{c_i}(t_i), \sigma_i'^2
+\right)\label{eq:noise}
+\end{eqnarray}
+where
+\begin{eqnarray}
+\sigma_i' &=& \left\{
+\begin{array}{lrl}
+\sigma_i, & b_i = 1\\
+K\sigma_i, & b_i = 0 & .
+\end{array}
+\right.
+\end{eqnarray}
 
+\section{Unknown Parameters}
+In Table~\ref{tab:params} we list the unknown parameters that are to be inferred
+and the prior distributions that were used.
 
+\begin{table}[h!]
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+Parameter & Description & Prior\\
+\hline
+$\{M_A, M_B\}$ & Mean magnitudes of the two images & Uniform$(M_{\rm min}, M_{\rm max})$\\
+$\tau$ & Time delay & Cauchy$(0, \tau_{\rm range}/10)T(\tau_{\rm min}, \tau_{\rm max})$\\
+$\{\sigma_{{\rm ML}, A}, \sigma_{{\rm ML}, B}\}$ & Standard deviations of microlensing signals & LogUniform$(\sigma_{\rm min}, \sigma_{\rm max})$\\
+$\{L_{{\rm ML, A}}, L_{{\rm ML, B}}\}$ & Timescales of microlensing signals & LogUniform$(L_{\rm min}, L_{\rm max})$\\
+$\alpha$ & Smoothness parameter for microlensing signals & Uniform$(1,2)$\\
+$\sigma_{\rm QSO}$ & Standard deviation of quasar variability & LogUniform$(\sigma_{\rm min}, \sigma_{\rm max})$\\
+$L_{\rm QSO}$ & Timescale of quasar variability & LogUniform$(L_{\rm min}, L_{\rm max})$\\
+$f_{\rm bad}$ & Fraction of data points with incorrect errorbars & Uniform$(0,1)$\\
+$K$ & Boost factor for bad errorbars & LogUniform$(1, 100)$\\
+$\{b_i\}_{i=1}^N$ & Flag for whether each errorbar is bad & Bernoulli$(f_{\rm bad})$\\
+\hline
+\end{tabular}
+\end{center}
+\caption{A list of the model parameters and their prior probability
+distributions. All of the priors are vague.\label{tab:params}}
+\end{table}
 
-plus a signal $\mu_A(t)$ that is due to microlensing or perhaps
-other effects. The variability of image $B$ is given by
-a lagged version of the QSO variability, plus another
-perturbation $\mu_B(t)$ caused my microlensing.
-
-The data are assumed to be noisy measurements of $y_A(t)$ and
-$y_B(t)$ at various times. 
+\section{Gaussian Processes}
+Inspection of Equation~\ref{eq:noise} suggests that this is a simple curve
+fitting problem. However, this is not the case, because the noise-free
+model predictions $y_{c_i}(t_i)$ cannot be computed as a function of the
+parameters listed in Table~\ref{tab:params}.
 
 If we make the simplifying assumption that our prior knowledge about
 $\mu_A(t)$, $\mu_B(t)$, and
@@ -87,14 +137,19 @@ p(\yy | \theta) &=& \frac{1}{\sqrt{(2\pi)^N\det{\CC}}}
 \left(
 \yy - \mm
 \right)
-\right]
+\right]\label{eq:likelihood}
 \end{eqnarray}
+The Gaussian Process assumption is questionable in the case of the microlensing
+signals $\mu_A(t)$ and $\mu_B(t)$ (especially if the source is not large),
+although it is still a flexible model for any temporally-correlated signal.
+The use of a Gaussian Process model for the QSO variability is more
+well established \citep{kelly, xu}.
+
 The elements of the mean vector are just the mean magnitudes of the
 appropriate images:
 \begin{eqnarray}
 m_i = M_{c_i}
 \end{eqnarray}
-
 The covariance matrix elements are given by:
 \begin{eqnarray}
 C_{ij} &=& \textnormal{Cov}(y_i, y_j) \\
@@ -103,70 +158,82 @@ C_{ij} &=& \textnormal{Cov}(y_i, y_j) \\
 \left(y_j - m_j\right)
 \right]
 \end{eqnarray}
-
-We assume the following:
+and are obtained by evaluating the following covariance {\it functions}
+at the relevant time differences.
 \begin{eqnarray}
-\textnormal{Cov}\left(y_{\rm QSO}(t_1), y_{\rm QSO}(t_2)\right)
-&=& \sigma_{\rm QSO}^2\exp\left[-\frac{\left|t_2 - t_1\right|}{L_{\rm QSO}}\right]
+\textnormal{Cov}\left(y_{\rm QSO}(t_i), y_{\rm QSO}(t_j)\right)
+&=& \sigma_{\rm QSO}^2\exp\left[-\frac{\left|t_i - t_j\right|}{L_{\rm QSO}}\right]\\
+\textnormal{Cov}\left(\mu_A(t_i), \mu_A(t_j)\right)
+&=& \sigma_{{\rm ML}, A}^2\exp\left[-\left(\frac{\left|t_i - t_j\right|}{L_{{\rm ML}, A}}\right)^\alpha\right]\\
+\textnormal{Cov}\left(\mu_B(t_i), \mu_B(t_j)\right)
+&=& \sigma_{{\rm ML}, B}^2\exp\left[-\left(\frac{\left|t_i - t_j\right|}{L_{{\rm ML}, B}}\right)^\alpha\right]
 \end{eqnarray}
+Numerically, the log of the likelihood function (Equation~\ref{eq:likelihood})
+requires the log of $\det(\mathbf{C})$ and the
+$\CC^{-1}\left(\yy - \mm\right)$ term. These can be implemented using
+Cholesky decompositions. Unfortunately the evaluation of this likelihood
+function takes $O(N^3)$ time, but is tractable for the B1600 data where $N=604$.
 
-\begin{eqnarray}
-\textnormal{Cov}\left(\mu_A(t_1), \mu_A(t_2)\right)
-&=& \sigma_{{\rm ML}, A}^2\exp\left[-\left(\frac{\left|t_2 - t_1\right|}{L_{{\rm ML}, A}}\right)^\alpha\right]
-\end{eqnarray}
-
-\begin{eqnarray}
-\textnormal{Cov}\left(\mu_B(t_1), \mu_B(t_2)\right)
-&=& \sigma_{{\rm ML}, B}^2\exp\left[-\left(\frac{\left|t_2 - t_1\right|}{L_{{\rm ML}, B}}\right)^\alpha\right]
-\end{eqnarray}
-
-Numerically, the logarithm of the determinant and the
-$\CC^{-1}\left(\yy - \mm\right)$ term are implemented using
-Cholesky decompositions.
-
-\begin{table}[h!]
-\begin{center}
-\begin{tabular}{|c|c|c|}
-\hline
-Parameter & Description & Prior\\
-\hline
-$\{m_k\}$ & Mean magnitudes & Uniform$(m_{\rm min}, m_{\rm max})$\\
-$\{\tau_k\}$ & Time delays & Cauchy$(0, \tau_{\rm range}/10)T(\tau_{\rm min}, \tau_{\rm max})$\\
-$\{\sigma_{\rm ML}\}$ & Standard deviations of microlensing signals & LogUniform$(\sigma_{\rm min}, \sigma_{\rm max})$\\
-$\{L_{\rm ML}\}$ & Timescales of microlensing signals & LogUniform$(L_{\rm min}, L_{\rm max})$\\
-$\alpha$ & Smoothness parameter for microlensing signals & Uniform$(1,2)$\\
-$\sigma_{\rm QSO}$ & Standard deviation of quasar variability & LogUniform$(\sigma_{\rm min}, \sigma_{\rm max})$\\
-$L_{\rm QSO}$ & Timescale of quasar variability & LogUniform$(L_{\rm min}, L_{\rm max})$\\
-$f_{\rm bad}$ & Fraction of data points with incorrect errorbars & Uniform$(0,1)$\\
-$K$ & Boost factor for bad errorbars & LogUniform$(1, 100)$\\
-$\{b_i\}$ & Flag for whether each errorbar is bad & Bernoulli$(f_{\rm bad})$\\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
+\section{Results}
+The MCMC was run using the Diffusive Nested Sampling algorithm
+\citep[][software available at {\tt http://github.com/eggplantbren/DNest3}]{dnest}.
+The posterior PDF for the time delay is shown in Figure~\ref{fig:time_delay}.
 
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.5]{hist.pdf}
+\caption{The posterior PDF for the time delay.\label{fig:time_delay}}
 \end{center}
 \end{figure}
-
 
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.5]{error_bars.pdf}
+\caption{The joint posterior PDF for the fraction of ``bad'' error bars
+and the error bar scaling parameter $K$. The dotted lines correspond to the
+assumption that the reported error bars are correct.\label{fig:time_delay}}
 \end{center}
 \end{figure}
 
+\section{Posterior Predictive Check}
+A useful sanity check for a Bayesian model is to verify that the observed data
+is typical of the kind of data that the model predicts. This is formalised
+using ``posterior predictive checks'' \citep{gelman}. Figure~\ref{fig:ppc}
+shows the actual data along with eight simulated datasets.
 
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.7]{posterior_predictive_check.pdf}
+\caption{Eight data sets simulated from the model
+using parameters drawn from the posterior distribution. The actual data set
+is also plotted and appears in the lower left panel. The actual data appears
+typical of the distribution of simulated data. The most atypical feature of
+the real data is the rapid variability in the final season, although similar
+features can be seen in the first two simulated datasets.
+\label{fig:ppc}}
 \end{center}
 \end{figure}
 
-\begin{thebibliography}{99} 
+\begin{thebibliography}{99}
+
+\bibitem[\protect\citeauthoryear{Brewer, P{\'a}rtay,
+\& Cs{\'a}nyi}{2011}]{dnest} Brewer B.~J., P{\'a}rtay L.~B.,
+Cs{\'a}nyi G., 2011, Statistics and Computing, 21, 4, 649-656. arXiv:0912.2380
+
+\bibitem[\protect\citeauthoryear{Gelman, Meng, \& Stern}{1996}]{gelman} Gelman, A.,
+Meng X., Stern, H., Posterior predictive assessment of model fitness via realized discrepancies,
+Statistica Sinica 6 (1996): 733-759.
+
+\bibitem[Kelly et al.(2009)]{kelly} Kelly, B.~C., Bechtold, 
+J., Siemiginowska, A.\ 2009.\ Are the Variations in Quasar Optical Flux 
+Driven by Thermal Fluctuations?.\ The Astrophysical Journal 698, 895-910. 
+
+
 \bibitem[\protect\citeauthoryear{Rasmussen \& Williams}{2006}]{rasmussen} Rasmussen C., Williams C., Gaussian Processes for Machine Learning, The MIT Press, 2006
+
+\bibitem[Zu et al.(2013)]{zu} Zu, Y., Kochanek, C.~S., 
+Koz{\l}owski, S., Udalski, A.\ 2013.\ Is Quasar Optical Variability a 
+Damped Random Walk?.\ The Astrophysical Journal 765, 106. 
 \end{thebibliography}
 
 \end{document}
