@@ -73,7 +73,8 @@ void TDModel::fromPrior()
 	for(int i=0; i<numPoints; i++)
 		bad_uniforms[i] = randomU();
 	f_bad = randomU();
-	boost = exp(log(1.) + log(100./1.)*randomU());
+	boost1 = exp(log(1.) + log(100./1.)*randomU());
+	boost2 = exp(log(1.) + log(100./1.)*randomU());
 
 	formMeanVector();
 	formCovarianceMatrix();
@@ -166,10 +167,15 @@ double TDModel::perturb8()
 	}
 	else
 	{
-		boost = log(boost);
-		boost += log(100./1.)*scale*randn();
-		boost = mod(boost - log(1.), log(100.)) + log(1.);
-		boost = exp(boost);
+		boost1 = log(boost1);
+		boost1 += log(100./1.)*scale*randn();
+		boost1 = mod(boost1 - log(1.), log(100.)) + log(1.);
+		boost1 = exp(boost1);
+
+		boost2 = log(boost2);
+		boost2 += log(100./1.)*scale*randn();
+		boost2 = mod(boost2 - log(1.), log(100.)) + log(1.);
+		boost2 = exp(boost2);
 	}
 
 	return 0.;
@@ -261,8 +267,9 @@ void TDModel::formCovarianceMatrix()
 	for(int i=0; i<numPoints; i++)
 	{
 		sig = Data::get_instance().get_sig()[i];
+		sig *= boost1;
 		if(bad_uniforms[i] <= f_bad)
-			sig *= boost;
+			sig *= boost2;
 		covarianceMatrix(i, i) += pow(sig, 2);
 	}
 
@@ -343,7 +350,7 @@ void TDModel::print(ostream& out) const
 	out<<alpha<<' ';
 	out<<logSig_qso<<' ';
 	out<<logTau_qso<<' ';
-	out<<f_bad<<' '<<boost<<' ';
+	out<<f_bad<<' '<<boost1<<' '<<boost2<<' ';
 
 	for(int i=0; i<numPoints; i++)
 		out<<bad_uniforms[i]<<' ';
@@ -375,7 +382,8 @@ istream& TDModel::read(istream& in)
 	in>>logSig_qso;
 	in>>logTau_qso;
 	in>>f_bad;
-	in>>boost;
+	in>>boost1;
+	in>>boost2;
 
 	for(int i=0; i<numPoints; i++)
 		in>>bad_uniforms[i];
@@ -390,6 +398,6 @@ string TDModel::description() const
 {
 	return string("mag, tau, logSig_ml, logTau_ml, alpha")
 			+ string(", logSig_qso, logTau_qso")
-			+ string(", f_bad, boost");
+			+ string(", f_bad, boost1, boost2");
 }
 
