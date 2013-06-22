@@ -8,7 +8,7 @@ cut = int(cut*sample.shape[0])
 sample = sample[cut:]
 sample_info = sample_info[cut:]
 
-for i in xrange(0, sample.shape[1]):
+for i in xrange(0, 20):
 	plt.subplot(2,1,1)
 	plt.plot(sample[:,i])
 	plt.title(i)
