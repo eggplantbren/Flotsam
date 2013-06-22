@@ -73,7 +73,8 @@ void TDModel::fromPrior()
 	for(int i=0; i<numPoints; i++)
 		bad_uniforms[i] = randomU();
 	f_bad = randomU();
-	boost1 = exp(log(1.) + log(100./1.)*randomU());
+	latent_boost1 = randomU();
+	boost1 = (latent_boost1 < 0.5)?(1.):(exp(log(1.) + log(100./1.)*(latent_boost1 - 0.5)*2));
 	boost2 = exp(log(1.) + log(100./1.)*randomU());
 
 	formMeanVector();
@@ -158,22 +159,20 @@ double TDModel::perturb7()
 
 double TDModel::perturb8()
 {
-	double scale = pow(10., 1.5 - 6.*randomU());
 	int which = randInt(2);
 	if(which == 0)
 	{
-		f_bad += scale*randn();
+		f_bad += pow(10., 1.5 - 6.*randomU())*randn();
 		f_bad = mod(f_bad, 1.);
 	}
 	else
 	{
-		boost1 = log(boost1);
-		boost1 += log(100./1.)*scale*randn();
-		boost1 = mod(boost1 - log(1.), log(100.)) + log(1.);
-		boost1 = exp(boost1);
+		latent_boost1 += pow(10., 1.5 - 6.*randomU())*randn();
+		latent_boost1 = mod(latent_boost1, 1.);
+		boost1 = (latent_boost1 < 0.5)?(1.):(exp(log(1.) + log(100./1.)*(latent_boost1 - 0.5)*2));
 
 		boost2 = log(boost2);
-		boost2 += log(100./1.)*scale*randn();
+		boost2 += log(100./1.)*pow(10., 1.5 - 6.*randomU())*randn();
 		boost2 = mod(boost2 - log(1.), log(100.)) + log(1.);
 		boost2 = exp(boost2);
 	}

@@ -40,7 +40,8 @@ class TDModel:public DNest3::Model
 		double logTau_qso;
 
 		// Hyperparameters for error bar boosts
-		double f_bad, boost1, boost2;
+		double f_bad;
+		double latent_boost1, boost1, boost2;
 		std::vector<double> bad_uniforms; // U(0,1) prior
 
 		// Mean vector
