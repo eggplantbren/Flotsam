@@ -41,8 +41,8 @@ void Limits::set(const Data& data)
 	logTau_ml_range.resize(data.get_numImages());
 	for(int i=0; i<data.get_numImages(); i++)
 	{
-		logTau_ml_min[i] = log(1E-3*data.get_tRange());
-		logTau_ml_max[i] = log(1E+3*data.get_tRange());
+		logTau_ml_min[i] = log(1E-4*data.get_tRange());
+		logTau_ml_max[i] = log(1E+2*data.get_tRange());
 		logTau_ml_range[i] = logSig_ml_max[i] - logSig_ml_min[i];
 	}
 
