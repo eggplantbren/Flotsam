@@ -3,6 +3,9 @@
 \usepackage{graphicx} \usepackage{amssymb}
 \usepackage{amsmath}
 
+\newcommand{\params}{\boldsymbol{\theta}}
+\newcommand{\data}{\boldsymbol{D}}
+
 %\input{macros.tex}
 
 % -----------------------------------------------------------------------------
@@ -131,24 +134,25 @@ variability \citep{2009ApJ...698..895K, 2010ApJ...721.1014M, 2011ApJ...735...80Z
 
 % -----------------------------------------------------------------------------
 
+\section{Bayesian Inference}
+For inferring unknown parameters $\params$ from data $\data$,
+Bayes' rule gives the posterior distribution
+\begin{eqnarray}
+p(\params | \data) \propto p(\params)p(\data|\params)
+\end{eqnarray}
+The prior distribution $p(\params)$ describes prior knowledge or uncertainty
+about the values of the parameter(s). The ``sampling distributions''
+$p(\data|\params)$
+describes prior knowledge about the data we expect to observe, as a function of
+$\params$ (Caticha). When $\data$ is fixed $p(\data|\params)$ is a function of
+$\params$ only and is called the likelihood function.
 
-\section{The Model for the Inference}
 We begin by defining our model for the prior knowledge about how the time
-delays give rise rise to the observed data. This results in a probability
-distribution for the data given some unknown parameters, i.e. the ``sampling
-distribution'' (actually distributions, one for each value of the parameters)
-$p(D|\theta)$. Once specific data is in hand, the sampling
-distributions become a likelihood function for the parameters which can be
-combined with a prior distribution $p(\theta)$ to give the posterior distribution.
-The posterior distribution for some parameters $\theta$ given data $D$
-is given by Bayes' rule:
-\begin{equation}
-p(\theta|D = D^*) \propto p(\theta)p(D|\theta)|_{D = D^*}
-\end{equation}
-where $D^*$ is the actual data set that was observed. Throughout this paper,
-the data $D$ are a set of measured magnitudes of multiple images of a QSO; see
-Figure~\ref{simdata} for an example data set.
+delays give rise rise to the observed data. This will determine the sampling
+distribution, and also the set of parameters (including nuisance parameters) to
+be inferred.
 
+\section{Sampling Distributions}
 The intrinsic quasar variability, in magnitudes, and in whatever band the
 observations are carried out in, can be described by a function $q(t)$. For a
 two-image system, the resulting light curves, if observed without gaps and
@@ -181,12 +185,8 @@ data will be the measurements
 \end{eqnarray}
 
 The sampling distributions (and hence the likelihood function) will then be
-written as a probability distribution for the measurements $\boldsymbol{D}$
+written as a probability distribution for the measurements $\data$
 given the time delay $\tau_2$ along with some nuisance parameters.
-
-\section{Sampling Distribution}
-
-
 
 {\bf GAUSSIAN ERRORS ON MAGNITUDES?}
 
@@ -230,6 +230,9 @@ The covariance function of the noise-free light curves is then:
 \end{eqnarray}
 where the intrinsic variations have been assumed to be uncorrelated with the
 microlensing contributions.
+
+{RANT ABOUT HOW THE GP ASSUMPTION FOR "MICROLENSING" IS A DESCRIPTION OF OUR
+PRIOR UNCERTAINTY ABOUT THE SIGNAL **IN OUR PARTICULAR DATA SET**}
 
 The probability distribution for the observed data $\mathbf{y}$ given the
 model parameters $\boldsymbol{\theta}$ is a multivariate Gaussian:
