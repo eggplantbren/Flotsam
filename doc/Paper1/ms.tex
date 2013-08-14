@@ -8,11 +8,11 @@
 % -----------------------------------------------------------------------------
 
 \title[Measuring Time Delays]
-{Measuring Time Delays in the Presence of Gravitational Microlensing} 
-\author[B. J. Brewer]{Brendon J. Brewer$^1$, Philip J. Marshall$^2$, Gregory Dobler$^3$ \\
-$^1$Department of Physics, University of California, Santa Barbara, CA, USA \\
-$^2$Department of Physics, University of Oxford, Keble Road, Oxford, OX1 3RH, UK \\
-$^3$KITP}
+{A Model for Extracting Time Delays from Noisy Time Series Data} 
+\author[B. J. Brewer]{Brendon J. Brewer$^1$, Philip J. Marshall$^2$\\
+$^1$Department of Statistics, The University of Auckland, Private Bag 92019,
+Auckland 1142, New Zealand\\
+$^2$Department of Physics, University of Oxford, Keble Road, Oxford, OX1 3RH, UK}
 
 \begin{document} 
 
@@ -23,26 +23,27 @@ $^3$KITP}
 % -----------------------------------------------------------------------------
 
 \begin{abstract}
-
 Observations of gravitationally lensed quasars provide a unique method for
 measuring cosmological parameters, particularly the Hubble constant $H_0$.
 A key part of
-this process is the extraction of the time delays from the photometric
-monitoring data of the multiple images of the quasar. Quantifying the
-uncertainty in this process is challenging, particularly when the time delays
-are obscured by the presence of microlensing in the light curves. We present a
+this process is the measurement of the time delays from the photometric
+monitoring of the multiple images of the quasar. The uncertainties in the time
+delays propagate to the uncertainties about the cosmological parameters, so it
+is important to have an accurate understanding of the size of these uncertainties.
+Quantifying the
+uncertainty in the time delay measurements is challenging, particularly when the time series
+data is affected by microlensing and other complex physical effects. We present a
 fully probabilistic model for the process of inferring the time delays from
 the light curve data. In this model, the probability distribution over light
-curves is described by a Gaussian Process (GP) whose covariance function
+curves is described by a Gaussian Process (GP) probability distribution whose covariance function
 depends on the time delays as well as the properties of the microlensing.
 Inferring the parameters of the covariance function from data yields
 the time delays, while allowing for a wide range of intrinsic, microlensing, and 
-noise-related variability. We test this method extensively on simulated data, 
+noise-related variability. We test this method on a simple simulated data set
+and a challenging one, 
 and find the inferences (including parameter uncertainties) to be robust.
 We apply our method to radio and optical monitoring data of the well
-studied lenses B1608+656 and RXJ1131$-$123, deriving new time delay estimates complete 
-with covariances. The effect on the $H_0$ precision from B1608 is ...
-
+studied gravitational lens B1608+656, deriving new time delay estimates and uncertainties. The effect on the $H_0$ precision from B1608 is {\bf no idea yet}.
 \end{abstract}
 
 \begin{keywords} gravitational lensing --- methods: statistical --- 
@@ -78,15 +79,16 @@ be expected to yield high precision cosmological measurements
 \citep{2010ApJ...712.1378P}, provided sources of systematic error are
 understood and well modelled.
 
-However, any inference of $H_0$ from the gravitational lensing method inherits
+However, any inference of $H_0$ or other cosmological parameters
+from the gravitational lensing technique inherits
 the uncertainty from the measurements of the time delays themselves. A
 thorough investigation of all known sources of uncertainty is an integral part
 of measuring cosmological parameters, and thus the purpose of this paper is to
 develop and present a reliable method for estimating the uncertainty on the
 values of the time delays themselves. The method is Bayesian
 \citep{2004kats.book.....O} so the results obtained are probability
-distributions for the time delays, and the uncertainties in the time delays
-are indicated by the widths of these probability distributions. To describe
+distributions over the space of possible solutions for the time delays, and the uncertainties in the time delays
+can be summarised by the widths of these probability distributions. To describe
 the underlying time variation of the quasar and the effects of microlensing on
 the light curves, we use Gaussian Processes (GPs), a family of probability
 distributions over function space that has computationally convenient
@@ -108,32 +110,38 @@ Our method is also related to the curve-shifting approach of
 minimise the scatter in the shifted light curves. The primary differences
 between the GP approach and standard curve shifting are that the GP approach
 is fully Bayesian and allows for exploration of the time delay parameter
-space, rather than providing a point estimate. Secondly, it is the likelihood
+space, rather than providing a point estimate of the time delays.
+Secondly, it is the likelihood
 function, rather than the scatter, which guides the inference, making it clear
-how uncertainties are to be obtained. 
+how uncertainties are to be obtained. A recent contribution by \citep{2013PhRvD..87l3512H}
+described a similar approach to the one presented here. The main differences
+are that we implement the model in a Bayesian framework and obtain posterior
+samples using MCMC methods, and we also implement several robustness features
+(e.g. we allow the possibility of systematically underestimated error bars)
+that are not present in the approach of \citet{2013PhRvD..87l3512H}.
 
 An introduction to Gaussian Processes and their applications can be found in
-\citet{rasmussen}. however, in their applications, GPs are usually used as a
-prior distribution over the space of functions. Here, GPs describe the
+\citet{rasmussen}. In their applications, GPs are usually used as a choice of
+prior distribution over the space of functions. In this work, GPs describe the
 sampling distributions, or the probability of the data given the model
 parameters. This is a common situation in astrophysics in fields where the
-signals can be modelled by a stochastic process, for example quasar
-variability \citep{2009ApJ...698..895K, 2010ApJ...721.1014M, 2011ApJ...735...80Z} and solar-like
-oscillations of stars \citep{2009MNRAS.395.2226B}.
+signals are complex and the best models we can think of are 
+stochastic processes. Two prominent examples are quasar
+variability \citep{2009ApJ...698..895K, 2010ApJ...721.1014M, 2011ApJ...735...80Z} and solar-like oscillations of stars \citep{2009MNRAS.395.2226B}.
 
 % -----------------------------------------------------------------------------
 
 
 \section{The Model for the Inference}
-
 We begin by defining our model for the prior knowledge about how the time
 delays give rise rise to the observed data. This results in a probability
-distribution for the data given some unknown parameters, i.e. sampling
-distributions $p(D|\theta)$. Once specific data is in hand, the sampling
+distribution for the data given some unknown parameters, i.e. the ``sampling
+distribution'' (actually distributions, one for each value of the parameters)
+$p(D|\theta)$. Once specific data is in hand, the sampling
 distributions become a likelihood function for the parameters which can be
-combined with a prior distribution $p(\theta)$ to give inferences. By Bayes'
-rule, the posterior distribution for some parameters $\theta$ given data $D$
-is given by:
+combined with a prior distribution $p(\theta)$ to give the posterior distribution.
+The posterior distribution for some parameters $\theta$ given data $D$
+is given by Bayes' rule:
 \begin{equation}
 p(\theta|D = D^*) \propto p(\theta)p(D|\theta)|_{D = D^*}
 \end{equation}
@@ -142,21 +150,39 @@ the data $D$ are a set of measured magnitudes of multiple images of a QSO; see
 Figure~\ref{simdata} for an example data set.
 
 The intrinsic quasar variability, in magnitudes, and in whatever band the
-observations are carried out in, is described by a function $f(t)$. For a
-four-image system, the resulting light curves, if observed without gaps and
+observations are carried out in, can be described by a function $q(t)$. For a
+two-image system, the resulting light curves, if observed without gaps and
 noise, would be described by the functions
 \begin{eqnarray}
 y_1(t) &=& m_1 + f(t) + \mu_1(t) \\
 y_2(t) &=& m_2 + f(t - \tau_2) + \mu_2(t) \\
-y_3(t) &=& m_3 + f(t - \tau_3) + \mu_3(t) \\
-y_4(t) &=& m_4 + f(t - \tau_4) + \mu_4(t) 
 \end{eqnarray}
-where $\{m_1, m_2, m_3, m_4\}$ are the mean magnitudes of the images,
-$\{\tau_2, \tau_3, \tau_4\}$ are the time delays relative to image 1, and the
-functions $\{\mu_1(t), \mu_2(t), \mu_3(t), \mu_4(t)\}$ describe the perturbing
-effects of microlensing on each of the light curves. The data then consist of
-noisy, irregularly sampled measurements of the light curves $\{y_1(t), y_2(t),
-y_3(t), y_4(t)\}$.
+where $\{m_1, m_2\}$ are the mean magnitudes of the images,
+$\tau_2$ is the time delay of image 2 relative to image 1, and the
+functions $\{\mu_1(t), \mu_2(t)\}$ describe any perturbations that are not
+shared by both images. A major source of perturbations is the effect of
+microlensing on each of the light curves. The data then consist of
+noisy, irregularly sampled measurements of the light curves $\{y_1(t), y_2(t)\}$.
+
+The actual data we observe is as follows. We will combine the measurements of all
+images into a single vector of $N$ magnitude measurements.
+At a set of times
+$\{t_1, t_2, ..., t_N\}$, we measure the magnitude of one of the images. These
+noisy measurements are denoted $\{Y_1, Y_2, ..., Y_N\}$. We also keep track of
+a set of flags $\{k_1, k_2, ..., k_N\}, \forall k_i \in \{1, 2\}$ which specifies
+which image was measured. For example, if $k_4 = 2$ then we know that $Y_4$ was
+a noisy measurement of image two at time $t_4$.
+
+When we use Bayes' rule, the flags $\{k_1, k_2, ..., k_N\}$ and measurement
+times $\{t_1, t_2, ..., t_N\}$ will be subsumed into the prior information. The
+data will be the measurements
+\begin{eqnarray}
+\boldsymbol{D} = \{Y_1, Y_2, ..., Y_N\}.
+\end{eqnarray}
+
+The sampling distributions (and hence the likelihood function) will then be
+written as a probability distribution for the measurements $\boldsymbol{D}$
+given the time delay $\tau$ along with some nuisance parameters.
 
 {\bf GAUSSIAN ERRORS ON MAGNITUDES?}
 
@@ -487,6 +513,9 @@ A.~C.~S., Browne I.~W.~A., Koopmans L.~V.~E., Myers S.~T., Wilkinson P.~N.,
 
 \bibitem[\protect\citeauthoryear{Gibbs \& MacKay}{1997}]{gibbsmackay}
 Gibbs, M., Mackay, D., 1997, Efficient implementation of Gaussian processes, Cavendish Lab., Cambridge, U.K., Tech. Rep.
+
+\bibitem[\protect\citeauthoryear{Hojjati, Kim, 
+\& Linder}{2013}]{2013PhRvD..87l3512H} Hojjati A., Kim A.~G., Linder E.~V., 2013, PhRvD, 87, 123512 
 
 \bibitem[\protect\citeauthoryear{Kelly, Bechtold, 
 \& Siemiginowska}{2009}]{2009ApJ...698..895K} Kelly B.~C., Bechtold J., Siemiginowska A., 2009, ApJ, 698, 895 
