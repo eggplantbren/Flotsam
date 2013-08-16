@@ -5,6 +5,7 @@
 
 \newcommand{\params}{\boldsymbol{\theta}}
 \newcommand{\data}{\boldsymbol{D}}
+\newcommand{\info}{\boldsymbol{I}}
 
 %\input{macros.tex}
 
@@ -135,16 +136,17 @@ variability \citep{2009ApJ...698..895K, 2010ApJ...721.1014M, 2011ApJ...735...80Z
 % -----------------------------------------------------------------------------
 
 \section{Bayesian Inference}
-For inferring unknown parameters $\params$ from data $\data$,
+For inferring unknown parameters $\params$ from data $\data$ in the context
+of prior information $\info$,
 Bayes' rule gives the posterior distribution
 \begin{eqnarray}
-p(\params | \data) \propto p(\params)p(\data|\params)
+p(\params | \data, \info) \propto p(\params|\info)p(\data|\params, \info)
 \end{eqnarray}
-The prior distribution $p(\params)$ describes prior knowledge or uncertainty
+The prior distribution $p(\params|\info)$ describes prior knowledge or uncertainty
 about the values of the parameter(s). The ``sampling distributions''
-$p(\data|\params)$
+$p(\data|\params,\info)$
 describes prior knowledge about the data we expect to observe, as a function of
-$\params$ (Caticha). When $\data$ is fixed $p(\data|\params)$ is a function of
+$\params$ (Caticha). When $\data$ is fixed $p(\data|\params,\info)$ is a function of
 $\params$ only and is called the likelihood function.
 
 We begin by defining our model for the prior knowledge about how the time
@@ -187,6 +189,27 @@ data will be the measurements
 The sampling distributions (and hence the likelihood function) will then be
 written as a probability distribution for the measurements $\data$
 given the time delay $\tau_2$ along with some nuisance parameters.
+
+\begin{table*}
+\begin{tabular}{lll}
+\hline
+{\bf Parameter} &	{\bf Meaning}			& {\bf Prior}\\
+\hline
+$\tau_2$	&	Time delay relative to image 1	& Cauchy()$T(,)$\\
+$\{m_1, m_2\}$	&	Mean magnitude for each image	& Uniform()\\
+\hline
+{\bf Data}	&	{\bf Meaning}			& {\bf Sampling Distribution}\\
+\hline
+$\{Y_1, ..., Y_N\}$ &	Noisy magnitude measurements	& $\mathcal{N}\left(\mathbf{m}(\params), \mathbf{C}(\params)\right)$\\
+\hline
+{\bf Prior Information} & {\bf Meaning}			&\\
+\hline
+$N$		&	Number of measurements (all images together)\\
+$\{t_1, ..., t_N\}$ &	Measurement times\\
+$\{k_1, ..., k_N\}$ &	Flags identifying which image was observed
+\end{tabular}
+\end{table*}
+
 
 {\bf GAUSSIAN ERRORS ON MAGNITUDES?}
 
