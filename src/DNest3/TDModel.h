@@ -33,7 +33,7 @@ class TDModel:public DNest3::Model
 		// Microlensing smoothness
 		double alpha;
 
-		// QSO Variability amplitude
+		// QSO Variability amplitude IN UNITS OF SQRT(TAU)
 		double logSig_qso;
 
 		// QSO variability timescale

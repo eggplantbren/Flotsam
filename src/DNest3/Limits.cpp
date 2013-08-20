@@ -50,15 +50,8 @@ void Limits::set(const Data& data)
 	alpha_max = 2.;
 	alpha_range = alpha_max - alpha_min;
 
-	logSig_qso_min = 0.;
-	logSig_qso_max = 0.;
-	for(int i=0; i<data.get_numImages(); i++)
-	{
-		logSig_qso_min += 1E-3*data.get_yStDev()[i]/data.get_numImages();
-		logSig_qso_max += 1E+3*data.get_yStDev()[i]/data.get_numImages();
-	}
-	logSig_qso_min = log(logSig_qso_min);
-	logSig_qso_max = log(logSig_qso_max);
+	logSig_qso_min = log(1E-4);
+	logSig_qso_max = log(1E2);
 
 	logSig_qso_range = logSig_qso_max - logSig_qso_min;
 

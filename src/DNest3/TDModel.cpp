@@ -236,7 +236,6 @@ double TDModel::perturb()
 	if(change[8])
 		logH += perturb9();
 
-
 	formMeanVector();
 	formCovarianceMatrix();
 	return logH;
@@ -288,7 +287,7 @@ double TDModel::covariance(double t1, double t2, int ID1, int ID2)
 	double tau_qso = exp(logTau_qso);
 
 	double exponent = abs((t1 - tau[ID1]) - (t2 - tau[ID2]))/tau_qso;
-	double C = pow(sig_qso, 2)
+	double C = pow(sig_qso*sqrt(tau_qso), 2)
 				*exp(-exponent);
 
 	vector<double> sig_ml(numImages);
