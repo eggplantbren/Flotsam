@@ -2,6 +2,7 @@
 \addtolength{\voffset}{-0.5in}
 \usepackage{graphicx} \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{dsfont}
 
 \newcommand{\params}{\boldsymbol{\theta}}
 \newcommand{\data}{\boldsymbol{D}}
@@ -124,6 +125,8 @@ samples using MCMC methods, and we also implement several robustness features
 (e.g. we allow the possibility of systematically underestimated error bars)
 that are not present in the approach of \citet{2013PhRvD..87l3512H}.
 
+Part of our model involves Gaussian Processes, which are a family of probability
+distributions over the space of possible functions.
 An introduction to Gaussian Processes and their applications can be found in
 \citet{rasmussen}. In their applications, GPs are usually used as a choice of
 prior distribution over the space of functions. In this work, GPs describe the
@@ -131,11 +134,19 @@ sampling distributions, or the probability of the data given the model
 parameters. This is a common situation in astrophysics in fields where the
 signals are complex and the best models we can think of are 
 stochastic processes. Two prominent examples are quasar
-variability \citep{2009ApJ...698..895K, 2010ApJ...721.1014M, 2011ApJ...735...80Z} and solar-like oscillations of stars \citep{2009MNRAS.395.2226B}.
+variability \citep{2009ApJ...698..895K, 2010ApJ...721.1014M, 2011ApJ...735...80Z}
+and solar-like oscillations of stars \citep{2009MNRAS.395.2226B}.
+
+In Section~\ref{sec:bayes} we briefly discuss Bayesian Inference, and in
+Section~\ref{sec:sampling} we describe our specific
+modelling assumptions. The computational implementation is described in
+Section~\ref{sec:computation}. In Section~\ref{sec:tests} we test the inference
+with two simulated data sets, one ``easy'' data set and one ``hard'' data set.
+In Section~\ref{sec:b1608} we apply the model to B1608+656.
 
 % -----------------------------------------------------------------------------
 
-\section{Bayesian Inference}
+\section{Bayesian Inference}\label{sec:bayes}
 For inferring unknown parameters $\params$ from data $\data$ in the context
 of prior information $\info$,
 Bayes' rule gives the posterior distribution
@@ -145,16 +156,17 @@ p(\params | \data, \info) \propto p(\params|\info)p(\data|\params, \info)
 The prior distribution $p(\params|\info)$ describes prior knowledge or uncertainty
 about the values of the parameter(s). The ``sampling distributions''
 $p(\data|\params,\info)$
-describes prior knowledge about the data we expect to observe, as a function of
-$\params$ (Caticha). When $\data$ is fixed $p(\data|\params,\info)$ is a function of
+describe prior knowledge about the data we expect to observe, as a function of
+$\params$ \citep{caticha}. When $\data$ is fixed $p(\data|\params,\info)$ is a function of
 $\params$ only and is called the likelihood function.
 
 We begin by defining our model for the prior knowledge about how the time
 delays give rise rise to the observed data. This will determine the sampling
-distribution, and also the set of parameters (including nuisance parameters) to
-be inferred.
+distributions, and also the set of parameters (including nuisance parameters) to
+be inferred. Our choice of prior distribution for the parameters will be
+discussed in Section
 
-\section{Sampling Distributions}
+\section{Sampling Distributions}\label{sec:sampling}
 The intrinsic quasar variability, in magnitudes, and in whatever band the
 observations are carried out in, can be described by a function $q(t)$. For a
 two-image system, the resulting light curves, if observed without gaps and
@@ -168,7 +180,8 @@ $\tau_2$ is the time delay of image 2 relative to image 1, and the
 functions $\{\mu_1(t), \mu_2(t)\}$ describe any perturbations that are not
 shared by both images. A major source of perturbations is the effect of
 microlensing on each of the light curves. The data then consist of
-noisy, irregularly sampled measurements of the light curves $\{y_1(t), y_2(t)\}$.
+noisy, irregularly sampled measurements of the light curves
+$\{y_1(t), y_2(t)\}$.
 
 The actual data we observe is as follows. We will combine the measurements of all
 images into a single vector of $N$ magnitude measurements.
@@ -195,10 +208,21 @@ given the time delay $\tau_2$ along with some nuisance parameters.
 \hline
 {\bf Parameter} &	{\bf Meaning}			& {\bf Prior}\\
 \hline
-$\tau_2$	&	Time delay relative to image 1	& Cauchy()$T(,)$\\
-$\{m_1, m_2\}$	&	Mean magnitude for each image	& Uniform()\\
-$L$		&	Length scale of QSO variations	& LogUniform()\\
-$\{\ell_1, \ell_2\}$ &	Length scale of image-specific variations & \\
+$\tau_2$	&	Time delay relative to image 1	& Cauchy$\left(0, 0.1\tau_{\rm range}\right)T\left(\tau_{\rm min},\tau_{\rm max}\right)$\\
+$\{m_1, m_2\}$	&	Mean magnitude for each image	& Uniform$(m_{\rm min}, m_{\rm max})$\\
+$L$		&	Length scale of QSO variations	& LogUniform$(L_{\rm min}, L_{\rm max})$\\
+$\beta$		&	Size of QSO variations		& LogUniform$(\beta_{\rm min}, \beta_{\rm max})$\\
+$A$		&	Size of image-specific variations	& LogUniform$\left(A_{\rm min}, A_{\rm max}\right)$\\
+$\{\ell_1, \ell_2\}$ &	Length scale of image-specific variations & LogUniform$(\ell_{\rm min}, \ell_{\rm max})$\\
+$\alpha$	&	Smoothness of image-specific variations	& Uniform$(1, 2)$\\
+$f_{\rm bad}$	&	Fraction of ``bad'' data points	& Uniform$(0,1)$\\
+$\kappa_1$	&	Error-bar boost for ``good'' data & $\frac{1}{2}\delta(\kappa_1 - 1) + \frac{1}{2}$LogUniform$(1,100)$\\
+$\kappa_2$	&	Error-bar boost for ``bad'' data & LogUniform$(\kappa_1, 100\kappa_1)$\\
+$\{b_i\}_{i=1}^N$ &	Badness hidden variables for each data point & Uniform$(0,1)$\\
+\hline
+{\bf Derived Parameter} & {\bf Meaning}	&	{\bf Definition}\\
+\hline
+$\{B_i\}_{i=1}^N$	&	Badness flag for each data point & $\mathds{1}\left(b_i \leq f_{\rm bad}\right)$\\
 \hline
 {\bf Data}	&	{\bf Meaning}			& {\bf Sampling Distribution}\\
 \hline
@@ -336,7 +360,7 @@ $\kappa$ & \vline & $LU(1, 10)$
 a uniform prior between $a$ and $b$, and $LU(a, b)$ denotes a log-uniform
 (that is, uniform in the logarithm of the parameter) prior $\propto 1/x$
 between $a$ and $b$. $\Delta t$ is the duration of the data set. All priors
-are independent.\label{priors}}
+are independent.\label{tab:prior}}
 \end{table}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -523,6 +547,9 @@ David Hogg, Jo Bovy, Malte Tewes, Matt Auger, Sherry Suyu, Chris Fassnacht, Tomm
 
 \bibitem[{Brewer {et~al.}(2010)Brewer, P\'{a}rtay, \& Cs\'{a}nyi}]{dnest}
 Brewer, B., P\'{a}rtay, L., \& Cs\'{a}nyi, G. 2010, Statistics and Computing, doi: 10.1007/s11222-010-9198-8, arXiv: 0912.2380
+
+\bibitem[\protect\citeauthoryear{Caticha}{2008}]{caticha} 
+Caticha A., 2008, arXiv, arXiv:0808.0012 
 
 \bibitem[\protect\citeauthoryear{Eigenbrod et 
 al.}{2005}]{2005A&A...436...25E} Eigenbrod A., Courbin F., Vuissoz C., Meylan G., Saha P., Dye S., 2005, A\&A, 436, 25 
