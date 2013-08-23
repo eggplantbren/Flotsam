@@ -92,9 +92,11 @@ of measuring cosmological parameters, and thus the purpose of this paper is to
 develop and present a reliable method for estimating the uncertainty on the
 values of the time delays themselves. The method is Bayesian
 \citep{2004kats.book.....O} so the results obtained are probability
-distributions over the space of possible solutions for the time delays, and the uncertainties in the time delays
+distributions over the space of possible solutions for the time delays, and the
+uncertainties in the time delays
 can be summarised by the widths of these probability distributions. To describe
-the underlying time variation of the quasar and the effects of microlensing on
+prior knowledge about the underlying time variation of the quasar and the
+effects of microlensing on
 the light curves, we use Gaussian Processes (GPs), a family of probability
 distributions over function space that has computationally convenient
 properties \citep{rasmussen}.
@@ -142,7 +144,9 @@ Section~\ref{sec:sampling} we describe our specific
 modelling assumptions. The computational implementation is described in
 Section~\ref{sec:computation}. In Section~\ref{sec:tests} we test the inference
 with two simulated data sets, one ``easy'' data set and one ``hard'' data set.
-In Section~\ref{sec:b1608} we apply the model to B1608+656.
+In Section~\ref{sec:b1608} we apply the model to B1608+656. Software implementing
+the model described in this paper is freely available online at
+{\tt www.github.com/eggplantnbren/Flotsam}.
 
 % -----------------------------------------------------------------------------
 
@@ -161,10 +165,9 @@ $\params$ \citep{caticha}. When $\data$ is fixed $p(\data|\params,\info)$ is a f
 $\params$ only and is called the likelihood function.
 
 We begin by defining our model for the prior knowledge about how the time
-delays give rise rise to the observed data. This will determine the sampling
+delays give rise to the observed data. This will determine the sampling
 distributions, and also the set of parameters (including nuisance parameters) to
-be inferred. Our choice of prior distribution for the parameters will be
-discussed in Section
+be inferred.
 
 \section{Sampling Distributions}\label{sec:sampling}
 The intrinsic quasar variability, in magnitudes, and in whatever band the
@@ -172,14 +175,18 @@ observations are carried out in, can be described by a function $q(t)$. For a
 two-image system, the resulting light curves, if observed without gaps and
 noise, would be described by the functions
 \begin{eqnarray}
-y_1(t) &=& m_1 + f(t) + \mu_1(t) \\
-y_2(t) &=& m_2 + f(t - \tau_2) + \mu_2(t) \\
+y_1(t) &=& m_1 + q(t) + \mu_1(t) \\
+y_2(t) &=& m_2 + q(t - \tau_2) + \mu_2(t) \\
 \end{eqnarray}
 where $\{m_1, m_2\}$ are the mean magnitudes of the images,
 $\tau_2$ is the time delay of image 2 relative to image 1, and the
-functions $\{\mu_1(t), \mu_2(t)\}$ describe any perturbations that are not
-shared by both images. A major source of perturbations is the effect of
-microlensing on each of the light curves. The data then consist of
+functions $\{\mu_1(t), \mu_2(t)\}$ describe any additional fluctuations that
+are not shared by both images. A major source of additional fluctuations
+is the effect of
+microlensing on each of the light curves, which appears because the foreground
+lens galaxy is actually composed of stars rather than smoothly
+distributed matter \citep{falco}.
+The data then consist of
 noisy, irregularly sampled measurements of the light curves
 $\{y_1(t), y_2(t)\}$.
 
@@ -194,25 +201,32 @@ a noisy measurement of image two at time $t_4$.
 
 When we use Bayes' rule, the flags $\{k_1, k_2, ..., k_N\}$ and measurement
 times $\{t_1, t_2, ..., t_N\}$ will be subsumed into the prior information. The
-data will be the measurements
+data (to which we will assign a ``sampling distribution'') will be the
+measurements
 \begin{eqnarray}
 \boldsymbol{D} = \{Y_1, Y_2, ..., Y_N\}.
 \end{eqnarray}
 
 The sampling distributions (and hence the likelihood function) will then be
 written as a probability distribution for the measurements $\data$
-given the time delay $\tau_2$ along with some nuisance parameters.
+given the time delay $\tau_2$ along with some nuisance parameters. For a full
+list of parameters, see Table~\ref{tab:prior}. The total number of parameters
+for a two-image system is $13+N$, for a four image system the number of
+parameters is $21+N$.
+
+
+
 
 \begin{table*}
 \begin{tabular}{lll}
 \hline
 {\bf Parameter} &	{\bf Meaning}			& {\bf Prior}\\
 \hline
-$\tau_2$	&	Time delay relative to image 1	& Cauchy$\left(0, 0.1\tau_{\rm range}\right)T\left(\tau_{\rm min},\tau_{\rm max}\right)$\\
+$\tau_2$	&	Time delay of image 2	&	Cauchy$\left(0, 0.1\tau_{\rm range}\right)T\left(\tau_{\rm min},\tau_{\rm max}\right)$\\
 $\{m_1, m_2\}$	&	Mean magnitude for each image	& Uniform$(m_{\rm min}, m_{\rm max})$\\
-$L$		&	Length scale of QSO variations	& LogUniform$(L_{\rm min}, L_{\rm max})$\\
 $\beta$		&	Size of QSO variations		& LogUniform$(\beta_{\rm min}, \beta_{\rm max})$\\
-$A$		&	Size of image-specific variations	& LogUniform$\left(A_{\rm min}, A_{\rm max}\right)$\\
+$L$		&	Length scale of QSO variations	& LogUniform$(L_{\rm min}, L_{\rm max})$\\
+$\{S_1, S_2\}$	&	Size of image-specific variations	& LogUniform$\left(A_{\rm min}, A_{\rm max}\right)$\\
 $\{\ell_1, \ell_2\}$ &	Length scale of image-specific variations & LogUniform$(\ell_{\rm min}, \ell_{\rm max})$\\
 $\alpha$	&	Smoothness of image-specific variations	& Uniform$(1, 2)$\\
 $f_{\rm bad}$	&	Fraction of ``bad'' data points	& Uniform$(0,1)$\\
@@ -222,6 +236,7 @@ $\{b_i\}_{i=1}^N$ &	Badness hidden variables for each data point & Uniform$(0,1)
 \hline
 {\bf Derived Parameter} & {\bf Meaning}	&	{\bf Definition}\\
 \hline
+$S_{\rm QSO}$	&	Standard deviation of QSO variability	& $\beta\sqrt{L}$\\
 $\{B_i\}_{i=1}^N$	&	Badness flag for each data point & $\mathds{1}\left(b_i \leq f_{\rm bad}\right)$\\
 \hline
 {\bf Data}	&	{\bf Meaning}			& {\bf Sampling Distribution}\\
@@ -234,6 +249,9 @@ $N$		&	Number of measurements (all images together)\\
 $\{t_1, ..., t_N\}$ &	Measurement times\\
 $\{k_1, ..., k_N\}$ &	Flags identifying which image was observed
 \end{tabular}
+\caption{A full list of parameters, prior information, and data in the
+FLOTSAM model. If there are more than two images, extra parameters are
+added accordingly.\label{tab:prior}}
 \end{table*}
 
 
@@ -553,6 +571,9 @@ Caticha A., 2008, arXiv, arXiv:0808.0012
 
 \bibitem[\protect\citeauthoryear{Eigenbrod et 
 al.}{2005}]{2005A&A...436...25E} Eigenbrod A., Courbin F., Vuissoz C., Meylan G., Saha P., Dye S., 2005, A\&A, 436, 25 
+
+\bibitem[\protect\citeauthoryear{Falco, Wambsganss, 
+\& Schneider}{1991}]{falco} Falco E.~E., Wambsganss J., Schneider P., 1991, MNRAS, 251, 698 
 
 \bibitem[\protect\citeauthoryear{Fassnacht et 
 al.}{2006}]{2006ApJ...642...30F} Fassnacht C.~D., Gal R.~R., Lubin L.~M., 
