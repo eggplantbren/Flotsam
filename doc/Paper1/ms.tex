@@ -293,22 +293,8 @@ primarily on the size of the microlensed source, and all images are of the
 same source. We also assume
 prior independence of $q(t)$, $\mu_1(t)$, and $\mu_2(t)$.
 
-Recall that the noise-free light curves of the two images are given by:
-\begin{eqnarray}
-y_1(t) &=& m_1 + q(t - \tau_1) + \mu_1(t) \\
-y_2(t) &=& m_2 + q(t - \tau_2) + \mu_2(t)
-\end{eqnarray}
-where $\tau_1 = 0$.
-Using this, and the model assumptions discussed above, we can obtain the
-covariance of $y_1$ with itself at a different time, as well as $y_2$ with itself
-at a different time, and $y_1$ and $y_2$ at any time lag.
+See the Appendix for derivations.
 
-\begin{eqnarray}
-\textnormal{Cov}\left[y_i(t_1), y_j(t_2)\right]\\
-= \mathds{E}\left[\left(y_i(t_1) - m_i\right)\left(y_j(t_2) - m_j\right)\right]\\
-= \mathds{E}\left[\left(q(t_1 - \tau_i) + \mu_i(t_1)\right)
-\left(q(t_2 - \tau_j) + \mu_j(t_2)\right)\right]
-\end{eqnarray}
 
 {RANT ABOUT HOW THE GP ASSUMPTION FOR "MICROLENSING" IS A DESCRIPTION OF OUR
 PRIOR UNCERTAINTY ABOUT THE SIGNAL **IN OUR PARTICULAR DATA SET**}
@@ -369,30 +355,6 @@ distributions for these parameters are listed in Table~\ref{priors}; we assign
 these priors in the analysis described in the first part of this paper. Later,
 we will show how a more informative set of priors can be derived, and used to
 improve the precision of the time delay inferences {\bf (WE HOPE)}.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{table}
-\begin{center}
-\begin{tabular}{ccc}
-Parameter & \vline & Prior \\
-\hline
-$\tau$ & \vline & $U(-\Delta t/2, \Delta t/2)$ \\ 
-$m$ & \vline & $U(y_{\rm min}, y_{\rm max})$ \\
-$\sigma_{\rm QSO}$ & \vline & $LU(10^{-3}, 10)$ \\
-$L_{\rm QSO}$ & \vline & $LU(10^{-3}\Delta t, 10\Delta t)$ \\
-$\sigma_{\rm micro}$ & \vline & $LU(10^{-3}, 10)$ \\
-$L_{\rm micro}$ & \vline & $LU(10^{-3}\Delta t, 10\Delta t)$ \\
-$\alpha_{\rm micro}$ & \vline & $U(1, 2)$ \\
-$\kappa$ & \vline & $LU(1, 10)$
-\end{tabular}
-\end{center}
-\caption{Prior probability distributions for the parameters. $U(a, b)$ denotes
-a uniform prior between $a$ and $b$, and $LU(a, b)$ denotes a log-uniform
-(that is, uniform in the logarithm of the parameter) prior $\propto 1/x$
-between $a$ and $b$. $\Delta t$ is the duration of the data set. All priors
-are independent.\label{tab:prior}}
-\end{table}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \subsection{Computational Details}
@@ -658,6 +620,50 @@ Wambsganss J., 1999, JCoAM, 109, 353
 \bibitem[\protect\citeauthoryear{Zu, Kochanek, 
 \& Peterson}{2011}]{2011ApJ...735...80Z} Zu Y., Kochanek C.~S., Peterson B.~M., 2011, ApJ, 735, 80 
 \end{thebibliography}
+
+\appendix
+\onecolumn
+
+\section{GP Covariance Function}
+Recall that the noise-free light curves of the two images are given by:
+\begin{eqnarray}
+y_1(t) &=& m_1 + q(t - \tau_1) + \mu_1(t) \\
+y_2(t) &=& m_2 + q(t - \tau_2) + \mu_2(t)
+\end{eqnarray}
+where $\tau_1 = 0$.
+Using this, and the model assumptions discussed above, we can obtain the
+covariance of $y_1$ with itself at a different time, as well as $y_2$ with itself
+at a different time, and $y_1$ and $y_2$ at any time lag. For distinct images
+$i$ and $j$ the covariance is:
+\begin{eqnarray}
+\textnormal{Cov}\left[y_i(t_1), y_j(t_2)\right]
+&=& \mathds{E}\left[\left(y_i(t_1) - m_i\right)\left(y_j(t_2) - m_j\right)\right]\\
+&=& \mathds{E}\left[\left(q(t_1 - \tau_i) + \mu_i(t_1)\right)
+\left(q(t_2 - \tau_j) + \mu_j(t_2)\right)\right]\\
+&=& \mathds{E}\left[q(t_1 - \tau_i)q(t_2 - \tau_j) + q(t_1 - \tau_i)\mu_j(t_2)
++ \mu_i(t_1)q(t_2 - \tau_j) + \mu_i(t_1)\mu_j(t_2)
+\right]\\
+&=& S_q\exp
+\left[-\frac{|(t_2 -\tau_j)- (t_1-\tau_i)|}{L_q}\right].
+\end{eqnarray}
+For a single image $i$, the covariance is:
+\begin{eqnarray}
+\textnormal{Cov}\left[y_i(t_1), y_i(t_2)\right]
+&=& \mathds{E}\left[\left(y_i(t_1) - m_i\right)\left(y_i(t_2) - m_i\right)\right]\\
+&=& \mathds{E}\left[\left(q(t_1 - \tau_i) + \mu_i(t_1)\right)
+\left(q(t_2 - \tau_i) + \mu_i(t_2)\right)\right]\\
+&=& \mathds{E}\left[q(t_1 - \tau_i)q(t_2 - \tau_i) + q(t_1 - \tau_i)\mu_i(t_2)
++ \mu_i(t_1)q(t_2 - \tau_i) + \mu_i(t_1)\mu_i(t_2)
+\right]\\
+&=& S_q\exp
+\left[-\frac{|(t_2 -\tau_j)- (t_1-\tau_i)|}{L_q}\right] +
+S_i\exp\left[
+-\left(\frac{|t_2 - t_1|
+}{\ell_i}\right)^\alpha
+\right]
+.
+\end{eqnarray}
+
 
 \end{document}
 
