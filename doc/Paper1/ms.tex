@@ -295,19 +295,20 @@ prior independence of $q(t)$, $\mu_1(t)$, and $\mu_2(t)$.
 
 Recall that the noise-free light curves of the two images are given by:
 \begin{eqnarray}
-y_1(t) &=& m_1 + q(t) + \mu_1(t) \\
-y_2(t) &=& m_2 + q(t - \tau_2) + \mu_2(t) \\
+y_1(t) &=& m_1 + q(t - \tau_1) + \mu_1(t) \\
+y_2(t) &=& m_2 + q(t - \tau_2) + \mu_2(t)
 \end{eqnarray}
+where $\tau_1 = 0$.
 Using this, and the model assumptions discussed above, we can obtain the
 covariance of $y_1$ with itself at a different time, as well as $y_2$ with itself
-at a different time and $y_1$ and $y_2$ at any time lag.
+at a different time, and $y_1$ and $y_2$ at any time lag.
 
 \begin{eqnarray}
-\textnormal{Cov}\left[y_i(t_1), y_j(t_2)\right]
-&=& \mathds{E}\left[\left(y_i(t_1) - m_i\right)\left(y_j(t_2) - m_j\right)\right]
+\textnormal{Cov}\left[y_i(t_1), y_j(t_2)\right]\\
+= \mathds{E}\left[\left(y_i(t_1) - m_i\right)\left(y_j(t_2) - m_j\right)\right]\\
+= \mathds{E}\left[\left(q(t_1 - \tau_i) + \mu_i(t_1)\right)
+\left(q(t_2 - \tau_j) + \mu_j(t_2)\right)\right]
 \end{eqnarray}
-where the intrinsic variations have been assumed to be uncorrelated with the
-microlensing contributions.
 
 {RANT ABOUT HOW THE GP ASSUMPTION FOR "MICROLENSING" IS A DESCRIPTION OF OUR
 PRIOR UNCERTAINTY ABOUT THE SIGNAL **IN OUR PARTICULAR DATA SET**}
