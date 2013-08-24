@@ -631,10 +631,9 @@ y_1(t) &=& m_1 + q(t - \tau_1) + \mu_1(t) \\
 y_2(t) &=& m_2 + q(t - \tau_2) + \mu_2(t)
 \end{eqnarray}
 where $\tau_1 = 0$.
-Using this, and the model assumptions discussed above, we can obtain the
-covariance of $y_1$ with itself at a different time, as well as $y_2$ with itself
-at a different time, and $y_1$ and $y_2$ at any time lag. For distinct images
-$i$ and $j$ the covariance is:
+Using this, and the model assumptions discussed in the paper, we can obtain the
+covariance of image $i$ at time $t_1$ with image $j$ at time $t_2$, where
+$i \neq j$:
 \begin{eqnarray}
 \textnormal{Cov}\left[y_i(t_1), y_j(t_2)\right]
 &=& \mathds{E}\left[\left(y_i(t_1) - m_i\right)\left(y_j(t_2) - m_j\right)\right]\\
@@ -646,7 +645,8 @@ $i$ and $j$ the covariance is:
 &=& S_q\exp
 \left[-\frac{|(t_2 -\tau_j)- (t_1-\tau_i)|}{L_q}\right].
 \end{eqnarray}
-For a single image $i$, the covariance is:
+We can also obtain the covariance of image $i$ measured at two times $t_1$ and
+$t_2$:
 \begin{eqnarray}
 \textnormal{Cov}\left[y_i(t_1), y_i(t_2)\right]
 &=& \mathds{E}\left[\left(y_i(t_1) - m_i\right)\left(y_i(t_2) - m_i\right)\right]\\
