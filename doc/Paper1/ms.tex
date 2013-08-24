@@ -290,15 +290,21 @@ In contrast, we use a single $\alpha$ parameter for all images;
 this is because it is suspected that the
 smoothness of the microlensing variations, which $\alpha$ describes, depends
 primarily on the size of the microlensed source, and all images are of the
-same source. 
+same source. We also assume
+prior independence of $q(t)$, $\mu_1(t)$, and $\mu_2(t)$.
 
-The covariance function of the noise-free light curves is then:
+Recall that the noise-free light curves of the two images are given by:
 \begin{eqnarray}
-& & \textnormal{Cov}\left[y_i(t_1), y_j(t_2)\right] \nonumber\\
-&=& \left<y_i(t_1)y_j(t_2)\right> \\
-&=& \left<\left[f(t_1 - \tau_i) + \mu_i(t_1)\right]\left[f(t_2 - \tau_j) + \mu_j(t_2)\right]\right> \\
-&=& \left<f(t_1 - \tau_i)f(t_2 - \tau_j)\right> + \left<\mu_i(t_1)\mu_j(t_2)\right> \\
-&=& C_{\rm QSO}(t_1 - \tau_i - t_2 + \tau_j) + \delta_{ij}C_{\rm micro}(t_1 - t_2)
+y_1(t) &=& m_1 + q(t) + \mu_1(t) \\
+y_2(t) &=& m_2 + q(t - \tau_2) + \mu_2(t) \\
+\end{eqnarray}
+Using this, and the model assumptions discussed above, we can obtain the
+covariance of $y_1$ with itself at a different time, as well as $y_2$ with itself
+at a different time and $y_1$ and $y_2$ at any time lag.
+
+\begin{eqnarray}
+\textnormal{Cov}\left[y_i(t_1), y_j(t_2)\right]
+&=& \mathds{E}\left[\left(y_i(t_1) - m_i\right)\left(y_j(t_2) - m_j\right)\right]
 \end{eqnarray}
 where the intrinsic variations have been assumed to be uncorrelated with the
 microlensing contributions.
