@@ -663,6 +663,19 @@ S_i\exp\left[
 \right]
 .
 \end{eqnarray}
+The covariance between a data point $Y_i$ and another data point $Y_j$ is
+given by the covariance of the underlying noise-free light curves at times $t_i$
+and $t_j$, plus a noise term:
+\begin{eqnarray}
+\textnormal{Cov}\left(
+Y_i, Y_j
+\right) = \textnormal{Cov}\left(y_{k_i}(t_i), y_{k_j}(t_j)\right)
++ \delta_{ij}\left[\left[\kappa_1 + (\kappa_2 - \kappa_1)\mathds{1}(B_i = 1)\right]\sigma_i\right]^2
+\end{eqnarray}
+where $\sigma_i$ is the reported error bar given with the data. The coefficient
+in front of $\sigma_i$ implies that the error bar should be multiplied by
+$\kappa_1$ if this is a ``good'' data point, or by $\kappa_2$ if it is a ``bad''
+data point.
 
 
 \end{document}
