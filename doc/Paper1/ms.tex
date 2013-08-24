@@ -225,7 +225,7 @@ parameters is $21+N$.
 $\tau_2$	&	Time delay of image 2	&	Cauchy$\left(0, 0.1\tau_{\rm range}\right)T\left(\tau_{\rm min},\tau_{\rm max}\right)$\\
 $\{m_1, m_2\}$	&	Mean magnitude for each image	& Uniform$(m_{\rm min}, m_{\rm max})$\\
 $\beta$		&	Size of QSO variations		& LogUniform$(\beta_{\rm min}, \beta_{\rm max})$\\
-$L$		&	Length scale of QSO variations	& LogUniform$(L_{\rm min}, L_{\rm max})$\\
+$L_q$		&	Length scale of QSO variations	& LogUniform$(L_{\rm min}, L_{\rm max})$\\
 $\{S_1, S_2\}$	&	Size of image-specific variations	& LogUniform$\left(A_{\rm min}, A_{\rm max}\right)$\\
 $\{\ell_1, \ell_2\}$ &	Length scale of image-specific variations & LogUniform$(\ell_{\rm min}, \ell_{\rm max})$\\
 $\alpha$	&	Smoothness of image-specific variations	& Uniform$(1, 2)$\\
@@ -236,7 +236,7 @@ $\{b_i\}_{i=1}^N$ &	Badness hidden variables for each data point & Uniform$(0,1)
 \hline
 {\bf Derived Parameter} & {\bf Meaning}	&	{\bf Definition}\\
 \hline
-$S_{\rm QSO}$	&	Standard deviation of QSO variability	& $\beta\sqrt{L}$\\
+$S_{q}$	&	Standard deviation of QSO variability	& $\beta\sqrt{L}$\\
 $\{B_i\}_{i=1}^N$	&	Badness flag for each data point & $\mathds{1}\left(b_i \leq f_{\rm bad}\right)$\\
 \hline
 {\bf Data}	&	{\bf Meaning}			& {\bf Sampling Distribution}\\
@@ -259,30 +259,35 @@ added accordingly.\label{tab:prior}}
 
 {\bf IMPORTANCE OF MEAN MAGS FOR MILLILENSING, CORRELATION WITH MICROLENSING AND INTRINSIC AGN TIMESCALE, NEED FOR INFORMATIVE PRIORS}
 
-We assume that the covariance function for the quasar variability is given by
+We model our uncertainties about the underlying QSO light curve $q(t)$ by
+a GP with mean function $\mathds{E}\left(q(t)\right) = 0$ and covariance function
 \begin{eqnarray}
-\textnormal{Cov}\left[f(t_1), f(t_2)\right] = C(|t_2 - t_1|)
-\end{eqnarray}
-where
-\begin{eqnarray}
-C(\Delta t) = \sigma_{\rm QSO}^2\exp\left(-\frac{\Delta t}{L_{\rm QSO}}\right)
+\textnormal{Cov}\left[q(t_1), q(t_2)\right] = S_q\exp
+\left[-\frac{|t_2 - t_1|}{L_q}\right]
 \end{eqnarray}
 
-{\bf COMMENT ON KELLY}
+This model for QSO variability has been studied extensively by \citep{}
+{\bf COMMENT ON KELLY}. We also note that this distribution is a MaxEnt
+distribution \citep{} with XX constraints \citep{sivia}.
 
-Similarly, the covariance function for each of the microlensing components is
+Similarly, our uncertainty about the image-specific variability is modelled
+as a GP with mean function $\mathds{E}\left(\mu_i(t)\right) = 0$ and
+covariance function
 \begin{eqnarray}
-\textnormal{Cov}\left[\mu(t_1), \mu(t_2)\right] = C_{\rm micro}(|t_2 - t_1|)
-\end{eqnarray}
-where
-\begin{eqnarray}
-C_{\rm micro}(\Delta t) = \sigma_{\rm micro}^2\exp\left(-\left(\frac{\Delta t}{L_{\rm micro}}\right)^{\alpha_{\rm micro}}\right)
+\textnormal{Cov}\left[\mu_i(t_1), \mu_i(t_2)\right] =
+S_i\exp\left[
+-\left(\frac{|t_2 - t_1|
+}{\ell_i}\right)^\alpha
+\right]
 \end{eqnarray}
 
-There is a $\sigma_{\rm micro}$  parameter and an $L_{\rm micro}$ parameter
+There is a separate $S_i$ parameter $\ell_i$ parameter
 for each image; this is because the stellar density and lens convergence is
-different at each image position. In contrast, we use a single $\alpha_{\rm
-micro}$ parameter for all images; this is because it is suspected that the
+different at each image position. If the image-specific variability is
+predominantly caused by microlensing, the typical timescales and amplitudes
+of the microlensing are unlikely to be the same for each image.
+In contrast, we use a single $\alpha$ parameter for all images;
+this is because it is suspected that the
 smoothness of the microlensing variations, which $\alpha$ describes, depends
 primarily on the size of the microlensed source, and all images are of the
 same source. 
