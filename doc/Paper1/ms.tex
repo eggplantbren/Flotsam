@@ -237,7 +237,7 @@ $\{b_i\}_{i=1}^N$ &	Badness hidden variables for each data point & Uniform$(0,1)
 {\bf Derived Parameter} & {\bf Meaning}	&	{\bf Definition}\\
 \hline
 $S_{q}$	&	Standard deviation of QSO variability	& $\beta\sqrt{L}$\\
-$\{B_i\}_{i=1}^N$	&	Badness flag for each data point & $\mathds{1}\left(b_i \leq f_{\rm bad}\right)$\\
+$\{a_i\}_{i=1}^N$	&	Errorbar multiplier for each data point & $\left\{\begin{array}{lr}\kappa_1, & b_i > f_{\rm bad}\\ \kappa_2, & b_i \leq f_{\rm bad}\end{array}\right.$\\
 \hline
 {\bf Data}	&	{\bf Meaning}			& {\bf Sampling Distribution}\\
 \hline
@@ -342,20 +342,6 @@ than it is by a time-correlated microlensing term. Thus, to improve the
 robustness of our method, we include a ``noise boost'' parameter $\kappa$
 describing the factor by which the reported error bars should be multiplied.
 This is another mechanism for accounting for outliers.
-
-In summary, the parameter vector is
-\begin{equation}
-\left\{ \{\tau\}, \{m\}, \sigma_{\rm QSO}, L_{\rm QSO}, \{\sigma_{\rm micro}\}
-\{L_{\rm micro}\}, \alpha_{\rm micro}, \kappa \right\}
-\end{equation}
-where parameters in braces denote a set (one for each QSO image).  For a
-double image lens, the total number of parameters in the model is~12. For a
-quad, this number is~20. A set of uninformative prior
-distributions for these parameters are listed in Table~\ref{priors}; we assign
-these priors in the analysis described in the first part of this paper. Later,
-we will show how a more informative set of priors can be derived, and used to
-improve the precision of the time delay inferences {\bf (WE HOPE)}.
-
 
 \subsection{Computational Details}
 
@@ -633,7 +619,7 @@ y_2(t) &=& m_2 + q(t - \tau_2) + \mu_2(t)
 where $\tau_1 = 0$.
 Using this, and the model assumptions discussed in the paper, we can obtain the
 covariance of image $i$ at time $t_1$ with image $j$ at time $t_2$, where
-$i \neq j$:
+$i \neq j$. Here, $t_1$ and $t_2$ stand for any two times.
 \begin{eqnarray}
 \textnormal{Cov}\left[y_i(t_1), y_j(t_2)\right]
 &=& \mathds{E}\left[\left(y_i(t_1) - m_i\right)\left(y_j(t_2) - m_j\right)\right]\\
@@ -670,12 +656,12 @@ and $t_j$, plus a noise term:
 \textnormal{Cov}\left(
 Y_i, Y_j
 \right) = \textnormal{Cov}\left(y_{k_i}(t_i), y_{k_j}(t_j)\right)
-+ \delta_{ij}\left[\left[\kappa_1 + (\kappa_2 - \kappa_1)\mathds{1}(B_i = 1)\right]\sigma_i\right]^2
++ \delta_{ij}\left(a_i\sigma_i\right)^2
 \end{eqnarray}
 where $\sigma_i$ is the reported error bar given with the data. The coefficient
-in front of $\sigma_i$ implies that the error bar should be multiplied by
-$\kappa_1$ if this is a ``good'' data point, or by $\kappa_2$ if it is a ``bad''
-data point.
+$a_i$
+in front of $\sigma_i$ is the robustness feature that depends on $\kappa_1$,
+$\kappa_2$, and the badness variable for data point $i$.
 
 
 \end{document}
