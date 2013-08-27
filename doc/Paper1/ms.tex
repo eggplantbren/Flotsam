@@ -231,13 +231,13 @@ $\{\ell_1, \ell_2\}$ &	Length scale of image-specific variations & LogUniform$(\
 $\alpha$	&	Smoothness of image-specific variations	& Uniform$(1, 2)$\\
 $f_{\rm bad}$	&	Fraction of ``bad'' data points	& Uniform$(0,1)$\\
 $\kappa_1$	&	Error-bar boost for ``good'' data & $\frac{1}{2}\delta(\kappa_1 - 1) + \frac{1}{2}$LogUniform$(1,100)$\\
-$\kappa_2$	&	Error-bar boost for ``bad'' data & LogUniform$(\kappa_1, 100\kappa_1)$\\
+$\kappa_2$	&	Extra error-bar boost for ``bad'' data & LogUniform$(1, 100)$\\
 $\{b_i\}_{i=1}^N$ &	Badness hidden variables for each data point & Uniform$(0,1)$\\
 \hline
 {\bf Derived Parameter} & {\bf Meaning}	&	{\bf Definition}\\
 \hline
 $S_{q}$	&	Standard deviation of QSO variability	& $\beta\sqrt{L}$\\
-$\{a_i\}_{i=1}^N$	&	Errorbar multiplier for each data point & $\left\{\begin{array}{lr}\kappa_1, & b_i > f_{\rm bad}\\ \kappa_2, & b_i \leq f_{\rm bad}\end{array}\right.$\\
+$\{a_i\}_{i=1}^N$	&	Errorbar multiplier for each data point & $\left\{\begin{array}{lr}\kappa_1, & b_i > f_{\rm bad}\\ \kappa_1\kappa_2, & b_i \leq f_{\rm bad}\end{array}\right.$\\
 \hline
 {\bf Data}	&	{\bf Meaning}			& {\bf Sampling Distribution}\\
 \hline
@@ -339,7 +339,8 @@ modelling assumptions and approximations in the pipeline. In the context of
 light curve modelling, underestimated error bars can be detected if the
 scatter in the light curve is better modelled by independent Gaussian noise
 than it is by a time-correlated microlensing term. Thus, to improve the
-robustness of our method, we include a ``noise boost'' parameter $\kappa$
+robustness of our method, we include ``noise boost'' parameters $\kappa_1$,
+$\kappa_2$, and $f_{\rm bad}$,
 describing the factor by which the reported error bars should be multiplied.
 This is another mechanism for accounting for outliers.
 
@@ -656,12 +657,14 @@ and $t_j$, plus a noise term:
 \textnormal{Cov}\left(
 Y_i, Y_j
 \right) = \textnormal{Cov}\left(y_{k_i}(t_i), y_{k_j}(t_j)\right)
-+ \delta_{ij}\left(a_i\sigma_i\right)^2
++ \delta_{ij}\left(a_i\sigma_i\right)^2\label{eq:covariance}
 \end{eqnarray}
 where $\sigma_i$ is the reported error bar given with the data. The coefficient
 $a_i$
 in front of $\sigma_i$ is the robustness feature that depends on $\kappa_1$,
-$\kappa_2$, and the badness variable for data point $i$.
+$\kappa_2$, and the badness variable for data point $i$. Equation~\ref{eq:covariance}
+provides the elements of the covariance matrix in the multivariate normal
+sampling distribution.
 
 
 \end{document}
