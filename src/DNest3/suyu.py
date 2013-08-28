@@ -62,6 +62,9 @@ print(summary1)
 print(summary2)
 print(summary3)
 
+print((summary1[2] + summary1[0])/3.)
+print((summary2[2] + summary2[0])/3.)
+print((summary3[2] + summary3[0])/3.)
 
 
 
