@@ -25,13 +25,6 @@ tDB = posterior_sample[:,7] - posterior_sample[:,5]
 hist(tAB, 50, alpha=0.2, color='b')
 hist(tCB, 50, alpha=0.2, color='r')
 hist(tDB, 50, alpha=0.2, color='g')
-xlabel('Time Delay $\\tau$ (days)')
-show()
-
-print(mean(tAB), std(tAB))
-print(mean(tCB), std(tCB))
-print(mean(tDB), std(tDB))
-
 
 # Find 68% credible intervals
 def summary(theta):
@@ -41,9 +34,33 @@ def summary(theta):
 	c = s[int(0.84*len(theta))]
 	return (b - a, b, c - b)
 
-print(summary(tAB))
-print(summary(tCB))
-print(summary(tDB))
+summary1 = summary(tAB)
+summary2 = summary(tCB)
+summary3 = summary(tDB)
+
+axhline(0, linewidth=2, color='k')
+
+# Plot summaries
+errorbar([summary1[1]], [-0.3], xerr=[[summary1[0]], [summary1[2]]], fmt='bo', linewidth=2)
+errorbar([summary2[1]], [-0.2], xerr=[[summary2[0]], [summary2[2]]], fmt='ro', linewidth=2)
+errorbar([summary3[1]], [-0.1], xerr=[[summary3[0]], [summary3[2]]], fmt='go', linewidth=2)
+
+# Plot Fassnacht's time delays
+errorbar([31.5], [-0.5], xerr=[[1.], [2.]], fmt='bo', linewidth=2)
+errorbar([36.], [-0.5], xerr=[[1.5], [1.5]], fmt='ro', linewidth=2)
+errorbar([77.], [-0.5], xerr=[[1.], [2.]], fmt='go', linewidth=2)
+
+ylim(-1)
+xlabel('Time Delay $\\tau$ (days)')
+show()
+
+print(mean(tAB), std(tAB))
+print(mean(tCB), std(tCB))
+print(mean(tDB), std(tDB))
+
+print(summary1)
+print(summary2)
+print(summary3)
 
 
 
