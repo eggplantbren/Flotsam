@@ -44,7 +44,10 @@ void TDModel::fromPrior()
 {
 	for(int i=0; i<numImages; i++)
 	{
-		mag[i] = limits.mag_min[i] + limits.mag_range[i]*randomU();
+		if(i==0)
+			mag[i] = limits.mag_min + limits.mag_range*randomU();
+		else
+			mag[i] = tan(M_PI*(randomU() - 0.5));
 
 		if(i == 0)
 			tau[i] = 0.;
@@ -85,11 +88,22 @@ double TDModel::perturb1()
 {
 	int which = randInt(numImages);
 
-	mag[which] += limits.mag_range[which]
-			*pow(10., 1.5 - 6.*randomU())*randn();
-	mag[which] = mod(mag[which] - limits.mag_min[which]
-				,limits.mag_range[which])
-				+ limits.mag_min[which];
+	if(which == 0)
+	{
+		mag[which] += limits.mag_range
+				*pow(10., 1.5 - 6.*randomU())*randn();
+		mag[which] = mod(mag[which] - limits.mag_min
+					,limits.mag_range)
+					+ limits.mag_min;
+	}
+	else
+	{
+		mag[which] = atan(mag[which])/M_PI + 0.5;
+		mag[which] += pow(10., 1.5 - 6.*randomU())*randn();
+		mag[which] = mod(mag[which], 1.);
+		mag[which] = tan(M_PI*(mag[which] - 0.5));
+	}
+
 	return 0.;
 }
 
@@ -278,7 +292,12 @@ void TDModel::formCovarianceMatrix()
 void TDModel::formMeanVector()
 {
 	for(int i=0; i<numPoints; i++)
-		meanVector(i) = mag[Data::get_instance().get_ID()[i]];
+	{
+		if(Data::get_instance().get_ID()[i] == 0)
+			meanVector(i) = mag[0];
+		else
+			meanVector(i) = mag[0] + mag[Data::get_instance().get_ID()[i]];
+	}
 }
 
 double TDModel::covariance(double t1, double t2, int ID1, int ID2)

@@ -18,7 +18,8 @@ class TDModel:public DNest3::Model
 		// Useful integers
 		int numPoints, numImages;
 
-		// Mean magnitudes
+		// Mean magnitude of image 0, followed by magnitudes of
+		// other images relative to image 0
 		std::vector<double> mag;
 
 		// Time delays (first is zero by definition)

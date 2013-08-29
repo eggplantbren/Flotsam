@@ -14,8 +14,8 @@ class Limits
 	private:
 		// Naming convention: varName_min, varName_max, varName_range
 
-		// Mean magnitudes
-		std::vector<double> mag_min, mag_max, mag_range;
+		// Magnitude for image 0
+		double mag_min, mag_max, mag_range;
 
 		// Time delays (first is zero by definition)
 		double tau_min, tau_max, tau_range;

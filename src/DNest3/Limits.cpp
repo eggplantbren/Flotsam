@@ -12,15 +12,9 @@ Limits::Limits()
 
 void Limits::set(const Data& data)
 {
-	mag_min.resize(data.get_numImages());
-	mag_max.resize(data.get_numImages());
-	mag_range.resize(data.get_numImages());
-	for(int i=0; i<data.get_numImages(); i++)
-	{
-		mag_min[i] = data.get_yMean()[i] - 30.*data.get_yStDev()[i]; 
-		mag_max[i] = data.get_yMean()[i] + 30.*data.get_yStDev()[i];
-		mag_range[i] = mag_max[i] - mag_min[i];
-	}
+	mag_min = data.get_yMean()[0] - 30.*data.get_yStDev()[0]; 
+	mag_max = data.get_yMean()[0] + 30.*data.get_yStDev()[0];
+	mag_range = mag_max - mag_min;
 
 	tau_min = -data.get_tRange();
 	tau_max =  data.get_tRange();
