@@ -42,3 +42,71 @@ errorbar(data[N:, 0], data[N:, 1], yerr=data[N:, 2], fmt='ro')
 show()
 
 savetxt('easy_data.txt', data)
+
+# Add microlensing to make hard data
+# Load the rays
+import cPickle as pickle
+print('Loading...')
+rays = pickle.load(open('rays.pickle', 'rb'))
+print('Done.')
+
+# FIRST IMAGE
+x0 = -1.
+y0 = -1.
+vx = 0.01
+vy = 0.01
+r = 0.05
+
+x = x0 + vx*arange(0, N)
+y = y0 + vy*arange(0, N)
+
+plot(rays[0::37,0], rays[0::37,1], 'b.', markersize=1)
+plot(x, y, 'ro-', markersize=10)
+axis([-4., 4., -4., 4.])
+show()
+
+mag = zeros(N)
+ion()
+hold(False)
+for i in xrange(0, N):
+	mag[i] = 2.5*log10(sum((rays[:,0] - x[i])**2 + (rays[:,1] - x[i])**2 <= r**2))
+	plot(mag[0:(i+1)])
+	draw()
+ioff()
+show()
+
+data[0:N, 1] += mag - mean(mag)
+
+# SECOND IMAGE
+x0 = 1.
+y0 = 1.
+vx = 0.01
+vy = -0.01
+r = 0.05
+
+x = x0 + vx*arange(0, N)
+y = y0 + vy*arange(0, N)
+
+hold(True)
+plot(rays[0::37,0], rays[0::37,1], 'b.', markersize=1)
+plot(x, y, 'ro-', markersize=10)
+axis([-4., 4., -4., 4.])
+show()
+
+mag = zeros(N)
+ion()
+hold(False)
+for i in xrange(0, N):
+	mag[i] = 2.5*log10(sum((rays[:,0] - x[i])**2 + (rays[:,1] - x[i])**2 <= r**2))
+	plot(mag[0:(i+1)])
+	draw()
+ioff()
+show()
+data[N:, 1] += mag - mean(mag)
+
+savetxt('hard_data.txt', data)
+
+hold(True)
+errorbar(data[0:N, 0], data[0:N, 1], yerr=data[0:N, 2], fmt='bo')
+errorbar(data[N:, 0], data[N:, 1], yerr=data[N:, 2], fmt='ro')
+show()
