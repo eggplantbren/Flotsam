@@ -222,8 +222,10 @@ parameters is $21+N$.
 \hline
 {\bf Parameter} &	{\bf Meaning}			& {\bf Prior}\\
 \hline
+$\tau_1$	&	Time delay of image 1	&	$\delta(\tau_1 - 0)$\\
 $\tau_2$	&	Time delay of image 2	&	Cauchy$\left(0, 0.1\tau_{\rm range}\right)T\left(\tau_{\rm min},\tau_{\rm max}\right)$\\
-$\{m_1, m_2\}$	&	Mean magnitude for each image	& Uniform$(m_{\rm min}, m_{\rm max})$\\
+$m_1$	&	Mean magnitude for image 1	& Uniform$(m_{\rm min}, m_{\rm max})$\\
+$m'_2$		&	Magnitude of image 2 relative to image 1	& Cauchy$(0,1)$\\
 $\beta$		&	Size of QSO variations		& LogUniform$(\beta_{\rm min}, \beta_{\rm max})$\\
 $L_q$		&	Length scale of QSO variations	& LogUniform$(L_{\rm min}, L_{\rm max})$\\
 $\{S_1, S_2\}$	&	Size of image-specific variations	& LogUniform$\left(A_{\rm min}, A_{\rm max}\right)$\\
@@ -236,6 +238,7 @@ $\{b_i\}_{i=1}^N$ &	Badness hidden variables for each data point & Uniform$(0,1)
 \hline
 {\bf Derived Parameter} & {\bf Meaning}	&	{\bf Definition}\\
 \hline
+$m_2$	&	Magnitude of image 2	& $m_1 + m'_2$\\
 $S_{q}$	&	Standard deviation of QSO variability	& $\beta\sqrt{L}$\\
 $\{a_i\}_{i=1}^N$	&	Errorbar multiplier for each data point & $\left\{\begin{array}{lr}\kappa_1, & b_i > f_{\rm bad}\\ \kappa_1\kappa_2, & b_i \leq f_{\rm bad}\end{array}\right.$\\
 \hline
@@ -426,6 +429,20 @@ each image position, and then repeat the inferences of the previous section in
 the presence of this contaminant. How is the time delay inference degraded?
 Can the microlensing curves be modelled by the GP? How are the results
 affected by observing strategy?
+
+\section{Demonstration on Simulated Data}
+In this section we demonstrate the inference methods on simulated data. We
+created an ``easy'' data set consisting solely of quasar variability with no
+microlensing. Then, a ``hard'' data set was created by adding microlensing
+variability. The data consisted of 100 measurements of two images over a time
+span of 100 days. The true time delay was $\tau_2 = 10$ days. The two data
+sets are plotted in Figure~\ref{fig:sim_data}.
+
+\begin{figure*}
+\includegraphics[scale=0.4]{Figures/sim_data.eps}
+\caption{\label{fig:sim_data}}
+\end{figure*}
+
 
 
 \subsubsection{Methodology}
