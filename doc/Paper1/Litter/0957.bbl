@@ -1,0 +1,46 @@
+\begin{thebibliography}{}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{{Hainline} {et~al.}(2012){Hainline}, {Morgan}, {Beach}, {Kochanek},
+  {Harris}, {Tilleman}, {Fadely}, {Falco}, \& {Le}}]{Hainline++2012}
+{Hainline}, L.~J., {Morgan}, C.~W., {Beach}, J.~N., {et~al.} 2012, \apj, 744,
+  104
+
+\bibitem[{{Kundic} {et~al.}(1997){Kundic}, {Turner}, {Colley}, {Gott},
+  {Rhoads}, {Wang}, {Bergeron}, {Gloria}, {Long}, {Malhotra}, \&
+  {Wambsganss}}]{Kundic++1997}
+{Kundic}, T., {Turner}, E.~L., {Colley}, W.~N., {et~al.} 1997, \apj, 482, 75
+
+\bibitem[{{Oscoz} {et~al.}(2001){Oscoz}, {Alcalde}, {Serra-Ricart},
+  {Mediavilla}, {Abajas}, {Barrena}, {Licandro}, {Motta}, \&
+  {Mu{\~n}oz}}]{Oscoz++2001}
+{Oscoz}, A., {Alcalde}, D., {Serra-Ricart}, M., {et~al.} 2001, \apj, 552, 81
+
+\bibitem[{{Pelt} {et~al.}(1998){Pelt}, {Schild}, {Refsdal}, \&
+  {Stabell}}]{Pelt++1998}
+{Pelt}, J., {Schild}, R., {Refsdal}, S., \& {Stabell}, R. 1998, \aap, 336, 829
+
+\bibitem[{{Press} {et~al.}(1992{\natexlab{a}}){Press}, {Rybicki}, \&
+  {Hewitt}}]{Press++1992-Paper1}
+{Press}, W.~H., {Rybicki}, G.~B., \& {Hewitt}, J.~N. 1992{\natexlab{a}}, \apj,
+  385, 404
+
+\bibitem[{{Press} {et~al.}(1992{\natexlab{b}}){Press}, {Rybicki}, \&
+  {Hewitt}}]{Press++1992-Paper2}
+---. 1992{\natexlab{b}}, \apj, 385, 416
+
+\bibitem[{{Shalyapin} {et~al.}(2012){Shalyapin}, {Goicoechea}, \&
+  {Gil-Merino}}]{Shalyapin++2012}
+{Shalyapin}, V.~N., {Goicoechea}, L.~J., \& {Gil-Merino}, R. 2012, \aap, 540,
+  A132
+
+\bibitem[{{Shalyapin} {et~al.}(2008){Shalyapin}, {Goicoechea}, {Koptelova},
+  {Ull{\'a}n}, \& {Gil-Merino}}]{Shalyapin++2008}
+{Shalyapin}, V.~N., {Goicoechea}, L.~J., {Koptelova}, E., {Ull{\'a}n}, A., \&
+  {Gil-Merino}, R. 2008, \aap, 492, 401
+
+\bibitem[{{Vanderriest} {et~al.}(1989){Vanderriest}, {Schneider}, {Herpe},
+  {Chevreton}, {Moles}, \& {Wlerick}}]{Vanderriest++1989}
+{Vanderriest}, C., {Schneider}, J., {Herpe}, G., {et~al.} 1989, \aap, 215, 1
+
+\end{thebibliography}

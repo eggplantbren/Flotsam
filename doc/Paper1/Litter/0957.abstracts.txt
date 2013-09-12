@@ -1,0 +1,277 @@
+
+********************************************************************************
+   http://adsabs.harvard.edu/abs/2012ApJ...744..104H
+
+   Title:
+   A New Microlensing Event in the Doubly Imaged Quasar Q 0957+561
+   Authors:
+   Hainline, Laura J.; Morgan, Christopher W.; Beach, Joseph N.;
+   Kochanek, C. S.; Harris, Hugh C.; Tilleman, Trudy; Fadely, Ross;
+   Falco, Emilio E.; Le, Truong X.
+   Publication:
+   The Astrophysical Journal, Volume 744, Issue 2, article id. 104, 9 pp.
+   (2012). (ApJ Homepage)
+ 
+   We present evidence for ultraviolet/optical microlensing in the
+   gravitationally lensed quasar Q 0957+561. We combine new measurements
+   from our optical monitoring campaign at the United States Naval
+   Observatory, Flagstaff, with measurements from the literature and find
+   that the time-delay-corrected r-band flux ratio m[A] - m[B] has
+   increased by ~0.1 mag over a period of five years beginning in the fall
+   of 2005. We apply our Monte Carlo microlensing analysis procedure to
+   the composite light curves, obtaining a measurement of the optical
+   accretion disk size, log {(r[s] /cm)[cos (i)/0.5]^1/2} = 16.2 ± 0.5,
+   that is consistent with the quasar accretion disk size-black hole mass
+   relation.
+
+********************************************************************************
+   http://adsabs.harvard.edu/abs/2012A%26A...540A.132S
+
+   Title:
+   A 5.5-year robotic optical monitoring of Q0957+561: substructure in a
+   non-local cD galaxy
+   Authors:
+   Shalyapin, V. N.; Goicoechea, L. J.; Gil-Merino, R.
+   Publication:
+   Astronomy & Astrophysics, Volume 540, id.A132, 8 pp. (A&A Homepage)
+ 
+   New light curves of the gravitationally lensed double quasar Q0957+561
+   in the gr bands during 2008-2010 include densely sampled, sharp
+   intrinsic fluctuations with unprecedentedly high signal-to-noise ratio.
+   These relatively violent flux variations allow us to very accurately
+   measure the g-band and r-band time delays between the two quasar images
+   A and B. Using correlation functions, we obtain that the two time
+   delays are inconsistent with each other at the 2sigma level, with the
+   r-band delay exceeding the 417-day delay in the g band by about 3 days.
+   We also studied the long-term evolution of the delay-corrected flux
+   ratio B/A from our homogeneous two-band monitoring with the Liverpool
+   Robotic Telescope between 2005 and 2010. This ratio B/A slightly
+   increases in periods of violent activity, which seems to be correlated
+   with the flux level in these periods. The presence of the previously
+   reported dense cloud within the cD lensing galaxy, along the line of
+   sight to the A image, could account for the observed time delay and
+   flux ratio anomalies.
+
+   Tables 1 and 2 corresponding to the Liverpool Robotic Telescope light
+   curves are only available at the CDS via anonymous ftp to
+   cdsarc.u-strasbg.fr (130.79.128.5) or via
+   http://cdsarc.u-strasbg.fr/viz-bin/qcat?J/A+A/540/A132
+
+********************************************************************************
+   http://adsabs.harvard.edu/abs/2008A%26A...492..401S
+
+   Title:
+   New two-colour light curves of Q0957+561: time delays and the origin of
+   intrinsic variations
+   Authors:
+   Shalyapin, V. N.; Goicoechea, L. J.; Koptelova, E.; Ullán, A.;
+   Gil-Merino, R.
+   Publication:
+   Astronomy and Astrophysics, Volume 492, Issue 2, 2008, pp.401-410 (A&A
+   Homepage)
+ 
+   Aims: We extend the gr-band time coverage of the gravitationally lensed
+   double quasar Q0957+561. New gr light curves permit us to detect
+   significant intrinsic fluctuations, to determine new time delays, and
+   thus to gain perspective on the mechanism of intrinsic variability in
+   Q0957+561.
+   Methods: We use new optical frames of Q0957+561 in the g and r
+   passbands from January 2005 to July 2007. These frames are part of an
+   ongoing long-term monitoring with the Liverpool robotic telescope. We
+   also introduce two photometric pipelines that are applied to the new gr
+   frames of Q0957+561. The transformation pipeline incorporates
+   zero-point, colour, and inhomogeneity corrections to the instrumental
+   magnitudes, so final photometry to the 1-2% level is achieved for both
+   quasar components. The two-colour final records are then used to
+   measure time delays.
+   Results: The gr light curves of Q0957+561 show several prominent events
+   and gradients, and some of them (in the g band) lead to a time delay
+   between components Delta t[BA] = 417 ± 2 d (1sigma). We do not find
+   evidence of extrinsic variability in the light curves of Q0957+561. We
+   also explore the possibility of a delay between a large event in the g
+   band and the corresponding event in the r band. The gr
+   cross-correlation reveals a time lag Delta t[rg] = 4.0 ± 2.0 d (1sigma;
+   the g-band event is leading) that confirms a previous claim of the
+   existence of a delay between the g and r band in this lensed quasar.
+   Conclusions: The time delays (between quasar components and between
+   optical bands) from the new records and previous ones in similar bands
+   indicate that most observed variations in Q0957+561 (amplitudes of ~100
+   mmag and timescales of ~100 d) are very probably due to reverberation
+   within the gas disc around the supermassive black hole.
+
+********************************************************************************
+   http://adsabs.harvard.edu/abs/1997ApJ...482...75K
+
+   Title:
+   A Robust Determination of the Time Delay in 0957+561A, B and a
+   Measurement of the Global Value of Hubble's Constant
+   Authors:
+   Kundic, Tomislav; Turner, Edwin L.; Colley, Wesley N.;
+   Gott, J. Richard, III; Rhoads, James E.; Wang, Yun; Bergeron, Louis E.;
+   Gloria, Karen A.; Long, Daniel C.; Malhotra, Sangeeta;
+   Wambsganss, Joachim
+   Publication:
+   Astrophysical Journal v.482, p.75 (ApJ Homepage)
+ 
+   Continued photometric monitoring of the gravitational lens system
+   0957+561A, B in the g and r bands with the Apache Point Observatory
+   (APO) 3.5 m telescope during 1996 shows a sharp g-band event in the
+   trailing (B) image light curve at the precise time predicted in an
+   earlier paper. The prediction was based on the observation of the event
+   during 1995 in the leading (A) image and on a differential time delay
+   of 415 days. This success confirms the so-called short delay, and the
+   absence of any such feature at a delay near 540 days rejects the "long
+   delay" for this system, thus resolving a long-standing controversy. A
+   series of statistical analyses of our light-curve data yield a best-fit
+   delay of 417 +/- 3 days (95% confidence interval) and demonstrate that
+   this result is quite robust against variations in the analysis
+   technique, data subsamples, and assumed parametric relationship of the
+   two light curves. Recent improvements in the modeling of the lens
+   system (consisting of a galaxy plus a galaxy cluster) allow us to
+   derive a value of the global value (at z = 0.36) of Hubble's constant
+   H0 using Refsdal's method, a simple and direct (single-step) distance
+   determination based on experimentally verified and securely understood
+   physics and geometry. The result is H0 = 64 +/- 13 km s-1 Mpc-1 (for
+   Omega = 1), where this 95% confidence interval is dominantly due to
+   remaining lens model uncertainties. However, it is reassuring that
+   available observations of the lensing mass distribution over-constrain
+   the model and thus provide an internal consistency check on its
+   validity. We argue that this determination of the extragalactic
+   distance scale (10% accurate at 1 sigma ) is now of comparable quality,
+   in terms of both statistical and systematic uncertainties, to those
+   based on more conventional techniques. Finally, we briefly discuss the
+   prospects for improved H0 determinations using gravitational lenses,
+   and some other possible implications and uses of the 0957+561A, B light
+   curves.
+
+********************************************************************************
+   http://adsabs.harvard.edu/abs/1992ApJ...385..404P
+
+   Title:
+   The time delay of gravitational lens 0957 + 561. I - Methodology and
+   analysis of optical photometric data. II - Analysis of radio data and
+   combined optical-radio analysis
+   Authors:
+   Press, William H.; Rybicki, George B.; Hewitt, Jacqueline N.
+   Publication:
+   Astrophysical Journal, Part 1 (ISSN 0004-637X), vol. 385, Feb. 1, 1992,
+   p. 404-420. (ApJ Homepage)
+ 
+   A method is reported which was developed for determining the time delay
+   between two irregularly sampled data sets, based on an optical
+   reconstruction that minimizes a global chi-squared, one which takes
+   into account the relative strength of expected correlations of each
+   data point with all others. It is concluded from the application of
+   this method to published data that previous estimates based on optical
+   data of the time delay between components A and B of the gravitational
+   lens 0957 + 561 are incorrect: their quoted error bars are vastly
+   underestimated. The method is extended and applied to the radio data of
+   Lehar et al. (1992). For the radio data alone, the analysis yields the
+   result tau-AB = 548 +19/-16 d. Combined analysis of the optical and
+   radio data yield tau-AB of 540 +/-12 d.
+
+********************************************************************************
+   http://adsabs.harvard.edu/abs/1992ApJ...385..416P
+
+   Title:
+   The Time Delay of Gravitational Lens 0957+561. II. Analysis of Radio
+   Data and Combined Optical-Radio Analysis
+   Authors:
+   Press, William H.; Rybicki, George B.; Hewitt, Jacqueline N.
+   Publication:
+   Astrophysical Journal v.385, p.416 (ApJ Homepage)
+ 
+   The method for determining the time delay of gravitational lens
+   0957+561, which we previously applied to published optical data, is
+   here extended and applied to the radio data of Lehar et al. The radio
+   data are relatively free of the windowing effects of seasonal
+   observing. For the radio data alone, our analysis gives the result
+   tau[AB] = 548^+19[-16] days (95% C.L.). Combined analysis of the
+   optical and radio data yield tau[AB] = 540±12 days (95% C.L.). We have
+   also fitted for a linear drift between the two components (possibly an
+   indication of microlensing). The radio data are consistent with zero
+   drift (as expected theoretically), while the optical data show a small
+   but marginally significant drift at the 2.4 sigma level.
+
+********************************************************************************
+   http://adsabs.harvard.edu/abs/1989A%26A...215....1V
+
+   Title:
+   The value of the time delay Delta t(A, B) for the 'double' quasar
+   0957+561 from optical photometric monitoring
+   Authors:
+   Vanderriest, C.; Schneider, J.; Herpe, G.; Chevreton, M.; Moles, M.;
+   Wlerick, G.
+   Publication:
+   Astronomy and Astrophysics (ISSN 0004-6361), vol. 215, no. 1, May 1989,
+   p. 1-13. (A&A Homepage)
+ 
+   The time delay between images A and B of the supposed
+   gravitational-lens double quasar 0957+561 is determined on the basis of
+   an extensive photometric monitoring campaign covering the period
+   1980-1987. Electronographic, photographic, and photoelectric
+   observations in the B band, obtained at the Observatoire de Haute
+   Provence, the Canada-France-Hawaii telescope, and Calar Alto, are
+   combined with published CCD data (Schild, 1986) in extensive tables and
+   graphs and analyzed. A travel-time delay of 415 + or - 20 days is
+   calculated and shown to be consistent with the gravitational-mirage
+   hypothesis. Small slow variations in the true interimage brightness
+   ratio at a given emission time are also detected, and the ratio is
+   found to be different from that of the extended features seen in radio
+   VLBI observations; a possible microlensing effect is inferred.
+
+********************************************************************************
+   http://adsabs.harvard.edu/abs/2001ApJ...552...81O
+
+   Title:
+   Time Delay in QSO 0957+561 From 1984-1999 Optical Data
+   Authors:
+   Oscoz, A.; Alcalde, D.; Serra-Ricart, M.; Mediavilla, E.; Abajas, C.;
+   Barrena, R.; Licandro, J.; Motta, V.; Muñoz, J. A.
+   Publication:
+   The Astrophysical Journal, Volume 552, Issue 1, pp. 81-90. (ApJ
+   Homepage)
+ 
+   Photometric optical data of QSO 0957+561 covering the period 1984-1999
+   are analyzed to discern between the two values of the time delay (417
+   and 424 days) mostly accepted in the recent literature. The
+   observations, performed by groups from three different
+   institutions-Princeton University, Harvard-Smithsonian Center for
+   Astrophysics, and Instituto de Astrofísica de Canarias-and including
+   new unpublished 1998-1999 data from the IAC80 Telescope, were obtained
+   in five filters (V, R, I, g, and r). The different light curves have
+   been divided into observational seasons, and two restrictions have been
+   applied to calculate the time delay better: (1) points with a strange
+   photometric behavior have been removed, and (2) data sets without large
+   gaps have been selected. Simulated data were generated to test several
+   numerical methods intended to compute the time delay (Deltatau[AB]).
+   The methods giving the best results-the discrete correlation function,
+   delta^2, z-transformed discrete correlation function, and linear
+   interpolation-were then applied to real data. A first analysis of the
+   23 different time delays derived from each technique shows that
+   Deltatau[AB] must be in the interval 420-424 days. From our statistical
+   study, a most probable value of Deltatau[AB]=422.6+/-0.6 days is
+   inferred.
+
+********************************************************************************
+   http://adsabs.harvard.edu/abs/1998A%26A...336..829P
+
+   Title:
+   Microlensing on different timescales in the lightcurves of QSO 0957+561
+   A,B
+   Authors:
+   Pelt, J.; Schild, R.; Refsdal, S.; Stabell, R.
+   Publication:
+   Astronomy and Astrophysics, v.336, p.829-839 (1998) (A&A Homepage)
+ 
+   A statistical analysis of an extended data set on a time basis of 17
+   years of optical observations of the gravitationally lensed quasar
+   0957+561 is presented. We use all available photometry to estimate the
+   time delay between A and B images as 416.3+/- 1.7 days. Using this
+   refined value we investigate basic statistical properties of the
+   difference curve between the A and the time shifted B image. We find a
+   significant variability of 0.25 mag on a time scale of 5 years, which
+   we interpret as microlensing by compact objects in the lensing galaxy.
+
+********************************************************************************
+
