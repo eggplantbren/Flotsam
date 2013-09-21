@@ -28,6 +28,7 @@ using namespace DNest3;
 
 MyModel::MyModel()
 :delta_mag(Data::get_instance().get_numImages())
+,n_qso(1000)
 {
 
 }
@@ -37,17 +38,24 @@ void MyModel::fromPrior()
 	mag0 = -100. + 200.*randomU();
 	for(size_t i=0; i<delta_mag.size(); i++)
 		delta_mag[i] = tan(M_PI*(randomU() - 0.5));
+
+	tau_qso = exp(log(1.) + log(1E6)*randomU());
+	beta_qso = exp(log(1E-3) + log(1E6)*randomU());
+	for(size_t i=0; i<n_qso.size(); i++)
+		n_qso[i] = randn();
 }
 
 double MyModel::perturb()
 {
-	int which = randInt(2);
+	double logH = 0.;
+	int which = randInt(4);
+
 	if(which == 0)
 	{
 		mag0 += 200.*pow(10., 1.5 - 6.*randomU())*randn();
 		mag0 = mod(mag0 + 100., 200.) - 100.;
 	}
-	else
+	else if(which == 1)
 	{
 		int which2 = randInt(delta_mag.size());
 		double u = 0.5 + atan(delta_mag[which2])/M_PI;
@@ -55,8 +63,44 @@ double MyModel::perturb()
 		u = mod(u, 1.);
 		delta_mag[which2] = tan(M_PI*(u - 0.5));
 	}
+	else if(which == 2)
+	{
+		tau_qso = log(tau_qso);
+		tau_qso += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
+		tau_qso = mod(tau_qso - log(1.), log(1E6)) + log(1.);
+		tau_qso = exp(tau_qso);
+	}
+	else if(which == 3)
+	{
+		beta_qso = log(beta_qso);
+		beta_qso += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
+		beta_qso = mod(beta_qso - log(1E-3), log(1E6)) + log(1E-3);
+		beta_qso = exp(beta_qso);
+	}
+	else if(which == 4)
+	{
+		double chance = pow(10., 0.5 - 4.*randomU());
+		double scale = pow(10., 1.5 - 6.*randomU());
+		bool full = randomU() <= 0.3;
+		for(size_t i=0; i<n_qso.size(); i++)
+		{
+			if(randomU() <= chance)
+			{
+				if(full)
+					n_qso[i] = randn();
+				else
+				{
+					logH -= -0.5*pow(n_qso[i], 2);
+					n_qso[i] += scale*randn();
+					logH += -0.5*pow(n_qso[i], 2);
+				}
+			}
+		}
 
-	return 0.;
+
+	}
+
+	return logH;
 }
 
 double MyModel::logLikelihood() const
@@ -69,6 +113,7 @@ void MyModel::print(std::ostream& out) const
 	out<<mag0<<' ';
 	for(size_t i=0; i<delta_mag.size(); i++)
 		out<<delta_mag[i]<<' ';
+	out<<tau_qso<<' '<<beta_qso<<' ';
 }
 
 string MyModel::description() const

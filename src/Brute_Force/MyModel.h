@@ -32,6 +32,10 @@ class MyModel:public DNest3::Model
 		// Magnitudes of others relative to image 0 (ignore delta_mag[0])
 		std::vector<double> delta_mag;
 
+		// QSO variability parameters
+		double tau_qso, beta_qso;
+		std::vector<double> n_qso;
+
 	public:
 		MyModel();
 
