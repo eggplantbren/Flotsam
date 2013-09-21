@@ -26,7 +26,10 @@
 class MyModel:public DNest3::Model
 {
 	private:
+		// Mean magnitude of image 0
 		double mag0;
+
+		// Magnitudes of others relative to image 0 (ignore delta_mag[0])
 		std::vector<double> delta_mag;
 
 	public:
