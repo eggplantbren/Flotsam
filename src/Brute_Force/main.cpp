@@ -20,18 +20,22 @@
 #include <iostream>
 #include "Start.h"
 #include "MyModel.h"
+#include "Data.h"
 
 using namespace std;
 using namespace DNest3;
 
 int main(int argc, char** argv)
 {
-	#ifndef DNest3_No_Boost
-	MTSampler<MyModel> sampler = setup_mt<MyModel>(argc, argv);
-	#else
-	Sampler<MyModel> sampler = setup<MyModel>(argc, argv);
-	#endif
+	// Process command line options and load data
+	CommandLineOptions options(argc, argv);
+	string dataFile = options.get_dataFile();
+	Data::get_instance().load(dataFile.c_str());
 
+	// Initialise the sampler
+	MTSampler<MyModel> sampler = setup_mt<MyModel>(options);
+
+	// Go!
 	sampler.run();
 	return 0;
 }

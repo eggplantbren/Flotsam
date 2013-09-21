@@ -20,23 +20,42 @@
 #include "MyModel.h"
 #include "RandomNumberGenerator.h"
 #include "Utils.h"
+#include "Data.h"
 #include <cmath>
 
 using namespace std;
 using namespace DNest3;
 
 MyModel::MyModel()
+:delta_mag(Data::get_instance().get_numImages())
 {
 
 }
 
 void MyModel::fromPrior()
 {
-
+	mag0 = -100. + 200.*randomU();
+	for(size_t i=0; i<delta_mag.size(); i++)
+		delta_mag[i] = tan(M_PI*(randomU() - 0.5));
 }
 
 double MyModel::perturb()
 {
+	int which = randInt(2);
+	if(which == 0)
+	{
+		mag0 += 200.*pow(10., 1.5 - 6.*randomU())*randn();
+		mag0 = mod(mag0 + 100., 200.) - 100.;
+	}
+	else
+	{
+		int which2 = randInt(delta_mag.size());
+		double u = 0.5 + atan(delta_mag[which2])/M_PI;
+		u += pow(10., 1.5 - 6.*randomU())*randn();
+		u = mod(u, 1.);
+		delta_mag[which2] = tan(M_PI*(u - 0.5));
+	}
+
 	return 0.;
 }
 
@@ -47,7 +66,9 @@ double MyModel::logLikelihood() const
 
 void MyModel::print(std::ostream& out) const
 {
-
+	out<<mag0<<' ';
+	for(size_t i=0; i<delta_mag.size(); i++)
+		out<<delta_mag[i]<<' ';
 }
 
 string MyModel::description() const

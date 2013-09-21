@@ -26,6 +26,8 @@
 class MyModel:public DNest3::Model
 {
 	private:
+		double mag0;
+		std::vector<double> delta_mag;
 
 	public:
 		MyModel();
