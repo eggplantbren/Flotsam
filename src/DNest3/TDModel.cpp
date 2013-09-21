@@ -31,6 +31,8 @@ TDModel::TDModel()
 	tau.resize(numImages);
 	logSig_ml.resize(numImages);
 	logTau_ml.resize(numImages);
+	sig_ml.resize(numImages);
+	tau_ml.resize(numImages);
 
 	meanVector = Vector(numPoints);
 	covarianceMatrix = Matrix(numPoints, numPoints);
@@ -257,6 +259,15 @@ double TDModel::perturb()
 
 void TDModel::formCovarianceMatrix()
 {
+	sig_qso = exp(logSig_qso);
+	tau_qso = exp(logTau_qso);
+	for(int i=0; i<numImages; i++)
+	{
+		sig_ml[i] = exp(logSig_ml[i]);
+		tau_ml[i] = exp(logTau_ml[i]);
+	}
+	coeff = pow(sig_qso, 2)*tau_qso;
+
 	// Fill covariance matrix
 	// with covariance function evaluations
 	for(int i=0; i<numPoints; i++)
@@ -302,26 +313,11 @@ void TDModel::formMeanVector()
 
 double TDModel::covariance(double t1, double t2, int ID1, int ID2)
 {
-	double sig_qso = exp(logSig_qso);
-	double tau_qso = exp(logTau_qso);
-
-	double exponent = abs((t1 - tau[ID1]) - (t2 - tau[ID2]))/tau_qso;
-	double C = pow(sig_qso*sqrt(tau_qso), 2)
-				*exp(-exponent);
-
-	vector<double> sig_ml(numImages);
-	vector<double> tau_ml(numImages);
-	for(int i=0; i<numImages; i++)
-	{
-		sig_ml[i] = exp(logSig_ml[i]);
-		tau_ml[i] = exp(logTau_ml[i]);
-	}
+	double C = coeff*exp(-abs((t1 - tau[ID1]) - (t2 - tau[ID2]))/tau_qso);
 
 	if(ID1 == ID2)
-	{
-		exponent = pow(abs(t1 - t2)/tau_ml[ID1], alpha);
-		C += pow(sig_ml[ID1], 2)*exp(-exponent);
-	}
+		C += pow(sig_ml[ID1], 2)*exp(-pow(abs(t1 - t2)/tau_ml[ID1], alpha));
+
 	return C;
 }
 

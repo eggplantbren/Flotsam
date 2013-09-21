@@ -45,6 +45,11 @@ class TDModel:public DNest3::Model
 		double latent_boost1, boost1, boost2;
 		std::vector<double> bad_uniforms; // U(0,1) prior
 
+
+		// Temporary stuff
+		std::vector<double> sig_ml, tau_ml;
+		double sig_qso, tau_qso, coeff;
+
 		// Mean vector
 		Vector meanVector;
 
