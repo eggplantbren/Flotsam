@@ -29,6 +29,7 @@ using namespace DNest3;
 MyModel::MyModel()
 :delta_mag(Data::get_instance().get_numImages())
 ,n_qso(1000)
+,y_qso(1000)
 {
 
 }
@@ -43,6 +44,8 @@ void MyModel::fromPrior()
 	beta_qso = exp(log(1E-3) + log(1E6)*randomU());
 	for(size_t i=0; i<n_qso.size(); i++)
 		n_qso[i] = randn();
+
+	assemble();
 }
 
 double MyModel::perturb()
@@ -100,7 +103,17 @@ double MyModel::perturb()
 
 	}
 
+	assemble();
+
 	return logH;
+}
+
+void MyModel::assemble()
+{
+	double alpha = exp(-1./tau_qso);
+	y_qso[0] = mag0 + beta_qso/sqrt(1. - alpha*alpha)*n_qso[0];
+	for(size_t i=1; i<y_qso.size(); i++)
+		y_qso[i] = mag0 + alpha*(y_qso[i-1] - mag0) + beta_qso*n_qso[i];
 }
 
 double MyModel::logLikelihood() const
@@ -114,6 +127,8 @@ void MyModel::print(std::ostream& out) const
 	for(size_t i=0; i<delta_mag.size(); i++)
 		out<<delta_mag[i]<<' ';
 	out<<tau_qso<<' '<<beta_qso<<' ';
+	for(size_t i=0; i<y_qso.size(); i++)
+		out<<y_qso[i]<<' ';
 }
 
 string MyModel::description() const
