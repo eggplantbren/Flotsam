@@ -41,7 +41,9 @@ class MyModel:public DNest3::Model
 
 		// DERIVED STUFF
 		std::vector<double> y_qso;
-		double t_min, t_max, t_range, dt;
+		double t_min, t_max, dt;
+
+		std::vector<double> mu;
 
 		// Evaluate y_qso function
 		double evaluate_y_qso(double t) const;

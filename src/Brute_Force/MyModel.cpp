@@ -31,6 +31,7 @@ MyModel::MyModel()
 ,n_qso(10000)
 ,tau(Data::get_instance().get_numImages())
 ,y_qso(10000)
+,mu(Data::get_instance().get_numPoints())
 {
 	t_min = Data::get_instance().get_tMin() -   Data::get_instance().get_tRange();
 	t_max = Data::get_instance().get_tMin() + 2*Data::get_instance().get_tRange();
@@ -60,6 +61,7 @@ void MyModel::fromPrior()
 double MyModel::perturb()
 {
 	double logH = 0.;
+
 	int which = randInt(6);
 
 	if(which == 0)
@@ -127,9 +129,10 @@ double MyModel::perturb()
 
 double MyModel::evaluate_y_qso(double t) const
 {
-	int i = static_cast<int>((t - t_min)/t_range);
-	if(i >= 0 && i < static_cast<int>(y_qso.size()))
-		return y_qso[i];
+	int i = static_cast<int>((t - t_min)/dt);
+	double w = (t - (t_min + i*dt))/dt;
+	if(i >= 0 && i < static_cast<int>(y_qso.size()) - 1)
+		return (1. - w)*y_qso[i] + w*y_qso[i+1];
 	return 0.;
 }
 
@@ -139,6 +142,12 @@ void MyModel::assemble()
 	y_qso[0] = mag0 + beta_qso/sqrt(1. - alpha*alpha)*n_qso[0];
 	for(size_t i=1; i<y_qso.size(); i++)
 		y_qso[i] = mag0 + alpha*(y_qso[i-1] - mag0) + beta_qso*n_qso[i];
+
+	const vector<double>& t = Data::get_instance().get_t();
+	const vector<int>& id = Data::get_instance().get_ID();
+
+	for(size_t i=0; i<t.size(); i++)	
+		mu[i] = mag0 + delta_mag[id[i]] + evaluate_y_qso(t[i] - tau[id[i]]);
 }
 
 
@@ -147,17 +156,11 @@ double MyModel::logLikelihood() const
 {
 	double logL = 0.;
 
-	const vector<double>& t = Data::get_instance().get_t();
 	const vector<double>& y = Data::get_instance().get_y();
 	const vector<double>& sig = Data::get_instance().get_sig();
-	const vector<int>& id = Data::get_instance().get_ID();
 
-	double mu;
 	for(size_t i=0; i<y.size(); i++)
-	{
-		mu = mag0 + delta_mag[id[i]] + evaluate_y_qso(t[i] - tau[id[i]]);
-		logL += -0.5*pow((y[i] - mu)/sig[i], 2);
-	}
+		logL += -0.5*pow((y[i] - mu[i])/sig[i], 2);
 
 	return logL;
 }
@@ -171,9 +174,6 @@ void MyModel::print(std::ostream& out) const
 
 	for(size_t i=0; i<tau.size(); i++)
 		out<<tau[i]<<' ';
-
-	for(size_t i=0; i<y_qso.size(); i++)
-		out<<y_qso[i]<<' ';
 }
 
 string MyModel::description() const
