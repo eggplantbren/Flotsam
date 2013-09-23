@@ -29,6 +29,7 @@ using namespace DNest3;
 MyModel::MyModel()
 :delta_mag(Data::get_instance().get_numImages())
 ,n_qso(1000)
+,tau(Data::get_instance().get_numImages())
 ,y_qso(1000)
 {
 
@@ -37,7 +38,9 @@ MyModel::MyModel()
 void MyModel::fromPrior()
 {
 	mag0 = -100. + 200.*randomU();
-	for(size_t i=0; i<delta_mag.size(); i++)
+
+	delta_mag[0] = 0.;
+	for(size_t i=1; i<delta_mag.size(); i++)
 		delta_mag[i] = tan(M_PI*(randomU() - 0.5));
 
 	tau_qso = exp(log(1.) + log(1E6)*randomU());
@@ -45,13 +48,17 @@ void MyModel::fromPrior()
 	for(size_t i=0; i<n_qso.size(); i++)
 		n_qso[i] = randn();
 
+	tau[0] = 0.;
+	for(size_t i=1; i<tau.size(); i++)
+		tau[i] = 10.*tan(M_PI*(randomU() - 0.5));
+
 	assemble();
 }
 
 double MyModel::perturb()
 {
 	double logH = 0.;
-	int which = randInt(4);
+	int which = randInt(6);
 
 	if(which == 0)
 	{
@@ -60,7 +67,7 @@ double MyModel::perturb()
 	}
 	else if(which == 1)
 	{
-		int which2 = randInt(delta_mag.size());
+		int which2 = 1 + randInt(delta_mag.size() - 1);
 		double u = 0.5 + atan(delta_mag[which2])/M_PI;
 		u += pow(10., 1.5 - 6.*randomU())*randn();
 		u = mod(u, 1.);
@@ -81,6 +88,14 @@ double MyModel::perturb()
 		beta_qso = exp(beta_qso);
 	}
 	else if(which == 4)
+	{
+		int which2 = 1 + randInt(tau.size() - 1);
+		double u = 0.5 + atan(tau[which2]/10.)/M_PI;
+		u += pow(10., 1.5 - 6.*randomU())*randn();
+		u = mod(u, 1.);
+		tau[which2] = 10.*tan(M_PI*(u - 0.5));
+	}
+	else if(which == 5)
 	{
 		double chance = pow(10., 0.5 - 4.*randomU());
 		double scale = pow(10., 1.5 - 6.*randomU());
@@ -118,7 +133,9 @@ void MyModel::assemble()
 
 double MyModel::logLikelihood() const
 {
-	return 0.;
+	double logL = 0.;
+
+	return logL;
 }
 
 void MyModel::print(std::ostream& out) const
@@ -127,6 +144,10 @@ void MyModel::print(std::ostream& out) const
 	for(size_t i=0; i<delta_mag.size(); i++)
 		out<<delta_mag[i]<<' ';
 	out<<tau_qso<<' '<<beta_qso<<' ';
+
+	for(size_t i=0; i<tau.size(); i++)
+		out<<tau[i]<<' ';
+
 	for(size_t i=0; i<y_qso.size(); i++)
 		out<<y_qso[i]<<' ';
 }

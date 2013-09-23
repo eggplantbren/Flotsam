@@ -36,10 +36,8 @@ class MyModel:public DNest3::Model
 		double tau_qso, beta_qso;
 		std::vector<double> n_qso;
 
-
-
-
-
+		// Time delays
+		std::vector<double> tau;
 
 		// DERIVED STUFF
 		std::vector<double> y_qso;
