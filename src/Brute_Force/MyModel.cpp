@@ -28,11 +28,13 @@ using namespace DNest3;
 
 MyModel::MyModel()
 :delta_mag(Data::get_instance().get_numImages())
-,n_qso(1000)
+,n_qso(10000)
 ,tau(Data::get_instance().get_numImages())
-,y_qso(1000)
+,y_qso(10000)
 {
-
+	t_min = Data::get_instance().get_tMin() -   Data::get_instance().get_tRange();
+	t_max = Data::get_instance().get_tMin() + 2*Data::get_instance().get_tRange();
+	dt = (t_max - t_min)/(static_cast<int>(y_qso.size()) - 1);
 }
 
 void MyModel::fromPrior()
@@ -123,6 +125,14 @@ double MyModel::perturb()
 	return logH;
 }
 
+double MyModel::evaluate_y_qso(double t) const
+{
+	int i = static_cast<int>((t - t_min)/t_range);
+	if(i >= 0 && i < static_cast<int>(y_qso.size()))
+		return y_qso[i];
+	return 0.;
+}
+
 void MyModel::assemble()
 {
 	double alpha = exp(-1./tau_qso);
@@ -131,9 +141,23 @@ void MyModel::assemble()
 		y_qso[i] = mag0 + alpha*(y_qso[i-1] - mag0) + beta_qso*n_qso[i];
 }
 
+
+
 double MyModel::logLikelihood() const
 {
 	double logL = 0.;
+
+	const vector<double>& t = Data::get_instance().get_t();
+	const vector<double>& y = Data::get_instance().get_y();
+	const vector<double>& sig = Data::get_instance().get_sig();
+	const vector<int>& id = Data::get_instance().get_ID();
+
+	double mu;
+	for(size_t i=0; i<y.size(); i++)
+	{
+		mu = mag0 + delta_mag[id[i]] + evaluate_y_qso(t[i] - tau[id[i]]);
+		logL += -0.5*pow((y[i] - mu)/sig[i], 2);
+	}
 
 	return logL;
 }
