@@ -6,8 +6,8 @@
 #include "Limits.h"
 #include <iostream>
 #include <vector>
-#include "Matrix.h"
-#include "Vector.h"
+#include <Eigen/Dense>
+#include <Eigen/Cholesky>
 
 class TDModel:public DNest3::Model
 {
@@ -51,11 +51,11 @@ class TDModel:public DNest3::Model
 		double sig_qso, tau_qso, coeff;
 
 		// Mean vector
-		Vector meanVector;
+		Eigen::VectorXd meanVector;
 
 		// Covariance matrix and its Cholesky decomposition
-		Matrix covarianceMatrix;
-		Matrix cholesky;
+		Eigen::MatrixXd covarianceMatrix;
+		Eigen::LLT<Eigen::MatrixXd> cholesky;
 
 		// Noise-free covariance function
 		double covariance(double t1, double t2, int ID1, int ID2);

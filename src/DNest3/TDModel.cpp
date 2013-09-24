@@ -13,9 +13,8 @@ using namespace DNest3;
 Limits TDModel::limits;
 
 TDModel::TDModel()
-:meanVector(1)
-,covarianceMatrix(1, 1)
-,cholesky(1, 1)
+:meanVector(Data::get_instance().get_numPoints())
+,covarianceMatrix(Data::get_instance().get_numPoints(), Data::get_instance().get_numPoints())
 {
 	if(!Data::get_instance().get_loaded())
 	{
@@ -34,9 +33,6 @@ TDModel::TDModel()
 	sig_ml.resize(numImages);
 	tau_ml.resize(numImages);
 
-	meanVector = Vector(numPoints);
-	covarianceMatrix = Matrix(numPoints, numPoints);
-	cholesky = Matrix(numPoints, numPoints);
 	bad_uniforms.resize(numPoints);
 
 	gsl_set_error_handler_off();
@@ -296,8 +292,8 @@ void TDModel::formCovarianceMatrix()
 		covarianceMatrix(i, i) += pow(sig, 2);
 	}
 
-	cholesky = covarianceMatrix;
-	gsl_linalg_cholesky_decomp(cholesky.get_gsl_matrix());
+//	cholesky = covarianceMatrix;
+//	gsl_linalg_cholesky_decomp(cholesky.get_gsl_matrix());
 }
 
 void TDModel::formMeanVector()
@@ -323,30 +319,31 @@ double TDModel::covariance(double t1, double t2, int ID1, int ID2)
 
 double TDModel::logLikelihood() const
 {
-	Vector y(numPoints);
-	for(int i=0; i<numPoints; i++)
-		y(i) = Data::get_instance().get_y()[i] - meanVector(i);
+//	Vector y(numPoints);
+//	for(int i=0; i<numPoints; i++)
+//		y(i) = Data::get_instance().get_y()[i] - meanVector(i);
 
-	double logDeterminant = 0.;
-	for(int i=0; i<numPoints; i++)
-		logDeterminant += 2.*log(cholesky(i,i));
+//	double logDeterminant = 0.;
+//	for(int i=0; i<numPoints; i++)
+//		logDeterminant += 2.*log(cholesky(i,i));
 
-	// C^-1*(y-mu)
-	Vector solution(numPoints);
-	gsl_linalg_cholesky_solve(cholesky.get_gsl_matrix(), y.get_gsl_vector(), solution.get_gsl_vector());
+//	// C^-1*(y-mu)
+//	Vector solution(numPoints);
+//	gsl_linalg_cholesky_solve(cholesky.get_gsl_matrix(), y.get_gsl_vector(), solution.get_gsl_vector());
 
-	// y . solution
-	double exponent = 0.;
-	for(int i=0; i<numPoints; i++)
-		exponent += y(i)*solution(i);
+//	// y . solution
+//	double exponent = 0.;
+//	for(int i=0; i<numPoints; i++)
+//		exponent += y(i)*solution(i);
 
-	double logL = -0.5*numPoints*log(2*M_PI)
-			- 0.5*logDeterminant - 0.5*exponent;
+//	double logL = -0.5*numPoints*log(2*M_PI)
+//			- 0.5*logDeterminant - 0.5*exponent;
 
-	if(isnan(logL) || isinf(logL))
-		logL = -1E300;
+//	if(isnan(logL) || isinf(logL))
+//		logL = -1E300;
+	return 0.;
 
-	return logL;
+//	return logL;
 }
 
 void TDModel::print(ostream& out) const
