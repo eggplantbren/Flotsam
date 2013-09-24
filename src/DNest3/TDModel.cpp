@@ -9,6 +9,7 @@
 
 using namespace std;
 using namespace DNest3;
+using namespace Eigen;
 
 Limits TDModel::limits;
 
@@ -292,8 +293,7 @@ void TDModel::formCovarianceMatrix()
 		covarianceMatrix(i, i) += pow(sig, 2);
 	}
 
-//	cholesky = covarianceMatrix;
-//	gsl_linalg_cholesky_decomp(cholesky.get_gsl_matrix());
+	cholesky = covarianceMatrix.llt();
 }
 
 void TDModel::formMeanVector()
@@ -319,31 +319,30 @@ double TDModel::covariance(double t1, double t2, int ID1, int ID2)
 
 double TDModel::logLikelihood() const
 {
-//	Vector y(numPoints);
-//	for(int i=0; i<numPoints; i++)
-//		y(i) = Data::get_instance().get_y()[i] - meanVector(i);
+	VectorXd y(numPoints);
+	for(int i=0; i<numPoints; i++)
+		y(i) = Data::get_instance().get_y()[i] - meanVector(i);
 
-//	double logDeterminant = 0.;
-//	for(int i=0; i<numPoints; i++)
-//		logDeterminant += 2.*log(cholesky(i,i));
+	MatrixXd L = cholesky.matrixL();
+	double logDeterminant = 0.;
+	for(int i=0; i<numPoints; i++)
+		logDeterminant += 2.*log(L(i,i));
 
-//	// C^-1*(y-mu)
-//	Vector solution(numPoints);
-//	gsl_linalg_cholesky_solve(cholesky.get_gsl_matrix(), y.get_gsl_vector(), solution.get_gsl_vector());
+	// C^-1*(y-mu)
+	VectorXd solution = cholesky.solve(y);
 
-//	// y . solution
-//	double exponent = 0.;
-//	for(int i=0; i<numPoints; i++)
-//		exponent += y(i)*solution(i);
+	// y*solution
+	double exponent = 0.;
+	for(int i=0; i<numPoints; i++)
+		exponent += y(i)*solution(i);
 
-//	double logL = -0.5*numPoints*log(2*M_PI)
-//			- 0.5*logDeterminant - 0.5*exponent;
+	double logL = -0.5*numPoints*log(2*M_PI)
+			- 0.5*logDeterminant - 0.5*exponent;
 
-//	if(isnan(logL) || isinf(logL))
-//		logL = -1E300;
-	return 0.;
+	if(isnan(logL) || isinf(logL))
+		logL = -1E300;
 
-//	return logL;
+	return logL;
 }
 
 void TDModel::print(ostream& out) const
