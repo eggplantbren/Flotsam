@@ -52,13 +52,8 @@ void TDModel::fromPrior()
 			tau[i] = 0.;
 		else
 		{
-			// Cauchy prior with bounds
-			do
-			{
-				tau[i] = limits.tau_min +
-						limits.tau_range*randomU();
-			}while(randomU() >= 1./(1. + pow(tau[i]/
-						(0.1*limits.tau_range), 2)));
+			// Cauchy prior
+			tau[i] = 0.1*limits.tau_range*tan(M_PI*(randomU() - 0.5));
 		}
 
 		logSig_ml[i] = limits.logSig_ml_min[i]
@@ -111,13 +106,10 @@ double TDModel::perturb2()
 	double logH = 0.;
 	int which = 1 + randInt(numImages - 1);
 
-	logH -= -log(1. + pow(tau[which]/(0.1*limits.tau_range), 2));
-	tau[which] += limits.tau_range
-			*pow(10., 1.5 - 6.*randomU())*randn();
-	tau[which] = mod(tau[which] - limits.tau_min
-				,limits.tau_range)
-				+ limits.tau_min;
-	logH += -log(1. + pow(tau[which]/(0.1*limits.tau_range), 2));
+	tau[which] = atan(tau[which]/(0.1*limits.tau_range))/M_PI + 0.5;
+	tau[which] += pow(10., 1.5 - 6.*randomU())*randn();
+	tau[which] = mod(tau[which], 1.);
+	tau[which] = 0.1*limits.tau_range*tan(M_PI*(tau[which] - 0.5));
 
 	return logH;
 }
