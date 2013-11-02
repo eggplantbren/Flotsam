@@ -33,8 +33,11 @@ class MyModel:public DNest3::Model
 		// Time delays
 		std::vector<double> tau;
 
-		// Curve
+		// Intrinsic qso variability
 		Curve y_qso;
+
+		// Per-image microlensing curve
+		std::vector<Curve> microlensing;
 
 		// Mock data
 		std::vector<double> mu;

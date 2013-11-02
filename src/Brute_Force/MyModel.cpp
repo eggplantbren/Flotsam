@@ -32,6 +32,10 @@ MyModel::MyModel()
 ,y_qso(Data::get_instance().get_tMin() - 0.5*Data::get_instance().get_tRange(),
 	Data::get_instance().get_tMin() + 1.5*Data::get_instance().get_tRange(),
 	10000)
+,microlensing(Data::get_instance().get_numImages(),
+	Curve(Data::get_instance().get_tMin(),
+		Data::get_instance().get_tMin() + Data::get_instance().get_tRange(),
+		10000))
 ,mu(Data::get_instance().get_numPoints())
 {
 
@@ -47,6 +51,9 @@ void MyModel::fromPrior()
 		tau[i] = 10.*tan(M_PI*(randomU() - 0.5));
 
 	y_qso.fromPrior();
+	for(size_t i=0; i<microlensing.size(); i++)
+		microlensing[i].fromPrior();
+
 	assemble();
 }
 
@@ -54,7 +61,7 @@ double MyModel::perturb()
 {
 	double logH = 0.;
 
-	int which = randInt(3);
+	int which = randInt(4);
 
 	if(which == 0)
 	{
@@ -74,6 +81,11 @@ double MyModel::perturb()
 	}
 	else if(which == 2)
 	{
+		int which2 = randInt(microlensing.size());
+		logH += microlensing[which2].perturb();
+	}
+	else if(which == 3)
+	{
 		logH += y_qso.perturb();
 	}
 
@@ -87,8 +99,11 @@ void MyModel::assemble()
 	const vector<double>& t = Data::get_instance().get_t();
 	const vector<int>& id = Data::get_instance().get_ID();
 
-	for(size_t i=0; i<t.size(); i++)	
-		mu[i] = mag[id[i]] + y_qso.evaluate(t[i] - tau[id[i]]);
+	for(size_t i=0; i<t.size(); i++)
+	{
+		mu[i] = mag[id[i]] + y_qso.evaluate(t[i] - tau[id[i]])
+				+ microlensing[id[i]].evaluate(t[i]);
+	}
 }
 
 
