@@ -8,7 +8,7 @@ class Curve
 {
 	private:
 		int N;
-		double t_min, t_max, t_range;
+		double t_min, t_max, t_range, dt;
 		std::vector<double> n, y;
 
 		// Timescale
@@ -22,6 +22,8 @@ class Curve
 		void fromPrior();
 		double perturb();
 		void print(std::ostream& out) const;
+
+		double evaluate(double t) const;
 };
 
 #endif

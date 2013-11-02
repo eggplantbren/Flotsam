@@ -12,6 +12,7 @@ Curve::Curve(double t_min, double t_max, int N)
 ,t_min(t_min)
 ,t_max(t_max)
 ,t_range(t_max - t_min)
+,dt(t_range/(N - 1))
 ,n(N)
 ,y(N)
 {
@@ -55,6 +56,14 @@ void Curve::assemble()
 	y[0] = n[0];
 	for(int i=1; i<N; i++)
 		y[i] = a*y[i-1] + b*n[i];
+}
+
+double Curve::evaluate(double t) const
+{
+	int i = static_cast<int>((t - t_min)/dt);
+	double w = (t - (t_min + i*dt))/dt;
+	if(i >= 0 && i < N - 1)
+		return (1. - w)*y[i] + w*y[i+1];
 }
 
 void Curve::print(ostream& out) const
