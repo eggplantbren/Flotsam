@@ -21,32 +21,23 @@
 #define _MyModel_
 
 #include "Model.h"
+#include "Curve.h"
 #include <vector>
 
 class MyModel:public DNest3::Model
 {
 	private:
-		// Mean magnitude of image 0
-		double mag0;
-
-		// Magnitudes of others relative to image 0 (ignore delta_mag[0])
-		std::vector<double> delta_mag;
-
-		// QSO variability parameters
-		double tau_qso, beta_qso;
-		std::vector<double> n_qso;
+		// Mean magnitudes
+		std::vector<double> mag;
 
 		// Time delays
 		std::vector<double> tau;
 
-		// DERIVED STUFF
-		std::vector<double> y_qso;
-		double t_min, t_max, dt;
+		// Curve
+		Curve y_qso;
 
+		// Mock data
 		std::vector<double> mu;
-
-		// Evaluate y_qso function
-		double evaluate_y_qso(double t) const;
 
 		// Assemble function
 		void assemble();

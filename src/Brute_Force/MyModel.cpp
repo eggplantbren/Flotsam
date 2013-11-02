@@ -27,34 +27,26 @@ using namespace std;
 using namespace DNest3;
 
 MyModel::MyModel()
-:delta_mag(Data::get_instance().get_numImages())
-,n_qso(10000)
+:mag(Data::get_instance().get_numImages())
 ,tau(Data::get_instance().get_numImages())
-,y_qso(10000)
+,y_qso(Data::get_instance().get_tMin() - 0.5*Data::get_instance().get_tRange(),
+	Data::get_instance().get_tMin() + 1.5*Data::get_instance().get_tRange(),
+	10000)
 ,mu(Data::get_instance().get_numPoints())
 {
-	t_min = Data::get_instance().get_tMin() -   Data::get_instance().get_tRange();
-	t_max = Data::get_instance().get_tMin() + 2*Data::get_instance().get_tRange();
-	dt = (t_max - t_min)/(static_cast<int>(y_qso.size()) - 1);
+
 }
 
 void MyModel::fromPrior()
 {
-	mag0 = -100. + 200.*randomU();
-
-	delta_mag[0] = 0.;
-	for(size_t i=1; i<delta_mag.size(); i++)
-		delta_mag[i] = tan(M_PI*(randomU() - 0.5));
-
-	tau_qso = exp(log(1.) + log(1E6)*randomU());
-	beta_qso = exp(log(1E-3) + log(1E6)*randomU());
-	for(size_t i=0; i<n_qso.size(); i++)
-		n_qso[i] = randn();
+	for(size_t i=0; i<mag.size(); i++)
+		mag[i] = 10.*tan(M_PI*(randomU() - 0.5));
 
 	tau[0] = 0.;
 	for(size_t i=1; i<tau.size(); i++)
 		tau[i] = 10.*tan(M_PI*(randomU() - 0.5));
 
+	y_qso.fromPrior();
 	assemble();
 }
 
@@ -62,36 +54,17 @@ double MyModel::perturb()
 {
 	double logH = 0.;
 
-	int which = randInt(6);
+	int which = randInt(3);
 
 	if(which == 0)
 	{
-		mag0 += 200.*pow(10., 1.5 - 6.*randomU())*randn();
-		mag0 = mod(mag0 + 100., 200.) - 100.;
-	}
-	else if(which == 1)
-	{
-		int which2 = 1 + randInt(delta_mag.size() - 1);
-		double u = 0.5 + atan(delta_mag[which2])/M_PI;
+		int which2 = randInt(mag.size());
+		double u = 0.5 + atan(mag[which2]/10.)/M_PI;
 		u += pow(10., 1.5 - 6.*randomU())*randn();
 		u = mod(u, 1.);
-		delta_mag[which2] = tan(M_PI*(u - 0.5));
+		mag[which2] = 10.*tan(M_PI*(u - 0.5));
 	}
-	else if(which == 2)
-	{
-		tau_qso = log(tau_qso);
-		tau_qso += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
-		tau_qso = mod(tau_qso - log(1.), log(1E6)) + log(1.);
-		tau_qso = exp(tau_qso);
-	}
-	else if(which == 3)
-	{
-		beta_qso = log(beta_qso);
-		beta_qso += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
-		beta_qso = mod(beta_qso - log(1E-3), log(1E6)) + log(1E-3);
-		beta_qso = exp(beta_qso);
-	}
-	else if(which == 4)
+	else if(which == 1)
 	{
 		int which2 = 1 + randInt(tau.size() - 1);
 		double u = 0.5 + atan(tau[which2]/10.)/M_PI;
@@ -99,27 +72,9 @@ double MyModel::perturb()
 		u = mod(u, 1.);
 		tau[which2] = 10.*tan(M_PI*(u - 0.5));
 	}
-	else if(which == 5)
+	else if(which == 2)
 	{
-		double chance = pow(10., 0.5 - 4.*randomU());
-		double scale = pow(10., 1.5 - 6.*randomU());
-		bool full = randomU() <= 0.3;
-		for(size_t i=0; i<n_qso.size(); i++)
-		{
-			if(randomU() <= chance)
-			{
-				if(full)
-					n_qso[i] = randn();
-				else
-				{
-					logH -= -0.5*pow(n_qso[i], 2);
-					n_qso[i] += scale*randn();
-					logH += -0.5*pow(n_qso[i], 2);
-				}
-			}
-		}
-
-
+		logH += y_qso.perturb();
 	}
 
 	assemble();
@@ -127,27 +82,13 @@ double MyModel::perturb()
 	return logH;
 }
 
-double MyModel::evaluate_y_qso(double t) const
-{
-	int i = static_cast<int>((t - t_min)/dt);
-	double w = (t - (t_min + i*dt))/dt;
-	if(i >= 0 && i < static_cast<int>(y_qso.size()) - 1)
-		return (1. - w)*y_qso[i] + w*y_qso[i+1];
-	return 0.;
-}
-
 void MyModel::assemble()
 {
-	double alpha = exp(-1./tau_qso);
-	y_qso[0] = mag0 + beta_qso/sqrt(1. - alpha*alpha)*n_qso[0];
-	for(size_t i=1; i<y_qso.size(); i++)
-		y_qso[i] = mag0 + alpha*(y_qso[i-1] - mag0) + beta_qso*n_qso[i];
-
 	const vector<double>& t = Data::get_instance().get_t();
 	const vector<int>& id = Data::get_instance().get_ID();
 
 	for(size_t i=0; i<t.size(); i++)	
-		mu[i] = mag0 + delta_mag[id[i]] + evaluate_y_qso(t[i] - tau[id[i]]);
+		mu[i] = mag[id[i]] + y_qso.evaluate(t[i] - tau[id[i]]);
 }
 
 
@@ -167,10 +108,8 @@ double MyModel::logLikelihood() const
 
 void MyModel::print(std::ostream& out) const
 {
-	out<<mag0<<' ';
-	for(size_t i=0; i<delta_mag.size(); i++)
-		out<<delta_mag[i]<<' ';
-	out<<tau_qso<<' '<<beta_qso<<' ';
+	for(size_t i=0; i<mag.size(); i++)
+		out<<mag[i]<<' ';
 
 	for(size_t i=0; i<tau.size(); i++)
 		out<<tau[i]<<' ';

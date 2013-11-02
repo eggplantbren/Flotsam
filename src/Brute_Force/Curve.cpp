@@ -74,6 +74,7 @@ double Curve::evaluate(double t) const
 	double w = (t - (t_min + i*dt))/dt;
 	if(i >= 0 && i < N - 1)
 		return (1. - w)*y[i] + w*y[i+1];
+	return 0.;
 }
 
 void Curve::print(ostream& out) const
