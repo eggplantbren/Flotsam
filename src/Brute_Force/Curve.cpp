@@ -23,13 +23,24 @@ void Curve::fromPrior()
 {
 	for(int i=0; i<N; i++)
 		n[i] = randn();
+
+	beta = exp(log(1E-3) + log(1E6)*randomU());
 	L = exp(log(1E-2*t_range) + log(1E4)*randomU());
 	assemble();
 }
 
 double Curve::perturb()
 {
-	if(randomU() <= 0.5)
+	int which = randInt(3);
+
+	if(which == 0)
+	{
+		beta = log(beta);
+		beta += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
+		beta = mod(beta - log(1E-3), log(1E6)) + log(1E-3);
+		beta = exp(beta);
+	}
+	else if(which == 1)
 	{
 		L = log(L);
 		L += log(1E4)*pow(10., 1.5 - 6.*randomU())*randn();
@@ -51,11 +62,10 @@ double Curve::perturb()
 void Curve::assemble()
 {
 	double a = exp(-1./L);
-	double b = sqrt(1. - a*a);
 
-	y[0] = n[0];
+	y[0] = n[0]*beta/sqrt(1. - a*a);
 	for(int i=1; i<N; i++)
-		y[i] = a*y[i-1] + b*n[i];
+		y[i] = a*y[i-1] + beta*n[i];
 }
 
 double Curve::evaluate(double t) const

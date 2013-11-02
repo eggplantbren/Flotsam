@@ -11,8 +11,8 @@ class Curve
 		double t_min, t_max, t_range, dt;
 		std::vector<double> n, y;
 
-		// Timescale
-		double L;
+		// short-term sd and timescale
+		double beta, L;
 
 		void assemble();
 
