@@ -1,5 +1,6 @@
 #include "Curve.h"
 #include "RandomNumberGenerator.h"
+#include "Utils.h"
 #include <cassert>
 #include <cmath>
 
@@ -27,8 +28,23 @@ void Curve::fromPrior()
 
 double Curve::perturb()
 {
+	if(randomU() <= 0.5)
+	{
+		L = log(L);
+		L += log(1E4)*pow(10., 1.5 - 6.*randomU())*randn();
+		L = mod(L - log(1E-2*t_range), log(1E4)) + log(1E-2*t_range);
+		L = exp(L);
+	}
+	else
+	{
+		double chance = pow(10., 0.5 - 6.*randomU());
+		for(int i=0; i<N; i++)
+			if(randomU() <= chance)
+				n[i] = randn();
+	}
 
 	assemble();
+	return 0.;
 }
 
 void Curve::assemble()
