@@ -36,6 +36,7 @@ MyModel::MyModel()
 	Curve(Data::get_instance().get_tMin(),
 		Data::get_instance().get_tMin() + Data::get_instance().get_tRange(),
 		10000))
+,noise(Data::get_instance().get_numPoints())
 ,mu(Data::get_instance().get_numPoints())
 {
 
@@ -54,6 +55,8 @@ void MyModel::fromPrior()
 	for(size_t i=0; i<microlensing.size(); i++)
 		microlensing[i].fromPrior();
 
+	noise.fromPrior();
+
 	assemble();
 }
 
@@ -61,7 +64,7 @@ double MyModel::perturb()
 {
 	double logH = 0.;
 
-	int which = randInt(4);
+	int which = randInt(5);
 
 	if(which == 0)
 	{
@@ -87,6 +90,10 @@ double MyModel::perturb()
 	else if(which == 3)
 	{
 		logH += y_qso.perturb();
+	}
+	else if(which == 4)
+	{
+		logH += noise.perturb();
 	}
 
 	assemble();
@@ -115,8 +122,12 @@ double MyModel::logLikelihood() const
 	const vector<double>& y = Data::get_instance().get_y();
 	const vector<double>& sig = Data::get_instance().get_sig();
 
+	double s;
 	for(size_t i=0; i<y.size(); i++)
-		logL += -0.5*pow((y[i] - mu[i])/sig[i], 2);
+	{
+		s = noise.get_boost(i)*sig[i];
+		logL += -log(s) - 0.5*pow((y[i] - mu[i])/s, 2);
+	}
 
 	return logL;
 }

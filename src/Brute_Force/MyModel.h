@@ -22,6 +22,7 @@
 
 #include "Model.h"
 #include "Curve.h"
+#include "NoiseProperties.h"
 #include <vector>
 
 class MyModel:public DNest3::Model
@@ -38,6 +39,9 @@ class MyModel:public DNest3::Model
 
 		// Per-image microlensing curve
 		std::vector<Curve> microlensing;
+
+		// Error bar boosting
+		NoiseProperties noise;
 
 		// Mock data
 		std::vector<double> mu;
