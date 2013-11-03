@@ -2,6 +2,7 @@
 #define _NoiseProperties_
 
 #include <vector>
+#include <ostream>
 
 class NoiseProperties
 {
@@ -16,6 +17,7 @@ class NoiseProperties
 		double perturb();
 
 		double get_boost(int i) const;
+		void print(std::ostream& out) const;
 };
 
 #endif

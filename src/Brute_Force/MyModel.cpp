@@ -134,11 +134,13 @@ double MyModel::logLikelihood() const
 
 void MyModel::print(std::ostream& out) const
 {
+	for(size_t i=0; i<tau.size(); i++)
+		out<<tau[i]<<' ';
+
 	for(size_t i=0; i<mag.size(); i++)
 		out<<mag[i]<<' ';
 
-	for(size_t i=0; i<tau.size(); i++)
-		out<<tau[i]<<' ';
+	noise.print(cout);
 }
 
 string MyModel::description() const

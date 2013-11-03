@@ -66,3 +66,14 @@ double NoiseProperties::get_boost(int i) const
 	return (u[i] < f_bad)?(b1*b2):(b1);
 }
 
+void NoiseProperties::print(ostream& out) const
+{
+	double b1 = (boost1 < 0.5)?(0.):((boost1 - 0.5)/0.5);
+	double b2 = boost2;
+
+	b1 = exp(log(1.) + log(100.)*b1);
+	b2 = exp(log(1.) + log(100.)*b2);
+
+	out<<f_bad<<' '<<b1<<' '<<(b1*b2)<<' ';
+}
+
