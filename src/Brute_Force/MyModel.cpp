@@ -48,7 +48,7 @@ void MyModel::fromPrior()
 
 	tau[0] = 0.;
 	for(size_t i=1; i<tau.size(); i++)
-		tau[i] = 10.*tan(M_PI*(randomU() - 0.5));
+		tau[i] = 0.1*Data::get_instance().get_tRange()*tan(M_PI*(randomU() - 0.5));
 
 	y_qso.fromPrior();
 	for(size_t i=0; i<microlensing.size(); i++)
@@ -74,10 +74,10 @@ double MyModel::perturb()
 	else if(which == 1)
 	{
 		int which2 = 1 + randInt(tau.size() - 1);
-		double u = 0.5 + atan(tau[which2]/10.)/M_PI;
+		double u = 0.5 + atan(tau[which2]/(0.1*Data::get_instance().get_tRange()))/M_PI;
 		u += pow(10., 1.5 - 6.*randomU())*randn();
 		u = mod(u, 1.);
-		tau[which2] = 10.*tan(M_PI*(u - 0.5));
+		tau[which2] = 0.1*Data::get_instance().get_tRange()*tan(M_PI*(u - 0.5));
 	}
 	else if(which == 2)
 	{
