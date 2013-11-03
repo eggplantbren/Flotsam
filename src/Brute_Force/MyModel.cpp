@@ -140,7 +140,7 @@ void MyModel::print(std::ostream& out) const
 	for(size_t i=0; i<mag.size(); i++)
 		out<<mag[i]<<' ';
 
-	noise.print(cout);
+	noise.print(out);
 }
 
 string MyModel::description() const
