@@ -59,7 +59,7 @@ double Curve::perturb_param()
 
 	if(which == 0)
 	{
-		mu = atan(mu/10.)/M_PI;
+		mu = 0.5 + atan(mu/10.)/M_PI;
 		mu += pow(10., 1.5 - 6.*randomU())*randn();
 		mu = mod(mu, 1.);
 		mu = 10.*tan(M_PI*(mu - 0.5));
