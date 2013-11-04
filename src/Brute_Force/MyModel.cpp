@@ -27,8 +27,7 @@ using namespace std;
 using namespace DNest3;
 
 MyModel::MyModel()
-:mag(Data::get_instance().get_numImages())
-,tau(Data::get_instance().get_numImages())
+:tau(Data::get_instance().get_numImages())
 ,y_qso(Data::get_instance().get_tMin() - 0.5*Data::get_instance().get_tRange(),
 	Data::get_instance().get_tMin() + 1.5*Data::get_instance().get_tRange(),
 	10000)
@@ -44,9 +43,6 @@ MyModel::MyModel()
 
 void MyModel::fromPrior()
 {
-	for(size_t i=0; i<mag.size(); i++)
-		mag[i] = 10.*tan(M_PI*(randomU() - 0.5));
-
 	tau[0] = 0.;
 	for(size_t i=1; i<tau.size(); i++)
 		tau[i] = 0.1*Data::get_instance().get_tRange()*tan(M_PI*(randomU() - 0.5));
@@ -64,17 +60,9 @@ double MyModel::perturb()
 {
 	double logH = 0.;
 
-	int which = randInt(5);
+	int which = randInt(4);
 
 	if(which == 0)
-	{
-		int which2 = randInt(mag.size());
-		double u = 0.5 + atan(mag[which2]/10.)/M_PI;
-		u += pow(10., 1.5 - 6.*randomU())*randn();
-		u = mod(u, 1.);
-		mag[which2] = 10.*tan(M_PI*(u - 0.5));
-	}
-	else if(which == 1)
 	{
 		int which2 = 1 + randInt(tau.size() - 1);
 		double u = 0.5 + atan(tau[which2]/(0.1*Data::get_instance().get_tRange()))/M_PI;
@@ -82,16 +70,16 @@ double MyModel::perturb()
 		u = mod(u, 1.);
 		tau[which2] = 0.1*Data::get_instance().get_tRange()*tan(M_PI*(u - 0.5));
 	}
-	else if(which == 2)
+	else if(which == 1)
 	{
 		int which2 = randInt(microlensing.size());
 		logH += microlensing[which2].perturb();
 	}
-	else if(which == 3)
+	else if(which == 2)
 	{
 		logH += y_qso.perturb();
 	}
-	else if(which == 4)
+	else if(which == 3)
 	{
 		logH += noise.perturb();
 	}
@@ -108,7 +96,7 @@ void MyModel::assemble()
 
 	for(size_t i=0; i<t.size(); i++)
 	{
-		mu[i] = mag[id[i]] + y_qso.evaluate(t[i] - tau[id[i]])
+		mu[i] = y_qso.evaluate(t[i] - tau[id[i]])
 				+ microlensing[id[i]].evaluate(t[i]);
 	}
 }
@@ -136,9 +124,6 @@ void MyModel::print(std::ostream& out) const
 {
 	for(size_t i=0; i<tau.size(); i++)
 		out<<tau[i]<<' ';
-
-	for(size_t i=0; i<mag.size(); i++)
-		out<<mag[i]<<' ';
 
 	noise.print(out);
 }

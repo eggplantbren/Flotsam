@@ -28,9 +28,6 @@
 class MyModel:public DNest3::Model
 {
 	private:
-		// Mean magnitudes
-		std::vector<double> mag;
-
 		// Time delays
 		std::vector<double> tau;
 

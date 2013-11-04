@@ -11,10 +11,15 @@ class Curve
 		double t_min, t_max, t_range, dt;
 		std::vector<double> n, y;
 
-		// short-term sd and timescale
-		double beta, L;
+		// Mean, short-term sd and timescale
+		double mu, beta, L;
 
+		double log_prob() const;
 		void assemble();
+		void disassemble();
+		double perturb1();
+		double perturb2();
+		double perturb_param();
 
 	public:
 		Curve(double t_min, double t_max, int N);
