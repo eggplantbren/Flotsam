@@ -15,6 +15,9 @@ class CAR
 		// Hyperparameters
 		double mu, beta, L;
 
+		// Limits on L
+		double L_min, L_max;
+
 	public:
 		CAR(const std::vector<double>& times);
 
