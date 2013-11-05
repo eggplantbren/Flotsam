@@ -1,7 +1,9 @@
 #include "CAR.h"
 
-CAR::CAR(int N)
-:n(N)
+using namespace std;
+
+CAR::CAR(const vector<double>& times)
+:t(times)
 {
 
 }
