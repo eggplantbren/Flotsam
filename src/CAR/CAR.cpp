@@ -47,9 +47,11 @@ void CAR::assemble()
 		cout<<y[i]<<endl;
 }
 
+#include <ctime>
 int main()
 {
 	RandomNumberGenerator::initialise_instance();
+	RandomNumberGenerator::get_instance().set_seed(time(0));
 
 	vector<double> t(100);
 	for(size_t i=0; i<t.size(); i++)
