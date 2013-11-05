@@ -27,6 +27,7 @@ class Curve
 		void fromPrior();
 		double perturb();
 		void print(std::ostream& out) const;
+		double get_mu() const { return mu; }
 
 		double evaluate(double t) const;
 };

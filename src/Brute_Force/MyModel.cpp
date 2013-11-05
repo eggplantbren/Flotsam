@@ -30,11 +30,11 @@ MyModel::MyModel()
 :tau(Data::get_instance().get_numImages())
 ,y_qso(Data::get_instance().get_tMin() - 0.5*Data::get_instance().get_tRange(),
 	Data::get_instance().get_tMin() + 1.5*Data::get_instance().get_tRange(),
-	10000)
+	20000)
 ,microlensing(Data::get_instance().get_numImages(),
 	Curve(Data::get_instance().get_tMin(),
 		Data::get_instance().get_tMin() + Data::get_instance().get_tRange(),
-		10000))
+		20000))
 ,noise(Data::get_instance().get_numPoints())
 ,mu(Data::get_instance().get_numPoints())
 {
@@ -96,7 +96,7 @@ void MyModel::assemble()
 
 	for(size_t i=0; i<t.size(); i++)
 	{
-		mu[i] = y_qso.evaluate(t[i] - tau[id[i]])
+		mu[i] = y_qso.evaluate(t[i] - tau[id[i]]) - y_qso.get_mu()
 				+ microlensing[id[i]].evaluate(t[i]);
 	}
 }
@@ -124,6 +124,13 @@ void MyModel::print(std::ostream& out) const
 {
 	for(size_t i=0; i<tau.size(); i++)
 		out<<tau[i]<<' ';
+
+	y_qso.print(out); out<<' ';
+	for(size_t i=0; i<microlensing.size(); i++)
+	{
+		microlensing[i].print(out);
+		out<<' ';
+	}
 
 	noise.print(out);
 }

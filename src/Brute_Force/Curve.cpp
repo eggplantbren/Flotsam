@@ -48,7 +48,7 @@ double Curve::log_prob() const
 	double sig0 = beta/sqrt(1. - a*a);
 	logP += -log(sig0) - 0.5*pow((y[0] - mu)/sig0, 2);
 	for(int i=1; i<N; i++)
-		logP += -log(beta) - 0.5*pow((y[i] - a*y[i-1])/beta, 2);
+		logP += -log(beta) - 0.5*pow((y[i] - (mu + a*(y[i-1] - mu)))/beta, 2);
 
 	return logP;
 }
@@ -111,17 +111,17 @@ double Curve::perturb1()
 void Curve::assemble()
 {
 	double a = exp(-1./L);
-	y[0] = n[0]*beta/sqrt(1. - a*a);
+	y[0] = mu + n[0]*beta/sqrt(1. - a*a);
 	for(int i=1; i<N; i++)
-		y[i] = a*y[i-1] + beta*n[i];
+		y[i] = mu + a*(y[i-1] - mu) + beta*n[i];
 }
 
 void Curve::disassemble()
 {
 	double a = exp(-1./L);
-	n[0] = y[0]*sqrt(1. - a*a)/beta;
+	n[0] = (y[0] - mu)*sqrt(1. - a*a)/beta;
 	for(int i=1; i<N; i++)
-		n[i] = (y[i] - a*y[i-1])/beta;
+		n[i] = ((y[i] - mu) - a*(y[i-1] - mu))/beta;
 }
 
 
@@ -130,13 +130,12 @@ double Curve::evaluate(double t) const
 	int i = static_cast<int>((t - t_min)/dt);
 	double w = (t - (t_min + i*dt))/dt;
 	if(i >= 0 && i < N - 1)
-		return mu + (1. - w)*y[i] + w*y[i+1];
+		return (1. - w)*y[i] + w*y[i+1];
 	return mu;
 }
 
 void Curve::print(ostream& out) const
 {
-	for(int i=0; i<N; i++)
-		out<<y[i]<<' ';
+	out<<mu<<' '<<beta<<' '<<L<<' ';
 }
 
