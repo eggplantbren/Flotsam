@@ -106,9 +106,7 @@ int main()
 
 	vector<double> t(100);
 	for(size_t i=0; i<t.size(); i++)
-		t[i] = i;
-	t[98] = 105;
-	t[99] = 110;
+		t[i] = pow(1.05, i);
 
 	CAR c(t);
 	c.fromPrior();

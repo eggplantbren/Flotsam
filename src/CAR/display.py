@@ -1,8 +1,6 @@
 from pylab import *
 
-t = arange(0., 100.)
-t[98] = 105.
-t[99] = 110.
+t = 1.05**arange(0., 100.)
 output = loadtxt('output.txt')
 
 ion()
