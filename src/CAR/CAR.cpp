@@ -98,6 +98,7 @@ void CAR::print(ostream& out) const
 }
 
 #include <fstream>
+#include <iomanip>
 
 int main()
 {
@@ -113,6 +114,7 @@ int main()
 	c.fromPrior();
 
 	fstream fout("output.txt", ios::out);
+	fout<<setprecision(12);
 	for(int i=0; i<1000; i++)
 	{
 		CAR c2 = c;
