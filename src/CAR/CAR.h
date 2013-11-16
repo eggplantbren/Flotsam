@@ -2,6 +2,7 @@
 #define _CAR_
 
 #include <vector>
+#include <ostream>
 
 class CAR
 {
@@ -29,6 +30,8 @@ class CAR
 
 		void fromPrior();
 		double perturb();
+
+		void print(std::ostream& out) const;
 };
 
 #endif

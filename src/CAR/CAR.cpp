@@ -91,6 +91,14 @@ void CAR::assemble()
 	}
 }
 
+void CAR::print(ostream& out) const
+{
+	for(size_t i=0; i<y.size(); i++)
+		out<<y[i]<<' ';
+}
+
+#include <fstream>
+
 int main()
 {
 	RandomNumberGenerator::initialise_instance();
@@ -103,6 +111,18 @@ int main()
 
 	CAR c(t);
 	c.fromPrior();
+
+	fstream fout("output.txt", ios::out);
+	for(int i=0; i<1000; i++)
+	{
+		CAR c2 = c;
+		double logH = c2.perturb();
+		if(randomU() <= exp(logH))
+			c = c2;
+		c.print(fout); fout<<endl;
+		cout<<(i+1)<<endl;
+	}
+	fout.close();
 
 	return 0;
 }
