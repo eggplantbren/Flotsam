@@ -28,7 +28,7 @@ class CAR
 		CAR(const std::vector<double>& times);
 
 		void fromPrior();
-
+		double perturb();
 };
 
 #endif

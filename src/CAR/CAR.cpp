@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cmath>
 #include "RandomNumberGenerator.h"
+#include "Utils.h"
 
 using namespace std;
 using namespace DNest3;
@@ -30,6 +31,52 @@ void CAR::fromPrior()
 	assemble();
 }
 
+double CAR::perturb()
+{
+	double logH = 0.;
+
+	int which = randInt(3);
+	if(which == 0)
+	{
+		mu = 0.5 + atan(mu/10.)/M_PI;
+		mu += pow(10., 1.5 - 6.*randomU())*randn();
+		mu = mod(mu, 1.);
+		mu = 10.*tan(M_PI*(mu - 0.5));
+	}
+	else if(which == 1)
+	{
+		sigma = log(sigma);
+		sigma += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
+		sigma = mod(sigma - log(1E-3), log(1E6)) + log(1E-3);
+		sigma = exp(sigma);
+	}
+	else if(which == 2)
+	{
+		L = log(L);
+		L += log(L_max/L_min)*pow(10., 1.5 - 6.*randomU())*randn();
+		L = mod(L - log(L_min), log(L_max/L_min)) + log(L_min);
+		L = exp(L);
+	}
+
+	// Now do the ns
+	if(randomU() <= 0.5)
+	{
+		which = randInt(n.size());
+		logH -= -0.5*pow(n[which], 2);
+		n[which] += pow(10., 1.5 - 6.*randomU())*randn();
+		logH += -0.5*pow(n[which], 2);
+	}
+	else if(which == 1)
+	{
+		double chance = pow(10., 0.5 - 4.*randomU());
+		for(size_t i=0; i<n.size(); i++)
+			n[i] = randn();
+	}
+
+	assemble();
+	return logH;
+}
+
 void CAR::assemble()
 {
 	y[0] = mu + sigma*n[0];
@@ -42,9 +89,6 @@ void CAR::assemble()
 		sd = sigma*sqrt(1. - exp(-2.*gap/L));
 		y[i] = mean + sd*n[i];
 	}
-
-	for(size_t i=0; i<y.size(); i++)
-		cout<<y[i]<<endl;
 }
 
 int main()
