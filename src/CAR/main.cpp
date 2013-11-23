@@ -33,10 +33,10 @@ int main(int argc, char** argv)
 	Data::get_instance().load(dataFile.c_str());
 
 	// Initialise the sampler
-	// MTSampler<MyModel> sampler = setup_mt<MyModel>(options);
+	MTSampler<MyModel> sampler = setup_mt<MyModel>(options);
 
 	// Go!
-	// sampler.run();
+	sampler.run();
 	return 0;
 }
 

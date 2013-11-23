@@ -33,12 +33,13 @@ MyModel::MyModel()
 
 void MyModel::fromPrior()
 {
-
+	light_curve.fromPrior();
 }
 
 double MyModel::perturb()
 {
-	return 0.;
+	double logH = light_curve.perturb();
+	return logH;
 }
 
 double MyModel::logLikelihood() const
