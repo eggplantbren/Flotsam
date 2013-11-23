@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cmath>
 #include "RandomNumberGenerator.h"
+#include "Utils.h"
 
 using namespace std;
 using namespace DNest3;
@@ -24,14 +25,62 @@ void CAR::fromPrior()
 		n[i] = randn();
 		
 	mu = 10.*tan(M_PI*(randomU() - 0.5));
-	sigma = exp(log(1E-3) + log(1E6)*randomU());
+	beta = exp(log(1E-3) + log(1E6)*randomU());
 	L = exp(log(L_min) + log(L_max/L_min)*randomU());
 
 	assemble();
 }
 
+double CAR::perturb()
+{
+	double logH = 0.;
+
+	int which = randInt(3);
+	if(which == 0)
+	{
+		mu = 0.5 + atan(mu/10.)/M_PI;
+		mu += pow(10., 1.5 - 6.*randomU())*randn();
+		mu = mod(mu, 1.);
+		mu = 10.*tan(M_PI*(mu - 0.5));
+	}
+	else if(which == 1)
+	{
+		beta = log(beta);
+		beta += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
+		beta = mod(beta - log(1E-3), log(1E6)) + log(1E-3);
+		beta = exp(beta);
+	}
+	else if(which == 2)
+	{
+		L = log(L);
+		L += log(L_max/L_min)*pow(10., 1.5 - 6.*randomU())*randn();
+		L = mod(L - log(L_min), log(L_max/L_min)) + log(L_min);
+		L = exp(L);
+	}
+
+	// Now do the ns
+	if(randomU() <= 0.5)
+	{
+		which = randInt(n.size());
+		logH -= -0.5*pow(n[which], 2);
+		n[which] += pow(10., 1.5 - 6.*randomU())*randn();
+		logH += -0.5*pow(n[which], 2);
+	}
+	else if(which == 1)
+	{
+		double chance = pow(10., 0.5 - 4.*randomU());
+		for(size_t i=0; i<n.size(); i++)
+			if(randomU() <= chance)
+				n[i] = randn();
+	}
+
+	assemble();
+	return logH;
+}
+
 void CAR::assemble()
 {
+	double sigma = beta*sqrt(L);
 	y[0] = mu + sigma*n[0];
 
 	double gap, mean, sd;
@@ -42,12 +91,20 @@ void CAR::assemble()
 		sd = sigma*sqrt(1. - exp(-2.*gap/L));
 		y[i] = mean + sd*n[i];
 	}
-
-	for(size_t i=0; i<y.size(); i++)
-		cout<<y[i]<<endl;
 }
 
-#include <ctime>
+void CAR::print(ostream& out) const
+{
+	out<<mu<<' '<<beta<<' '<<L<<' ';
+	for(size_t i=0; i<y.size(); i++)
+		out<<y[i]<<' ';
+}
+
+/*
+#include <fstream>
+#include <iomanip>
+
+>>>>>>> 5896811a4a0ccff38c8aa6e3fe2af584a0e8babe
 int main()
 {
 	RandomNumberGenerator::initialise_instance();
@@ -55,13 +112,24 @@ int main()
 
 	vector<double> t(100);
 	for(size_t i=0; i<t.size(); i++)
-		t[i] = i;
-	t[98] = 105;
-	t[99] = 110;
+		t[i] = pow(1.05, i);
 
 	CAR c(t);
 	c.fromPrior();
 
+	fstream fout("output.txt", ios::out);
+	fout<<setprecision(12);
+	for(int i=0; i<1000; i++)
+	{
+		CAR c2 = c;
+		double logH = c2.perturb();
+		if(randomU() <= exp(logH))
+			c = c2;
+		c.print(fout); fout<<endl;
+		cout<<(i+1)<<endl;
+	}
+	fout.close();
+
 	return 0;
 }
-
+*/

@@ -2,6 +2,7 @@
 #define _CAR_
 
 #include <vector>
+#include <ostream>
 
 class CAR
 {
@@ -16,7 +17,7 @@ class CAR
 		std::vector<double> y;
 
 		// Hyperparameters
-		double mu, sigma, L;
+		double mu, beta, L;
 
 		// Limits on L
 		double L_min, L_max;
@@ -28,7 +29,11 @@ class CAR
 		CAR(const std::vector<double>& times);
 
 		void fromPrior();
+		double perturb();
 
+		void print(std::ostream& out) const;
+
+		const std::vector<double>& get_y() const { return y; }
 };
 
 #endif
