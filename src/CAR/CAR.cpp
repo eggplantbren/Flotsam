@@ -70,7 +70,8 @@ double CAR::perturb()
 	{
 		double chance = pow(10., 0.5 - 4.*randomU());
 		for(size_t i=0; i<n.size(); i++)
-			n[i] = randn();
+			if(randomU() <= chance)
+				n[i] = randn();
 	}
 
 	assemble();
@@ -97,6 +98,7 @@ void CAR::print(ostream& out) const
 		out<<y[i]<<' ';
 }
 
+/*
 #include <fstream>
 #include <iomanip>
 
@@ -126,4 +128,4 @@ int main()
 
 	return 0;
 }
-
+*/
