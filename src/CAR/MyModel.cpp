@@ -44,7 +44,16 @@ double MyModel::perturb()
 
 double MyModel::logLikelihood() const
 {
-	return 0.;
+	const vector<double>& y = light_curve.get_y();
+	const vector<double>& Y = Data::get_instance().get_y();
+	const vector<double>& sig = Data::get_instance().get_sig();
+
+	double logL = 0.;
+
+	for(size_t i=0; i<y.size(); i++)
+		logL += -log(sig[i]) - 0.5*pow((y[i] - Y[i])/sig[i], 2);
+
+	return logL;
 }
 
 void MyModel::print(std::ostream& out) const

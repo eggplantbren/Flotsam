@@ -32,6 +32,8 @@ class CAR
 		double perturb();
 
 		void print(std::ostream& out) const;
+
+		const std::vector<double>& get_y() const { return y; }
 };
 
 #endif
