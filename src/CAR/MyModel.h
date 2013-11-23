@@ -21,11 +21,14 @@
 #define _MyModel_
 
 #include "Model.h"
+#include "CAR.h"
+#include "Data.h"
 #include <vector>
 
 class MyModel:public DNest3::Model
 {
 	private:
+		CAR light_curve;
 
 	public:
 		MyModel();

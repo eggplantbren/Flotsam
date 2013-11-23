@@ -26,6 +26,7 @@ using namespace std;
 using namespace DNest3;
 
 MyModel::MyModel()
+:light_curve(Data::get_instance().get_t())
 {
 
 }
@@ -47,7 +48,7 @@ double MyModel::logLikelihood() const
 
 void MyModel::print(std::ostream& out) const
 {
-
+	light_curve.print(out);
 }
 
 string MyModel::description() const
