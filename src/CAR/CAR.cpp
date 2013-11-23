@@ -25,7 +25,7 @@ void CAR::fromPrior()
 		n[i] = randn();
 		
 	mu = 10.*tan(M_PI*(randomU() - 0.5));
-	sigma = exp(log(1E-3) + log(1E6)*randomU());
+	beta = exp(log(1E-3) + log(1E6)*randomU());
 	L = exp(log(L_min) + log(L_max/L_min)*randomU());
 
 	assemble();
@@ -45,10 +45,10 @@ double CAR::perturb()
 	}
 	else if(which == 1)
 	{
-		sigma = log(sigma);
-		sigma += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
-		sigma = mod(sigma - log(1E-3), log(1E6)) + log(1E-3);
-		sigma = exp(sigma);
+		beta = log(beta);
+		beta += log(1E6)*pow(10., 1.5 - 6.*randomU())*randn();
+		beta = mod(beta - log(1E-3), log(1E6)) + log(1E-3);
+		beta = exp(beta);
 	}
 	else if(which == 2)
 	{
@@ -80,6 +80,7 @@ double CAR::perturb()
 
 void CAR::assemble()
 {
+	double sigma = beta*sqrt(L);
 	y[0] = mu + sigma*n[0];
 
 	double gap, mean, sd;
@@ -94,7 +95,7 @@ void CAR::assemble()
 
 void CAR::print(ostream& out) const
 {
-	out<<mu<<' '<<sigma<<' '<<L<<' ';
+	out<<mu<<' '<<beta<<' '<<L<<' ';
 	for(size_t i=0; i<y.size(); i++)
 		out<<y[i]<<' ';
 }

@@ -17,7 +17,7 @@ class CAR
 		std::vector<double> y;
 
 		// Hyperparameters
-		double mu, sigma, L;
+		double mu, beta, L;
 
 		// Limits on L
 		double L_min, L_max;
