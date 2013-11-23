@@ -94,6 +94,7 @@ void CAR::assemble()
 
 void CAR::print(ostream& out) const
 {
+	out<<mu<<' '<<sigma<<' '<<L<<' ';
 	for(size_t i=0; i<y.size(); i++)
 		out<<y[i]<<' ';
 }
