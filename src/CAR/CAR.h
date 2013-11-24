@@ -7,6 +7,9 @@
 class CAR
 {
 	private:
+		// Allow mean to be free or fixed?
+		bool zero_mean;
+
 		// Timestamps
 		std::vector<double> t;
 
@@ -26,7 +29,7 @@ class CAR
 		void assemble();
 
 	public:
-		CAR(const std::vector<double>& times);
+		CAR(bool zero_mean, const std::vector<double>& times);
 
 		void fromPrior();
 		double perturb();

@@ -26,7 +26,7 @@ using namespace std;
 using namespace DNest3;
 
 MyModel::MyModel()
-:light_curve(Data::get_instance().get_t())
+:light_curve(false, Data::get_instance().get_t())
 {
 
 }

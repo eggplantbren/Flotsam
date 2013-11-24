@@ -8,8 +8,9 @@
 using namespace std;
 using namespace DNest3;
 
-CAR::CAR(const vector<double>& times)
-:t(times)
+CAR::CAR(bool zero_mean, const vector<double>& times)
+:zero_mean(zero_mean)
+,t(times)
 ,n(times.size())
 ,y(times.size())
 {
@@ -23,8 +24,11 @@ void CAR::fromPrior()
 {
 	for(size_t i=0; i<n.size(); i++)
 		n[i] = randn();
-		
-	mu = 10.*tan(M_PI*(randomU() - 0.5));
+
+	if(zero_mean)
+		mu = 0.;
+	else
+		mu = 10.*tan(M_PI*(randomU() - 0.5));
 	beta = exp(log(1E-3) + log(1E6)*randomU());
 	L = exp(log(L_min) + log(L_max/L_min)*randomU());
 
@@ -35,7 +39,7 @@ double CAR::perturb()
 {
 	double logH = 0.;
 
-	int which = randInt(3);
+	int which = (zero_mean)?(1 + randInt(2)):(randInt(3));
 	if(which == 0)
 	{
 		mu = 0.5 + atan(mu/10.)/M_PI;
