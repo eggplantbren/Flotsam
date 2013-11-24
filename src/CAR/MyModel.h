@@ -28,7 +28,7 @@
 class MyModel:public DNest3::Model
 {
 	private:
-		CAR light_curve;
+		CAR qso_light_curve;
 
 	public:
 		MyModel();

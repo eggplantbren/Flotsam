@@ -26,25 +26,25 @@ using namespace std;
 using namespace DNest3;
 
 MyModel::MyModel()
-:light_curve(false, Data::get_instance().get_t())
+:qso_light_curve(false, Data::get_instance().get_t())
 {
 
 }
 
 void MyModel::fromPrior()
 {
-	light_curve.fromPrior();
+	qso_light_curve.fromPrior();
 }
 
 double MyModel::perturb()
 {
-	double logH = light_curve.perturb();
+	double logH = qso_light_curve.perturb();
 	return logH;
 }
 
 double MyModel::logLikelihood() const
 {
-	const vector<double>& y = light_curve.get_y();
+	const vector<double>& y = qso_light_curve.get_y();
 	const vector<double>& Y = Data::get_instance().get_y();
 	const vector<double>& sig = Data::get_instance().get_sig();
 
@@ -58,7 +58,7 @@ double MyModel::logLikelihood() const
 
 void MyModel::print(std::ostream& out) const
 {
-	light_curve.print(out);
+	qso_light_curve.print(out);
 }
 
 string MyModel::description() const
