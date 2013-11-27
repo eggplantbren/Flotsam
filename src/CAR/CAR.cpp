@@ -22,6 +22,13 @@ CAR::CAR(bool zero_mean, const vector<double>& times)
 	L_max = 1E2 *t_range;
 }
 
+void CAR::set_times(const vector<double>& times)
+{
+	t.set(times);
+	t.sort();
+	assemble();
+}
+
 void CAR::fromPrior()
 {
 	for(size_t i=0; i<n.size(); i++)

@@ -36,7 +36,13 @@ class MyModel:public DNest3::Model
 		// Then it's differences
 		std::vector<double> mu;
 
+		// Fluctuations of the QSO
 		CAR qso_light_curve;
+
+		// Time of data point, minus lag
+		std::vector<double> shifted_times;
+
+		void compute_shifted_times();
 
 	public:
 		MyModel();

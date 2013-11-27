@@ -38,6 +38,7 @@ class CAR
 		void print(std::ostream& out) const;
 
 		const std::vector<double>& get_y() const { return y; }
+		void set_times(const std::vector<double>& times);
 };
 
 #endif

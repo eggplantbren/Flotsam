@@ -29,6 +29,7 @@ MyModel::MyModel()
 :tau(Data::get_instance().get_numImages())
 ,mu(Data::get_instance().get_numImages())
 ,qso_light_curve(true, Data::get_instance().get_t())
+,shifted_times(Data::get_instance().get_numPoints())
 {
 
 }
@@ -39,11 +40,23 @@ void MyModel::fromPrior()
 	tau[0] = 0.;
 	for(size_t i=1; i<tau.size(); i++)
 		tau[i] = tau_scale*tan(M_PI*(randomU() - 0.5));
+	compute_shifted_times();
 
 	for(size_t i=0; i<mu.size(); i++)
 		mu[i] = 10.*tan(M_PI*(randomU() - 0.5));
 
 	qso_light_curve.fromPrior();
+}
+
+void MyModel::compute_shifted_times()
+{
+	const vector<double>& t = Data::get_instance().get_t();
+	const vector<int>& id = Data::get_instance().get_ID();
+
+	for(size_t i=0; i<shifted_times.size(); i++)
+		shifted_times[i] = t[i] - tau[id[i]];
+
+	qso_light_curve.set_times(shifted_times);
 }
 
 double MyModel::perturb()
@@ -60,6 +73,7 @@ double MyModel::perturb()
 		tau[i] += pow(10., 1.5 - 6.*randomU())*randn();
 		tau[i] = mod(tau[i], 1.);
 		tau[i] = tau_scale*tan(M_PI*(tau[i] - 0.5));
+		compute_shifted_times();
 	}
 	else if(which == 1)
 	{
