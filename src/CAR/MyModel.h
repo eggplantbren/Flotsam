@@ -28,6 +28,10 @@
 class MyModel:public DNest3::Model
 {
 	private:
+		// First argument is mean parameter of image 0
+		// Then it's differences
+		std::vector<double> mu;
+
 		CAR qso_light_curve;
 
 	public:

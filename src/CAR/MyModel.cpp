@@ -26,19 +26,36 @@ using namespace std;
 using namespace DNest3;
 
 MyModel::MyModel()
-:qso_light_curve(false, Data::get_instance().get_t())
+:mu(Data::get_instance().get_numImages())
+,qso_light_curve(true, Data::get_instance().get_t())
 {
 
 }
 
 void MyModel::fromPrior()
 {
+	for(size_t i=0; i<mu.size(); i++)
+		mu[i] = 10.*tan(M_PI*(randomU() - 0.5));
 	qso_light_curve.fromPrior();
 }
 
 double MyModel::perturb()
 {
-	double logH = qso_light_curve.perturb();
+	double logH = 0.;
+
+	int which = randInt(2);
+	if(which == 0)
+		logH += qso_light_curve.perturb();
+	else
+	{
+		int i = randInt(mu.size());
+
+		mu[i] = 0.5 + atan(mu[i]/10.)/M_PI;
+		mu[i] += pow(10., 1.5 - 6.*randomU())*randn();
+		mu[i] = mod(mu[i], 1.);
+		mu[i] = 10.*tan(M_PI*(mu[i] - 0.5));
+	}
+
 	return logH;
 }
 
@@ -47,22 +64,31 @@ double MyModel::logLikelihood() const
 	const vector<double>& y = qso_light_curve.get_y();
 	const vector<double>& Y = Data::get_instance().get_y();
 	const vector<double>& sig = Data::get_instance().get_sig();
+	const vector<int>& id = Data::get_instance().get_ID();
 
 	double logL = 0.;
 
+	double m;
 	for(size_t i=0; i<y.size(); i++)
-		logL += -log(sig[i]) - 0.5*pow((y[i] - Y[i])/sig[i], 2);
+	{
+		m = mu[0];
+		if(id[i] != 0)
+			m += mu[id[i]];
+		logL += -log(sig[i]) - 0.5*pow((Y[i] - (y[i] + m))/sig[i], 2);
+	}
 
 	return logL;
 }
 
 void MyModel::print(std::ostream& out) const
 {
+	for(size_t i=0; i<mu.size(); i++)
+		out<<mu[i]<<' ';
 	qso_light_curve.print(out);
 }
 
 string MyModel::description() const
 {
-	return string("");
+	return string("mu, qso_light_curve");
 }
 
