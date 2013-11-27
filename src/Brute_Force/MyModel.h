@@ -31,6 +31,9 @@ class MyModel:public DNest3::Model
 		// Time delays
 		std::vector<double> tau;
 
+		// Mean level and deltas
+		std::vector<double> mean;
+
 		// Intrinsic qso variability
 		Curve y_qso;
 

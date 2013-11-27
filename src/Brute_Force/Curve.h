@@ -11,8 +11,8 @@ class Curve
 		double t_min, t_max, t_range, dt;
 		std::vector<double> n, y;
 
-		// Mean, short-term sd and timescale
-		double mu, beta, L;
+		// short-term sd and timescale
+		double beta, L;
 
 		double log_prob() const;
 		void assemble();
@@ -27,7 +27,6 @@ class Curve
 		void fromPrior();
 		double perturb();
 		void print(std::ostream& out) const;
-		double get_mu() const { return mu; }
 
 		double evaluate(double t) const;
 };

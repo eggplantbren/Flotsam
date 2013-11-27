@@ -7,16 +7,17 @@
 class NoiseProperties
 {
 	private:
-		std::vector<double> u;
-		double f_bad, boost1, boost2;
+		double nu;
+		double boost;
 
 	public:
-		NoiseProperties(int N);
+		NoiseProperties();
 
 		void fromPrior();
 		double perturb();
 
-		double get_boost(int i) const;
+		double get_nu() const { return nu; }
+		double get_boost() const { return boost; }
 		void print(std::ostream& out) const;
 };
 
