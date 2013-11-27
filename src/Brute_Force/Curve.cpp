@@ -91,10 +91,20 @@ double Curve::perturb1()
 
 	logH += perturb_param();
 
-	double chance = pow(10., 0.5 - 6.*randomU());
-	for(int i=0; i<N; i++)
-		if(randomU() <= chance)
-			n[i] = randn();
+	if(randomU() <= 0.5)
+	{
+		double chance = pow(10., 0.5 - 6.*randomU());
+		for(int i=0; i<N; i++)
+			if(randomU() <= chance)
+				n[i] = randn();
+	}
+	else
+	{
+		int which = randInt(n.size());
+		logH -= -0.5*pow(n[which], 2);
+		n[which] += pow(10., 1.5 - 6.*randomU())*randn();
+		logH += -0.5*pow(n[which], 2);
+	}
 
 	assemble();
 	return logH;
