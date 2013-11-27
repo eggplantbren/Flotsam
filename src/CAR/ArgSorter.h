@@ -1,6 +1,9 @@
 #ifndef _ArgSorter_
 #define _ArgSorter_
 
+#include <vector>
+#include <algorithm>
+
 // Compare two objects when given pointers to them
 template<class Type>
 bool compare(const Type* t1, const Type* t2)
@@ -12,12 +15,16 @@ template<class Type>
 class ArgSorter
 {
 	private:
-		vector<const Type*> pointers;
+		std::vector<const Type*> pointers;
 
 	public:
-		ArgSorter(const vector<Type>& the_objects)
-		:pointers(the_objects.size())
+		ArgSorter()
 		{
+		}
+
+		void set(const std::vector<Type>& the_objects)
+		{
+			pointers.resize(the_objects.size());
 			for(size_t i=0; i<pointers.size(); i++)
 				pointers[i] = &(the_objects[i]);
 		}
