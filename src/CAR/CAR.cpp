@@ -10,10 +10,12 @@ using namespace DNest3;
 
 CAR::CAR(bool zero_mean, const vector<double>& times)
 :zero_mean(zero_mean)
-,t(times)
 ,n(times.size())
 ,y(times.size())
 {
+	t.set(times);
+	t.sort();
+
 	double t_range = *max_element(times.begin(), times.end()) -
 				*min_element(times.begin(), times.end());
 	L_min = 1E-2*t_range;

@@ -1,6 +1,7 @@
 #ifndef _CAR_
 #define _CAR_
 
+#include "ArgSorter.h"
 #include <vector>
 #include <ostream>
 
@@ -11,7 +12,7 @@ class CAR
 		bool zero_mean;
 
 		// Timestamps
-		std::vector<double> t;
+		ArgSorter<double> t;
 
 		// Latent variables with N(0,1) priors
 		std::vector<double> n;
