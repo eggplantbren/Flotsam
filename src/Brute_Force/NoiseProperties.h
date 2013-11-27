@@ -8,7 +8,7 @@ class NoiseProperties
 {
 	private:
 		double nu;
-		double boost;
+		double latent_boost;
 
 	public:
 		NoiseProperties();
@@ -17,7 +17,7 @@ class NoiseProperties
 		double perturb();
 
 		double get_nu() const { return nu; }
-		double get_boost() const { return boost; }
+		double get_boost() const;
 		void print(std::ostream& out) const;
 };
 

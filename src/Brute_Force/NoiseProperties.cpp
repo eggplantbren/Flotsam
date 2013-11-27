@@ -14,7 +14,7 @@ NoiseProperties::NoiseProperties()
 void NoiseProperties::fromPrior()
 {
 	nu = exp(log(0.5) + log(200.)*randomU());
-	boost = exp(log(1.) + log(100.)*randomU());
+	latent_boost = randomU();
 }
 
 double NoiseProperties::perturb()
@@ -32,17 +32,25 @@ double NoiseProperties::perturb()
 	}
 	else if(which == 1)
 	{
-		boost = log(boost);
-		boost += log(100.)*pow(10., 1.5 - 6.*randomU())*randn();
-		boost = mod(boost - log(1.), log(100.)) + log(1.);
-		boost = exp(boost);
+		latent_boost += pow(10., 1.5 - 6.*randomU())*randn();
+		latent_boost = mod(latent_boost, 1.);
 	}
 
 	return logH;
 }
 
+double NoiseProperties::get_boost() const
+{
+	if(latent_boost < 0.5)
+		return 1.;
+
+	double b = 2.*(latent_boost - 0.5);
+	b = exp(log(1.) + log(100.)*b);
+	return b;
+}
+
 void NoiseProperties::print(ostream& out) const
 {
-	out<<nu<<' '<<boost<<' ';
+	out<<nu<<' '<<get_boost()<<' ';
 }
 
