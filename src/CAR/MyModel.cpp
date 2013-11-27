@@ -26,7 +26,8 @@ using namespace std;
 using namespace DNest3;
 
 MyModel::MyModel()
-:mu(Data::get_instance().get_numImages())
+:tau(Data::get_instance().get_numImages())
+,mu(Data::get_instance().get_numImages())
 ,qso_light_curve(true, Data::get_instance().get_t())
 {
 
@@ -34,8 +35,14 @@ MyModel::MyModel()
 
 void MyModel::fromPrior()
 {
+	tau_scale = 0.1*Data::get_instance().get_tRange();
+	tau[0] = 0.;
+	for(size_t i=1; i<tau.size(); i++)
+		tau[i] = tau_scale*tan(M_PI*(randomU() - 0.5));
+
 	for(size_t i=0; i<mu.size(); i++)
 		mu[i] = 10.*tan(M_PI*(randomU() - 0.5));
+
 	qso_light_curve.fromPrior();
 }
 
@@ -43,10 +50,18 @@ double MyModel::perturb()
 {
 	double logH = 0.;
 
-	int which = randInt(2);
+	int which = randInt(3);
+
 	if(which == 0)
-		logH += qso_light_curve.perturb();
-	else
+	{
+		int i = 1 + randInt(tau.size() - 1);
+
+		tau[i] = 0.5 + atan(tau[i]/tau_scale)/M_PI;
+		tau[i] += pow(10., 1.5 - 6.*randomU())*randn();
+		tau[i] = mod(tau[i], 1.);
+		tau[i] = tau_scale*tan(M_PI*(tau[i] - 0.5));
+	}
+	else if(which == 1)
 	{
 		int i = randInt(mu.size());
 
@@ -54,6 +69,10 @@ double MyModel::perturb()
 		mu[i] += pow(10., 1.5 - 6.*randomU())*randn();
 		mu[i] = mod(mu[i], 1.);
 		mu[i] = 10.*tan(M_PI*(mu[i] - 0.5));
+	}
+	else
+	{
+		logH += qso_light_curve.perturb();
 	}
 
 	return logH;
@@ -82,6 +101,8 @@ double MyModel::logLikelihood() const
 
 void MyModel::print(std::ostream& out) const
 {
+	for(size_t i=0; i<tau.size(); i++)
+		out<<tau[i]<<' ';
 	for(size_t i=0; i<mu.size(); i++)
 		out<<mu[i]<<' ';
 	qso_light_curve.print(out);
@@ -89,6 +110,6 @@ void MyModel::print(std::ostream& out) const
 
 string MyModel::description() const
 {
-	return string("mu, qso_light_curve");
+	return string("tau, mu, qso_light_curve");
 }
 

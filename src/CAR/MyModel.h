@@ -28,6 +28,10 @@
 class MyModel:public DNest3::Model
 {
 	private:
+		// Time delays (first one is zero)
+		std::vector<double> tau;
+		double tau_scale;
+
 		// First argument is mean parameter of image 0
 		// Then it's differences
 		std::vector<double> mu;
